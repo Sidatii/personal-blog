@@ -1,22 +1,22 @@
 ---
 phase: "02-git-integration-and-deployment"
-plan: "02"
+plan: "04"
 type: "execute"
 wave: "1"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 25%"
-total_phases: "4"
-completed_plans: "8/8"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%"
+total_phases: "6"
+completed_plans: "9/12"
 ---
 
 # Personal Blog Project - State
 
 ## Current Position
 
-**Phase:** 02-git-integration-and-deployment (2 of 4)
-**Plan:** 02 of 02
-**Status:** Plan complete
+**Phase:** 02-git-integration-and-deployment (1 of 6)
+**Plan:** 04 of 04 in this phase (All complete)
+**Status:** Phase complete
 
 ### Progress Overview
 
@@ -29,9 +29,11 @@ Phase 2: Foundation - 100% complete ✓
 - [x] Plan 02: Markdown engine ✓
 - [x] Plan 03: Content pipeline ✓
 
-Phase 3: Git Integration and Deployment - 25% complete ✓
+Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 01: GitSyncService with file locking ✓
-- [x] Plan 02: GitHub webhook controller ✓
+- [x] Plan 02: GitHub webhook validator and controller ✓
+- [x] Plan 03: Queued sync job ✓
+- [x] Plan 04: Health check and Deployer configuration ✓
 
 Phase 4: Content Management
 - [ ] Plan 01: Authentication system (pending)
@@ -45,6 +47,10 @@ Phase 4: Content Management
 | 00-01 | PostgreSQL over MySQL | PostgreSQL offers better JSON support for flexible content schema |
 | 00-01 | TailwindCSS 4.x | Latest version with improved DX and smaller bundle size |
 | 00-01 | Skipped Pest for PHPUnit | Laravel 12 requires PHPUnit 11.x, Pest not yet compatible |
+| 02-04 | Closure route for health endpoint | Simple infrastructure check with no reusable logic, controller would be over-engineering |
+| 02-04 | getenv() in deploy.php | Deployer runs in its own PHP context without Laravel's helper functions |
+| 02-04 | Health endpoint in web.php | Infrastructure route not part of the API surface, avoids conflicts with Plan 02's api.php |
+| 02-03 | Symlink approach for content path | After git pull, symlink base_path('content/posts') to git repo content path. Existing ContentIndexer works unchanged without modifications to its path assumptions. |
 
 ## Blockers & Concerns
 
@@ -74,10 +80,12 @@ Phase 4: Content Management
 - SQLite (dev/testing)
 - PostgreSQL (production)
 - PHPUnit 11.5.51
+- Deployer 7.5.12
 
 **Dependencies:**
 - league/commonmark (installed)
 - spatie/yaml-front-matter (installed)
+- deployer/deployer (installed)
 
 ## Environment Variables
 
@@ -94,23 +102,31 @@ Phase 4: Content Management
 - APP_URL=http://localhost:8000
 - APP_KEY=[generated]
 
+**Deployment:**
+- DEPLOY_REPOSITORY (for Deployer)
+- DEPLOY_HOST (for Deployer)
+- DEPLOY_USER (for Deployer)
+- DEPLOY_PATH (for Deployer)
+
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 02-01 (GitSyncService with file locking)
+**Stopped at:** Completed plan 02-03 (Queued sync job with notifications)
 **Resume file:** None
 
 ### What Was Just Completed
-- Created git-sync configuration file (config/git-sync.php) with centralized settings
-- Implemented GitSyncService with flock() file locking
-- Used Symfony Process for git operations (clone, fetch, reset)
-- Added git sync environment variables to .env.example and .env
+- SyncContentFromGitJob with ShouldQueue + ShouldBeUnique using GitHub delivery ID
+- ThrottlesExceptions middleware for 3 retries with 5-minute exponential backoff
+- handle() pulls git repo, creates symlink for content path, indexes changed/new files
+- failed() sends ContentSyncFailedNotification email with exception details
+- ContentSyncFailedNotification and WebhookAuthFailedNotification email classes
+- Job dispatch wired into WebhookController on valid webhook
+- Auth failure notification added to WebhookController for security alerting
+- Added configurable job settings to config/git-sync.php
 
 ### What Comes Next
-Phase 02-git-integration-and-deployment
-- Plan 02: GitHub webhook controller
-- Plan 03: Queued sync job
-- Plan 04: Health check endpoint
+Phase 2 complete! Git integration and deployment pipeline fully wired.
+Ready for Phase 3: Content Management (Blog Features & SEO)
 
 ## Notes
 
@@ -121,6 +137,8 @@ Phase 02-git-integration-and-deployment
 - `.planning/` - Project planning documents
 
 ### Git History
+- ead0825: feat(02-03): create SyncContentFromGitJob with retry logic
+- fd5efbf: feat(02-03): wire notifications and job dispatch into WebhookController
 - 86cb2ec: feat(02-01): create GitSyncService with file locking
 - ee13cd0: chore(02-01): create git-sync configuration file
 - 29a9ae2: feat(02-02): add GitHub webhook validator and controller
