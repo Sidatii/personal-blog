@@ -205,11 +205,14 @@ class MarkdownParser
             try {
                 $highlighted = $this->highlighter->highlight($code, $language);
 
-                // Remove inline background-color from Shiki output so container background is used
-                $highlighted = preg_replace('/\s*style="[^"]*background-color:[^"]*" /', '', $highlighted);
-                $highlighted = preg_replace('/\s*style="[^"]*background:[^"]*" /', '', $highlighted);
-                $highlighted = preg_replace('/\s*style="[^"]*background-color:[^"]*"$/', '', $highlighted);
-                $highlighted = preg_replace('/\s*style="[^"]*background:[^"]*"$/', '', $highlighted);
+                // Strip Shiki's outer <pre><code> wrapper and keep only inner content
+                // Shiki returns: <pre class="shiki" style="..."><code>...</code></pre>
+                // We want: just the span elements for syntax highlighting
+                $highlighted = preg_replace('/^\s*<pre[^>]*>\s*/i', '', $highlighted);
+                $highlighted = preg_replace('/\s*<\/code>\s*<\/pre>\s*$/i', '', $highlighted);
+
+                // Remove any style attributes entirely (not just background)
+                $highlighted = preg_replace('/\s*style="[^"]*"/', '', $highlighted);
 
                 // Wrap in code-block component structure for container isolation, copy button, and language label
                 return View::make('components.code-block', [
