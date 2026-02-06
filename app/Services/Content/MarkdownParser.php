@@ -4,87 +4,68 @@ namespace App\Services\Content;
 
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Spatie\YamlFrontMatter\Document;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class MarkdownParser
 {
-    protected CommonMarkConverter $converter;
+    /**
+     * @var GithubFlavoredMarkdownConverter
+     */
+    protected GithubFlavoredMarkdownConverter $converter;
 
     /**
-     * Create a new MarkdownParser instance.
-     * 
-     * Security configuration:
-     * - html_input: 'strip' - Strips ALL HTML from markdown input
-     * - allow_unsafe_links: false - Blocks javascript:, data: URLs
-     * - max_nesting_level: 100 - Prevents catastrophic backtracking
+     * Constructor - inject converter with security-hardened configuration.
      */
-    public function __construct()
+    public function __construct(?GithubFlavoredMarkdownConverter $converter = null)
     {
+        // Security-hardened configuration
         $config = [
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-            'max_nesting_level' => 100,
-            'enable_strong' => true,
-            'enable_emphasis' => true,
-            'disallowed_tags' => ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+            'html_input' => 'strip',           // CRITICAL: Strips ALL HTML from input
+            'allow_unsafe_links' => false,     // CRITICAL: Blocks javascript:, data: URLs
+            'max_nesting_level' => 100,        // Prevents catastrophic backtracking
         ];
 
-        $this->converter = new CommonMarkConverter($config);
+        $this->converter = $converter ?? new GithubFlavoredMarkdownConverter($config);
     }
 
     /**
      * Parse markdown content and extract frontmatter.
-     * 
-     * @param string $markdown Raw markdown with optional frontmatter
-     * @return array ['body' => HTML string, 'matter' => array]
+     * Returns array with 'body' (HTML) and 'matter' (frontmatter data).
      */
     public function parse(string $markdown): array
     {
-        $matter = [];
-        $content = $markdown;
+        // Extract frontmatter using spatie/yaml-front-matter
+        $document = YamlFrontMatter::parse($markdown);
 
-        // Extract frontmatter if present
-        if (preg_match('/^---\s*\n(.*?)\n---\s*\n/s', $markdown, $matches)) {
-            $matter = $this->extractFrontMatter($matches[1]);
-            $content = substr($markdown, strlen($matches[0]));
-        }
-
-        $body = $this->convertToHtml($content);
+        // Convert markdown body to HTML with security configuration
+        $html = $this->converter->convert($document->body())->getContent();
 
         return [
-            'body' => $body,
-            'matter' => $matter,
+            'body' => $html,
+            'matter' => $document->matter(),
         ];
     }
 
     /**
-     * Parse YAML frontmatter.
-     * 
-     * @param string $yaml YAML string
-     * @return array
+     * Extract frontmatter from markdown using spatie/yaml-front-matter.
      */
-    public function extractFrontMatter(string $yaml): array
+    public function extractFrontMatter(string $markdown): array
     {
-        // Wrap YAML in frontmatter delimiters for proper parsing
-        $wrappedYaml = "---\n" . trim($yaml) . "\n---\n";
-        $object = YamlFrontMatter::parse($wrappedYaml);
-        $matter = $object->matter();
+        $document = YamlFrontMatter::parse($markdown);
 
         return [
-            'title' => $matter['title'] ?? '',
-            'category' => $matter['category'] ?? '',
-            'tags' => $matter['tags'] ?? [],
-            'excerpt' => $matter['excerpt'] ?? '',
-            'published_at' => $matter['published_at'] ?? null,
-            'is_featured' => $matter['is_featured'] ?? false,
+            'title' => $document->matter('title', ''),
+            'category' => $document->matter('category', ''),
+            'tags' => $document->matter('tags', []),
+            'excerpt' => $document->matter('excerpt', ''),
+            'published_at' => $document->matter('published_at', null),
+            'is_featured' => $document->matter('is_featured', false),
         ];
     }
 
     /**
      * Convert markdown to HTML with security configuration.
-     * 
-     * @param string $markdown
-     * @return string HTML string
      */
     public function convertToHtml(string $markdown): string
     {
@@ -92,31 +73,24 @@ class MarkdownParser
     }
 
     /**
-     * Parse a markdown file and extract frontmatter.
-     * 
-     * @param string $filepath Path to markdown file
-     * @return array ['body' => HTML string, 'matter' => array]
+     * Read a markdown file and parse it.
      */
     public function parseFile(string $filepath): array
     {
+        if (!file_exists($filepath)) {
+            throw new \RuntimeException("File not found: {$filepath}");
+        }
+
         $content = file_get_contents($filepath);
+
         return $this->parse($content);
     }
 
     /**
-     * Extract frontmatter from a markdown file.
-     * 
-     * @param string $filepath Path to markdown file
-     * @return array
+     * Get the converter instance (for testing/debugging).
      */
-    public function extractFrontMatterFromFile(string $filepath): array
+    public function getConverter(): GithubFlavoredMarkdownConverter
     {
-        $content = file_get_contents($filepath);
-        
-        if (preg_match('/^---\s*\n(.*?)\n---\s*\n/s', $content, $matches)) {
-            return $this->extractFrontMatter($matches[1]);
-        }
-
-        return [];
+        return $this->converter;
     }
 }

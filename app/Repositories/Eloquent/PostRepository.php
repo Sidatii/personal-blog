@@ -11,43 +11,81 @@ use Illuminate\Support\Collection;
 class PostRepository implements PostRepositoryInterface
 {
     /**
-     * Find a published post by slug.
+     * @var Post
+     */
+    protected Post $post;
+
+    /**
+     * Constructor - inject Post model for dependency injection.
+     */
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+
+    /**
+     * Find a published post by slug with eager loading.
      */
     public function findPublishedBySlug(string $slug): ?Post
     {
-        return Post::published()->where('slug', $slug)->with(['category', 'tags'])->first();
+        return $this->post
+            ->published()
+            ->where('slug', $slug)
+            ->with(['category', 'tags'])
+            ->first();
     }
 
     /**
-     * Get published posts with pagination.
+     * Get published posts with limit and eager loading.
      */
     public function findPublished(int $limit = 10): Collection
     {
-        return Post::published()->with(['category', 'tags'])->limit($limit)->get();
+        return $this->post
+            ->published()
+            ->with(['category', 'tags'])
+            ->limit($limit)
+            ->get();
     }
 
     /**
-     * Get posts by category.
+     * Get posts by category with eager loading.
      */
     public function findByCategory(Category $category, int $limit = 10): Collection
     {
-        return $category->posts()->published()->with(['tags'])->limit($limit)->get();
+        return $this->post
+            ->published()
+            ->where('category_id', $category->id)
+            ->with(['category', 'tags'])
+            ->limit($limit)
+            ->get();
     }
 
     /**
-     * Get posts by tag.
+     * Get posts by tag with eager loading.
      */
     public function findByTag(Tag $tag, int $limit = 10): Collection
     {
-        return $tag->posts()->published()->with(['category'])->limit($limit)->get();
+        return $this->post
+            ->published()
+            ->whereHas('tags', function ($query) use ($tag) {
+                $query->where('tags.id', $tag->id);
+            })
+            ->with(['category', 'tags'])
+            ->limit($limit)
+            ->get();
     }
 
     /**
-     * Get featured posts.
+     * Get featured posts with eager loading.
      */
     public function findFeatured(int $limit = 5): Collection
     {
-        return Post::featured()->published()->with(['category', 'tags'])->limit($limit)->get();
+        return $this->post
+            ->published()
+            ->featured()
+            ->with(['category', 'tags'])
+            ->limit($limit)
+            ->get();
     }
 
     /**
@@ -55,29 +93,30 @@ class PostRepository implements PostRepositoryInterface
      */
     public function updateOrCreateFromIndex(array $data): Post
     {
-        return Post::updateOrCreate(
+        return $this->post->updateOrCreate(
             ['filepath' => $data['filepath']],
             $data
         );
     }
 
     /**
-     * Mark a file as needing reindex.
+     * Mark a file as needing reindex by updating content hash.
      */
     public function markAsChanged(string $filepath): void
     {
-        $post = Post::where('filepath', $filepath)->first();
-        if ($post) {
-            $post->content_hash = '';
-            $post->save();
-        }
+        $this->post
+            ->where('filepath', $filepath)
+            ->update(['content_hash' => null]);
     }
 
     /**
-     * Get all published posts.
+     * Get all published posts with eager loading.
      */
     public function allPublished(): Collection
     {
-        return Post::published()->with(['category', 'tags'])->get();
+        return $this->post
+            ->published()
+            ->with(['category', 'tags'])
+            ->get();
     }
 }
