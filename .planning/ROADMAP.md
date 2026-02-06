@@ -62,7 +62,15 @@ Laravel-based personal blog with git-based publishing workflow. Phase structure 
 - Zero-downtime deployment setup
 - Health checks and rollback mechanism
 
-**Status:** [Pending]
+**Status:** Planned
+
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Git sync service and configuration (Wave 1)
+- [ ] 02-02-PLAN.md — Webhook endpoint with signature verification (Wave 1)
+- [ ] 02-03-PLAN.md — Queue job, notifications, and pipeline wiring (Wave 2)
+- [ ] 02-04-PLAN.md — Health checks and Deployer configuration (Wave 1)
 
 ---
 
@@ -131,5 +139,5 @@ Laravel-based personal blog with git-based publishing workflow. Phase structure 
 
 ## Current Position
 
-**Phase:** 0
-**Next:** Plan phase 0 (Laravel installation)
+**Phase:** 2
+**Next:** Execute phase 2
