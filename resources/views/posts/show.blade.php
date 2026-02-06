@@ -79,7 +79,7 @@
             <footer class="mt-12 pt-8 border-t border-rose-pine-overlay">
                 <div class="flex items-center justify-between">
                     {{-- Back to posts link --}}
-                    <a href="{{ route('home') }}" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors flex items-center gap-2">
+                    <a href="{{ url('/') }}" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Back to posts
                     </a>
