@@ -1,12 +1,12 @@
 ---
 phase: "03-blog-features-and-seo"
-plan: "02"
+plan: "03"
 type: "complete"
-wave: "1"
+wave: "2"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 85%"
-completed_plans: "10/13"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 92%"
+completed_plans: "11/13"
 ---
 
 # Personal Blog Project - State
@@ -14,7 +14,7 @@ completed_plans: "10/13"
 ## Current Position
 
 **Phase:** 03-blog-features-and-seo (3 of 7)
-**Status:** In progress - Plan 02 complete
+**Status:** In progress - Plan 03 complete
 
 ### Progress Overview
 
@@ -30,6 +30,7 @@ Phase 2: Foundation - 100% complete ✓
 Phase 3: Blog Features & SEO - In progress
 - [x] Plan 01: Rose Pine theme integration ✓
 - [x] Plan 02: UI components and base layout ✓
+- [x] Plan 03: Shiki syntax highlighting ✓
 
 Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 01: GitSyncService with file locking ✓
@@ -54,6 +55,7 @@ Phase 4: Blog Features & SEO - Ready to begin
 | 02-04 | Health endpoint in web.php | Infrastructure route not part of the API surface, avoids conflicts with Plan 02's api.php |
 | 02-03 | Symlink approach for content path | After git pull, symlink base_path('content/posts') to git repo content path. Existing ContentIndexer works unchanged without modifications to its path assumptions. |
 | 03-01 | Hardcode Rose Pine values in app.css | User-selected option - direct CSS custom properties instead of npm package for simpler dependency management |
+| 03-03 | Use Shiki constructor injection | Shiki library API uses `new Shiki('theme')` not static factory method |
 
 ## Blockers & Concerns
 
@@ -88,6 +90,8 @@ Phase 4: Blog Features & SEO - Ready to begin
 **Dependencies:**
 - league/commonmark (installed)
 - spatie/yaml-front-matter (installed)
+- spatie/shiki-php ^2.3 (installed)
+- shiki ^3.22.0 (installed)
 - deployer/deployer (installed)
 
 ## Environment Variables
@@ -114,24 +118,20 @@ Phase 4: Blog Features & SEO - Ready to begin
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 03-02 (UI components and base layout)
+**Stopped at:** Completed plan 03-03 (Shiki syntax highlighting)
 **Resume file:** None
 
 ### What Was Just Completed
-- Rose Pine Main (dark) and Rose Pine Dawn (light) themes via CSS custom properties
-- Cookie-based theme persistence (30-day expiry)
-- window.darkMode API for component theme toggling
-- Theme toggle endpoint (POST /api/theme/toggle) and status endpoint (GET /api/theme/status)
-- ThemeController with toggle() and status() methods
-- Custom TailwindCSS dark variant configured
-- Dark mode toggle component with sun/moon icons
-- Header component with sticky positioning and mobile menu
-- Footer component with copyright, navigation, and social links
-- Base layout with dark mode initialization and component orchestration
+- spatie/shiki-php ^2.3 installed via Composer
+- shiki ^3.22.0 installed via npm
+- ShikiHighlighter service with Rose Pine theme configuration
+- highlight() method supporting language parameter (default: php)
+- Service dependency injection ready for markdown rendering pipeline
+- Server-side syntax highlighting for SEO-friendly code blocks
 
 ### What Comes Next
-Phase 3 Plan 02 complete! UI components and base layout established.
-Ready for additional Phase 3 plans or other features.
+Phase 3 Plan 03 complete! Shiki syntax highlighting service established.
+Ready for additional Phase 3 plans or integration into markdown rendering.
 
 ## Notes
 
@@ -142,6 +142,8 @@ Ready for additional Phase 3 plans or other features.
 - `.planning/` - Project planning documents
 
 ### Git History
+- 1147959: feat(03-03): create ShikiHighlighter service with Rose Pine theme
+- f5dfe0a: chore(03-03): install spatie/shiki-php and shiki for syntax highlighting
 - 661e34f: feat(03-02): create base layout with dark mode and component includes
 - 88b85b7: feat(03-02): create footer component with copyright, nav, and social links
 - 7ce6ed0: feat(03-02): create header component with logo, nav, and mobile menu
