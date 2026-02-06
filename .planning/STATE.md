@@ -1,13 +1,13 @@
 ---
 phase: "03-blog-features-and-seo"
-plan: "00"
-type: "ready"
+plan: "01"
+type: "complete"
 wave: "1"
-status: "ready"
+status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 69%"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 77%"
 total_phases: "7"
-completed_plans: "8/13"
+completed_plans: "9/13"
 ---
 
 # Personal Blog Project - State
@@ -15,7 +15,7 @@ completed_plans: "8/13"
 ## Current Position
 
 **Phase:** 03-blog-features-and-seo (3 of 7)
-**Status:** Ready to begin
+**Status:** In progress - Plan 01 complete
 
 ### Progress Overview
 
@@ -27,6 +27,9 @@ Phase 2: Foundation - 100% complete ✓
 - [x] Plan 01: Core publishing foundation ✓
 - [x] Plan 02: Markdown engine ✓
 - [x] Plan 03: Content pipeline ✓
+
+Phase 3: Blog Features & SEO - In progress
+- [x] Plan 01: Rose Pine theme integration ✓
 
 Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 01: GitSyncService with file locking ✓
@@ -50,6 +53,7 @@ Phase 4: Blog Features & SEO - Ready to begin
 | 02-04 | getenv() in deploy.php | Deployer runs in its own PHP context without Laravel's helper functions |
 | 02-04 | Health endpoint in web.php | Infrastructure route not part of the API surface, avoids conflicts with Plan 02's api.php |
 | 02-03 | Symlink approach for content path | After git pull, symlink base_path('content/posts') to git repo content path. Existing ContentIndexer works unchanged without modifications to its path assumptions. |
+| 03-01 | Hardcode Rose Pine values in app.css | User-selected option - direct CSS custom properties instead of npm package for simpler dependency management |
 
 ## Blockers & Concerns
 
@@ -110,22 +114,20 @@ Phase 4: Blog Features & SEO - Ready to begin
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 02-03 (Queued sync job with notifications)
+**Stopped at:** Completed plan 03-01 (Rose Pine theme integration with hardcoded CSS values)
 **Resume file:** None
 
 ### What Was Just Completed
-- SyncContentFromGitJob with ShouldQueue + ShouldBeUnique using GitHub delivery ID
-- ThrottlesExceptions middleware for 3 retries with 5-minute exponential backoff
-- handle() pulls git repo, creates symlink for content path, indexes changed/new files
-- failed() sends ContentSyncFailedNotification email with exception details
-- ContentSyncFailedNotification and WebhookAuthFailedNotification email classes
-- Job dispatch wired into WebhookController on valid webhook
-- Auth failure notification added to WebhookController for security alerting
-- Added configurable job settings to config/git-sync.php
+- Rose Pine Main (dark) and Rose Pine Dawn (light) themes via CSS custom properties
+- Cookie-based theme persistence (30-day expiry)
+- window.darkMode API for component theme toggling
+- Theme toggle endpoint (POST /api/theme/toggle) and status endpoint (GET /api/theme/status)
+- ThemeController with toggle() and status() methods
+- Custom TailwindCSS dark variant configured
 
 ### What Comes Next
-Phase 2 complete! Git integration and deployment pipeline fully wired.
-Ready for Phase 3: Content Management (Blog Features & SEO)
+Phase 3 Plan 01 complete! Rose Pine theme foundation established.
+Ready for additional theme features or other Phase 3 plans.
 
 ## Notes
 
