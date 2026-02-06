@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class Post extends Model
+class Post extends Model implements Feedable
 {
     use SoftDeletes;
 
@@ -63,5 +65,42 @@ class Post extends Model
     public function scopeRecent($query, $limit = 10)
     {
         return $query->orderBy('published_at', 'desc')->limit($limit);
+    }
+
+    /**
+     * Get feed items for the RSS/Atom feed.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getFeedItems()
+    {
+        return static::published()
+            ->orderBy('published_at', 'desc')
+            ->limit(50)
+            ->get();
+    }
+
+    /**
+     * Convert this post to a feed item.
+     */
+    public function toFeedItem(): FeedItem
+    {
+        return FeedItem::create()
+            ->id($this->slug ?? $this->id)
+            ->title($this->title)
+            ->summary($this->excerpt ?? $this->getSummaryFromContent())
+            ->updated($this->updated_at)
+            ->link(route('posts.show', $this))
+            ->authorName(config('app.name', 'Blog Author'))
+            ->authorEmail(config('mail.from.address', 'author@example.com'));
+    }
+
+    /**
+     * Get a summary from content if excerpt is not available.
+     */
+    private function getSummaryFromContent(): string
+    {
+        // Return a truncated version or placeholder
+        return 'Read more...';
     }
 }
