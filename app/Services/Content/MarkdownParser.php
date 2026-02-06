@@ -3,6 +3,7 @@
 namespace App\Services\Content;
 
 use App\Services\ShikiHighlighter;
+use Illuminate\Support\Facades\View;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
@@ -183,7 +184,7 @@ class MarkdownParser
     /**
      * Highlight code blocks in HTML using ShikiHighlighter.
      * Finds all <pre><code class="language-{lang}"> blocks and replaces them
-     * with Shiki's syntax-highlighted output.
+     * with Shiki's syntax-highlighted output wrapped in the code-block component.
      */
     protected function highlightCodeBlocks(string $html): string
     {
@@ -204,8 +205,11 @@ class MarkdownParser
             try {
                 $highlighted = $this->highlighter->highlight($code, $language);
 
-                // Wrap in code-block component structure if needed
-                return $highlighted;
+                // Wrap in code-block component structure for container isolation, copy button, and language label
+                return View::make('components.code-block', [
+                    'language' => $language,
+                    'highlighted' => $highlighted,
+                ])->render();
             } catch (\Exception $e) {
                 // If highlighting fails, return original but add shiki class for styling
                 return '<div class="shiki"><pre><code class="language-'.$language.'">'.$matches[2].'</code></pre></div>';
