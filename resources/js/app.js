@@ -1,3 +1,6 @@
 import './bootstrap';
 import './dark-mode';
-import 'alpinejs';
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+Alpine.start();
