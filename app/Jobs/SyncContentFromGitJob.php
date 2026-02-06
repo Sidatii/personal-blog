@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Notifications\ContentSyncFailedNotification;
 use App\Services\Content\ContentIndexer;
 use App\Services\Content\GitSyncService;
 use Illuminate\Bus\Queueable;

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SyncContentFromGitJob;
+use App\Notifications\WebhookAuthFailedNotification;
 use App\Services\Webhooks\GitHubWebhookValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class WebhookController extends Controller
 {
@@ -16,17 +19,22 @@ class WebhookController extends Controller
 
     /**
      * Handle incoming GitHub webhook requests.
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function handle(Request $request): JsonResponse
     {
         // Step 1 - Validate signature
-        if (!$this->validator->verify($request)) {
+        if (! $this->validator->verify($request)) {
             Log::warning('Webhook signature verification failed', [
-                'ip' => $request->ip()
+                'ip' => $request->ip(),
             ]);
+
+            // Send notification for webhook auth failure
+            $adminEmail = config('git-sync.admin_email', config('mail.from.address'));
+            if ($adminEmail) {
+                Notification::route('mail', $adminEmail)
+                    ->notify(new WebhookAuthFailedNotification($request->ip()));
+            }
+
             return response()->json(['error' => 'Invalid signature'], 403);
         }
 
@@ -39,8 +47,9 @@ class WebhookController extends Controller
 
         if (Cache::has("webhook:processed:{$deliveryId}")) {
             Log::info('Duplicate webhook skipped', [
-                'delivery_id' => $deliveryId
+                'delivery_id' => $deliveryId,
             ]);
+
             return response()->json(['status' => 'already_processed'], 200);
         }
 
@@ -50,11 +59,12 @@ class WebhookController extends Controller
 
         if ($branch !== $configuredBranch) {
             Log::info('Webhook for non-sync branch ignored', [
-                'branch' => $branch
+                'branch' => $branch,
             ]);
+
             return response()->json([
                 'status' => 'ignored',
-                'reason' => 'branch_mismatch'
+                'reason' => 'branch_mismatch',
             ], 200);
         }
 
@@ -64,14 +74,15 @@ class WebhookController extends Controller
         if ($eventType !== 'push') {
             return response()->json([
                 'status' => 'ignored',
-                'reason' => 'not_push_event'
+                'reason' => 'not_push_event',
             ], 200);
         }
 
-        // Step 5 - Mark as processed and prepare for dispatch
+        // Step 5 - Mark as processed and dispatch sync job
         Cache::put("webhook:processed:{$deliveryId}", true, now()->addDay());
 
-        // TODO: Dispatch SyncContentFromGitJob here (Plan 03)
+        // Dispatch the content sync job
+        SyncContentFromGitJob::dispatch($deliveryId);
 
         return response()->json(['status' => 'queued'], 200);
     }
