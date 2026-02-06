@@ -11,22 +11,11 @@ use Illuminate\Support\Collection;
 class PostRepository implements PostRepositoryInterface
 {
     /**
-     * Create a new repository instance.
-     */
-    public function __construct(protected Post $post)
-    {
-        //
-    }
-
-    /**
      * Find a published post by slug.
      */
     public function findPublishedBySlug(string $slug): ?Post
     {
-        return $this->post->published()
-            ->where('slug', $slug)
-            ->with(['category', 'tags'])
-            ->first();
+        return Post::published()->where('slug', $slug)->with(['category', 'tags'])->first();
     }
 
     /**
@@ -34,10 +23,7 @@ class PostRepository implements PostRepositoryInterface
      */
     public function findPublished(int $limit = 10): Collection
     {
-        return $this->post->published()
-            ->with(['category', 'tags'])
-            ->limit($limit)
-            ->get();
+        return Post::published()->with(['category', 'tags'])->limit($limit)->get();
     }
 
     /**
@@ -45,11 +31,7 @@ class PostRepository implements PostRepositoryInterface
      */
     public function findByCategory(Category $category, int $limit = 10): Collection
     {
-        return $this->post->published()
-            ->where('category_id', $category->id)
-            ->with(['category', 'tags'])
-            ->limit($limit)
-            ->get();
+        return $category->posts()->published()->with(['tags'])->limit($limit)->get();
     }
 
     /**
@@ -57,13 +39,7 @@ class PostRepository implements PostRepositoryInterface
      */
     public function findByTag(Tag $tag, int $limit = 10): Collection
     {
-        return $this->post->published()
-            ->whereHas('tags', function ($query) use ($tag) {
-                $query->where('tags.id', $tag->id);
-            })
-            ->with(['category', 'tags'])
-            ->limit($limit)
-            ->get();
+        return $tag->posts()->published()->with(['category'])->limit($limit)->get();
     }
 
     /**
@@ -71,11 +47,7 @@ class PostRepository implements PostRepositoryInterface
      */
     public function findFeatured(int $limit = 5): Collection
     {
-        return $this->post->published()
-            ->featured()
-            ->with(['category', 'tags'])
-            ->limit($limit)
-            ->get();
+        return Post::featured()->published()->with(['category', 'tags'])->limit($limit)->get();
     }
 
     /**
@@ -83,7 +55,7 @@ class PostRepository implements PostRepositoryInterface
      */
     public function updateOrCreateFromIndex(array $data): Post
     {
-        return $this->post->updateOrCreate(
+        return Post::updateOrCreate(
             ['filepath' => $data['filepath']],
             $data
         );
@@ -94,7 +66,11 @@ class PostRepository implements PostRepositoryInterface
      */
     public function markAsChanged(string $filepath): void
     {
-        $this->post->where('filepath', $filepath)->update(['content_hash' => '']);
+        $post = Post::where('filepath', $filepath)->first();
+        if ($post) {
+            $post->content_hash = '';
+            $post->save();
+        }
     }
 
     /**
@@ -102,8 +78,6 @@ class PostRepository implements PostRepositoryInterface
      */
     public function allPublished(): Collection
     {
-        return $this->post->published()
-            ->with(['category', 'tags'])
-            ->get();
+        return Post::published()->with(['category', 'tags'])->get();
     }
 }

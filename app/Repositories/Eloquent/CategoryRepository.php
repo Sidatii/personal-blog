@@ -9,19 +9,11 @@ use Illuminate\Support\Collection;
 class CategoryRepository implements CategoryRepositoryInterface
 {
     /**
-     * Create a new repository instance.
-     */
-    public function __construct(protected Category $category)
-    {
-        //
-    }
-
-    /**
      * Find a category by slug.
      */
     public function findBySlug(string $slug): ?Category
     {
-        return $this->category->where('slug', $slug)->first();
+        return Category::where('slug', $slug)->first();
     }
 
     /**
@@ -29,7 +21,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function all(): Collection
     {
-        return $this->category->all();
+        return Category::all();
     }
 
     /**
@@ -37,7 +29,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function findOrCreate(string $name, string $slug): Category
     {
-        return $this->category->firstOrCreate(
+        return Category::firstOrCreate(
             ['slug' => $slug],
             ['name' => $name]
         );
@@ -48,6 +40,6 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function withPostCount(): Collection
     {
-        return $this->category->withCount('posts')->get();
+        return Category::withCount('posts')->get();
     }
 }
