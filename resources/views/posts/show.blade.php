@@ -114,12 +114,66 @@
         --tw-prose-th-borders: var(--rp-highlight-med);
         --tw-prose-td-borders: var(--rp-highlight-low);
     }
-    
+
+    /* Distinct header typography for visual hierarchy */
+    .prose h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--rp-text);
+        margin-top: 2em;
+        margin-bottom: 1em;
+        letter-spacing: -0.025em;
+    }
+
+    .prose h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--rp-text);
+        margin-top: 1.5em;
+        margin-bottom: 0.75em;
+        border-bottom: 1px solid var(--rp-highlight-med);
+        padding-bottom: 0.25em;
+    }
+
+    .prose h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--rp-subtle);
+        margin-top: 1.25em;
+        margin-bottom: 0.5em;
+    }
+
+    .prose h4 {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--rp-muted);
+        margin-top: 1em;
+        margin-bottom: 0.25em;
+    }
+
+    .prose h5 {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--rp-muted);
+        margin-top: 0.75em;
+        margin-bottom: 0.25em;
+    }
+
+    .prose h6 {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--rp-muted);
+        margin-top: 0.5em;
+        margin-bottom: 0.25em;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
     /* Smooth scroll for anchor links */
     html {
         scroll-behavior: smooth;
     }
-    
+
     /* Offset for fixed header when scrolling to anchors */
     [id] {
         scroll-margin-top: 6rem;
