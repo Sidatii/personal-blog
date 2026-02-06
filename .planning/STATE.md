@@ -1,12 +1,12 @@
 ---
 phase: "03-blog-features-and-seo"
-plan: "05"
+plan: "06"
 type: "complete"
-wave: "2"
+wave: "3"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 94%"
-completed_plans: "13/13"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95%"
+completed_plans: "14/14"
 ---
 
 # Personal Blog Project - State
@@ -14,7 +14,7 @@ completed_plans: "13/13"
 ## Current Position
 
 **Phase:** 03-blog-features-and-seo (3 of 7)
-**Status:** Phase complete - Plan 05 complete
+**Status:** Phase complete - Plan 06 complete
 
 ### Progress Overview
 
@@ -33,6 +33,7 @@ Phase 3: Blog Features & SEO - 100% complete ✓
 - [x] Plan 03: Shiki syntax highlighting ✓
 - [x] Plan 04: Single post view with TOC and progress bar ✓
 - [x] Plan 05: SEO meta tags with Open Graph and JSON-LD ✓
+- [x] Plan 06: RSS feed and XML sitemap ✓
 
 Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 01: GitSyncService with file locking ✓
@@ -60,6 +61,7 @@ Phase 4: Blog Features & SEO - Ready to begin
 | 03-03 | Use Shiki constructor injection | Shiki library API uses `new Shiki('theme')` not static factory method |
 | 03-04 | Install Alpine.js for components | Required for interactive elements (progress bar, copy button) - lightweight alternative to React/Vue |
 | 03-05 | Used archtechx/laravel-seo package | Modern fluent API with JSON-LD support, better than ralphjsmit for non-database SEO |
+| 03-06 | Used spatie/laravel-feed and spatie/laravel-sitemap | Industry-standard packages with Laravel 12 support, reliable RSS and sitemap generation |
 
 ## Blockers & Concerns
 
@@ -97,6 +99,8 @@ Phase 4: Blog Features & SEO - Ready to begin
 - spatie/shiki-php ^2.3 (installed)
 - shiki ^3.22.0 (installed)
 - archtechx/laravel-seo ^0.10.3 (installed)
+- spatie/laravel-feed ^4.4 (installed)
+- spatie/laravel-sitemap ^7.3 (installed)
 - deployer/deployer (installed)
 
 ## Environment Variables
@@ -123,21 +127,21 @@ Phase 4: Blog Features & SEO - Ready to begin
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 03-05 (SEO meta tags with Open Graph and JSON-LD)
+**Stopped at:** Completed plan 03-06 (RSS feed and XML sitemap)
 **Resume file:** None
 
 ### What Was Just Completed
-- Installed archtechx/laravel-seo package for SEO management
-- Created config/seo.php with site defaults, OG settings, Twitter Cards, and JSON-LD config
-- Built SeoMeta View Component generating all meta tags and structured data
-- Created BlogController with SEO data injection for index and show pages
-- Hybrid OG image resolution: featured image → auto-generated → default fallback
-- All pages now render complete SEO meta tags in the head section
-- Blog posts include BlogPosting schema for Google rich snippets
+- Installed spatie/laravel-feed and spatie/laravel-sitemap packages
+- Implemented Feedable interface on Post model for RSS generation
+- Created custom Atom feed template at /feed with published posts
+- Created artisan command `sitemap:generate` for XML sitemap
+- Added dynamic sitemap route at /sitemap.xml with static file fallback
+- Sitemap includes homepage, blog index, and all published posts with priority based on recency
+- Both /feed and /sitemap.xml endpoints tested and working
 
 ### What Comes Next
-Phase 3 Plan 05 complete! Full SEO implementation established.
-Ready for additional features or next phase.
+Phase 3 Plan 06 complete! Full SEO implementation with RSS and sitemap.
+Ready for next phase or additional features.
 
 ## Notes
 
@@ -155,8 +159,18 @@ Ready for additional features or next phase.
 - `resources/views/components/reading-progress.blade.php` - Reading progress bar
 - `resources/views/components/table-of-contents.blade.php` - Sticky TOC sidebar
 - `resources/views/components/code-block.blade.php` - Code block with copy button
+- `config/feed.php` - RSS/Atom feed configuration
+- `resources/views/feed.blade.php` - Atom feed template
+- `app/Console/Commands/GenerateSitemap.php` - Sitemap generator command
+- `public/sitemap.xml` - Generated XML sitemap
 
 ### Git History
+- 56c1e59: fix(03-06): correct feed template array key
+- 4a7407d: feat(03-06): add sitemap route and configure feed/sitemap endpoints
+- 4a66819: feat(03-06): create sitemap generation command
+- 3e76b84: feat(03-06): create feed template and register feed routes
+- 6edf246: feat(03-06): update Post model to implement Feedable interface
+- 85c4ec0: chore(03-06): install spatie/laravel-feed and spatie/laravel-sitemap
 - d234e4b: feat(03-05): verify hybrid OG image fallback configuration
 - e885c4e: feat(03-05): update base layout and routes for SEO meta integration
 - 9581d61: feat(03-05): create BlogController with SEO data injection
