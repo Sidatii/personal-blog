@@ -17,17 +17,15 @@
         </button>
     </div>
     
-    {{-- Code block with syntax highlighting --}}
-    <div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0">{!! $highlighted ?? $slot !!}</div>
+    {{-- Code block with syntax highlighting (Shiki keeps pre/code wrapper) --}}
+    <div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0">{!! $slot !!}</div>
 </div>
 
 {{-- Line numbers CSS --}}
 @push('head')
 <style>
-    /* Outer container handles background, syntax colors come from inline styles on spans */
-    .shiki code {
-        all: initial;
-    }
+    /* Line numbers for code blocks */
+    .shiki { counter-reset: line; }
     .shiki .line::before { 
         counter-increment: line; 
         content: counter(line); 
