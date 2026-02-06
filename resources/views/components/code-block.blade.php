@@ -21,18 +21,13 @@
     <div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0">{!! $highlighted ?? $slot !!}</div>
 </div>
 
-{{-- Line numbers CSS (will be applied to Shiki output) --}}
+{{-- Line numbers CSS --}}
 @push('head')
 <style>
-    .shiki,
-    .shiki span,
-    .shiki code,
-    .shiki pre {
-        background-color: transparent !important;
-        background: transparent !important;
-        background-image: none !important;
+    /* Outer container handles background, syntax colors come from inline styles on spans */
+    .shiki code {
+        all: initial;
     }
-    .shiki { counter-reset: line; }
     .shiki .line::before { 
         counter-increment: line; 
         content: counter(line); 
