@@ -74,6 +74,7 @@ Plans:
 ---
 
 ### Phase 3: Blog Features & SEO
+**Status:** ✓ Complete
 **Goal:** Reader-facing blog with dark mode, syntax highlighting, SEO meta tags, RSS feed, and sitemap
 
 **Depends on:** Phase 1
@@ -87,9 +88,7 @@ Plans:
 - RSS/Atom feed
 - Syntax highlighting
 
-**Status:** Planned
-
-**Plans:** 5 plans
+**Plans:** 7/7 complete
 
 Plans:
 - [x] 03-01-PLAN.md — Foundation & Theme: Install Rose Pine theme, configure TailwindCSS, create base layout with header, footer, dark mode toggle
@@ -97,6 +96,8 @@ Plans:
 - [x] 03-03-PLAN.md — Blog Post View: Single post with Shiki syntax highlighting, sticky TOC, progress bar, code blocks
 - [x] 03-04-PLAN.md — SEO & Meta: archtechx/laravel-seo integration, Open Graph, Twitter Cards, JSON-LD structured data
 - [x] 03-05-PLAN.md — Feeds: RSS/Atom feed with spatie/laravel-feed, XML sitemap with spatie/laravel-sitemap
+- [x] 03-06-PLAN.md — BlogController: Markdown parsing integration (from gap closure)
+- [x] 03-07-PLAN.md — Gap Closure: Wire BlogController to parse markdown files
 
 ---
 
@@ -147,5 +148,5 @@ Plans:
 
 ## Current Position
 
-**Phase:** 3
-**Next:** Plan phase 3
+**Phase:** 4
+**Next:** Plan phase 4
