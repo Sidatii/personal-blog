@@ -1,10 +1,15 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Blog Routes
+Route::get('/blog', [BlogController::class, 'index'])->name('posts.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
 
 Route::get('/health', function () {
     $checks = [

@@ -7,7 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name') }}</title>
+    {{-- SEO Meta Tags --}}
+    <x-seo-meta
+        :title="$seo['title'] ?? null"
+        :description="$seo['description'] ?? null"
+        :image="$seo['image'] ?? null"
+        :type="$seo['type'] ?? 'website'"
+        :url="$seo['url'] ?? null"
+        :published-time="$seo['publishedTime'] ?? null"
+        :modified-time="$seo['modifiedTime'] ?? null"
+        :author="$seo['author'] ?? null"
+    />
 
     {{-- Dark mode script (blocking to prevent FOUC) --}}
     <script src="{{ asset('js/dark-mode.js') }}"></script>
