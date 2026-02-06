@@ -80,4 +80,37 @@ return [
     */
     'sync_branch' => env('GIT_SYNC_BRANCH', 'main'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Job Maximum Exceptions
+    |--------------------------------------------------------------------------
+    |
+    | Maximum number of exceptions allowed before the job is marked as failed.
+    | Used by ThrottlesExceptions middleware.
+    |
+    */
+    'job_max_exceptions' => (int) env('GIT_SYNC_JOB_MAX_EXCEPTIONS', 3),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Job Backoff Minutes
+    |--------------------------------------------------------------------------
+    |
+    | Number of minutes to wait between retry attempts.
+    | Exponential backoff is applied automatically by ThrottlesExceptions.
+    |
+    */
+    'job_backoff_minutes' => (int) env('GIT_SYNC_JOB_BACKOFF', 5),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Email for Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Email address to receive failure notifications for sync jobs
+    | and webhook authentication failures.
+    |
+    */
+    'admin_email' => env('ADMIN_EMAIL'),
+
 ];
