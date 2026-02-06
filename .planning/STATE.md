@@ -7,7 +7,7 @@ status: "complete"
 last_activity: "2026-02-06"
 progress: "▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░ 75%"
 total_phases: "4"
-completed_plans: "2/4"
+completed_plans: "3/4"
 ---
 
 # Personal Blog Project - State
@@ -15,7 +15,7 @@ completed_plans: "2/4"
 ## Current Position
 
 **Phase:** 01-core-publishing (2 of 4)
-**Plan:** 01 of 03
+**Plan:** 02 of 03
 **Status:** Plan complete
 
 ### Progress Overview
@@ -24,10 +24,10 @@ Phase 1: Setup (Laravel + PostgreSQL) - 100% complete
 - [x] Plan 01: Laravel installation and configuration ✓
 - [x] Plan 02: Database schema design ✓ (implicit in 01-01)
 
-Phase 2: Core Publishing - 33% complete
+Phase 2: Core Publishing - 67% complete
 - [x] Plan 01: Database schema, models, and repository interfaces ✓
-- [ ] Plan 02: Repository implementations (pending)
-- [ ] Plan 03: Markdown parser and content services (pending)
+- [x] Plan 02: Repository implementations and markdown parser ✓
+- [ ] Plan 03: Content indexer and sync command (pending)
 
 Phase 3: Content Management
 - [ ] Plan 01: Blog posts CRUD (pending)
@@ -95,20 +95,21 @@ Phase 4: Frontend & Polish
 
 ## Session Continuity
 
-**Last session:** 2026-02-06 01:02:00 UTC
-**Stopped at:** Completed plan 01-01 (Core publishing foundation)
+**Last session:** 2026-02-06 00:09:04 UTC
+**Stopped at:** Completed plan 01-02 (Repository implementations and markdown parser)
 **Resume file:** None
 
 ### What Was Just Completed
-- Database migrations for posts, categories, tags, and post_tag pivot table
-- Eloquent models with relationships (Post → Category, Post ↔ Tag)
-- Repository interfaces defining data access contracts
-- All migrations executed successfully
+- PostRepository with Eloquent queries and eager loading
+- CategoryRepository with category management methods
+- TagRepository with pivot table sync capability
+- MarkdownParser with security-hardened configuration (html_input: strip, allow_unsafe_links: false)
+- Service provider bindings for all repositories and services
+- All security and frontmatter tests passing
 
 ### What Comes Next
-- Plan 01-02: Repository implementations and concrete bindings
-- Plan 01-03: Markdown parser service with security configuration
-- Content sync command implementation
+- Plan 01-03: Content indexer implementation
+- Command to sync markdown files to database
 - Test content pipeline from markdown files to database records
 
 ## Notes
@@ -120,6 +121,7 @@ Phase 4: Frontend & Polish
 - `.planning/` - Project planning documents
 
 ### Git History
+- 8d3ba51: feat(01-02): Implement repository layer and markdown parser
 - 833a04e: feat(01-01): Create repository interfaces for posts and categories
 - bc797e1: feat(01-01): Create Eloquent models for Post, Category, Tag
 - 4215f08: feat(01-01): Create database schema for posts, categories, tags
@@ -130,3 +132,4 @@ Phase 4: Frontend & Polish
 - 7 tables: users, cache, jobs, posts, categories, tags, post_tag
 - All custom migrations executed successfully
 - Ready for repository implementations in plan 01-02
+- Ready for content indexer in plan 01-03
