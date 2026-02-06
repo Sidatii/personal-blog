@@ -2,22 +2,27 @@
 
 namespace App\Services\Content;
 
-use League\CommonMark\CommonMarkConverter;
+use App\Services\ShikiHighlighter;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use Spatie\YamlFrontMatter\Document;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class MarkdownParser
 {
-    /**
-     * @var GithubFlavoredMarkdownConverter
-     */
     protected GithubFlavoredMarkdownConverter $converter;
 
+    protected ShikiHighlighter $highlighter;
+
     /**
-     * Constructor - inject converter with security-hardened configuration.
+     * Extracted headings from the last parse operation.
+     *
+     * @var array<int, array{level: int, text: string, id: string}>
      */
-    public function __construct(?GithubFlavoredMarkdownConverter $converter = null)
+    protected array $headings = [];
+
+    /**
+     * Constructor - inject converter and highlighter with security-hardened configuration.
+     */
+    public function __construct(?GithubFlavoredMarkdownConverter $converter = null, ?ShikiHighlighter $highlighter = null)
     {
         // Security-hardened configuration
         $config = [
@@ -27,6 +32,7 @@ class MarkdownParser
         ];
 
         $this->converter = $converter ?? new GithubFlavoredMarkdownConverter($config);
+        $this->highlighter = $highlighter ?? new ShikiHighlighter;
     }
 
     /**
@@ -38,8 +44,14 @@ class MarkdownParser
         // Extract frontmatter using spatie/yaml-front-matter
         $document = YamlFrontMatter::parse($markdown);
 
+        // Extract headings before HTML conversion
+        $this->headings = $this->extractHeadings($document->body());
+
         // Convert markdown body to HTML with security configuration
         $html = $this->converter->convert($document->body())->getContent();
+
+        // Post-process to highlight code blocks
+        $html = $this->highlightCodeBlocks($html);
 
         return [
             'body' => $html,
@@ -77,7 +89,7 @@ class MarkdownParser
      */
     public function parseFile(string $filepath): array
     {
-        if (!file_exists($filepath)) {
+        if (! file_exists($filepath)) {
             throw new \RuntimeException("File not found: {$filepath}");
         }
 
@@ -92,5 +104,112 @@ class MarkdownParser
     public function getConverter(): GithubFlavoredMarkdownConverter
     {
         return $this->converter;
+    }
+
+    /**
+     * Get headings extracted from the last parse operation.
+     *
+     * @return array<int, array{level: int, text: string, id: string}>
+     */
+    public function getHeadings(): array
+    {
+        return $this->headings;
+    }
+
+    /**
+     * Extract headings from markdown content.
+     * Finds all heading elements (h1-h6) and returns their level, text, and slug.
+     *
+     * @return array<int, array{level: int, text: string, id: string}>
+     */
+    protected function extractHeadings(string $markdown): array
+    {
+        $headings = [];
+
+        // Match markdown headings: # Heading, ## Heading, etc.
+        // Supports optional closing hashes and inline formatting
+        $pattern = '/^(#{1,6})\s+(.+?)(?:\s*#*)?$/m';
+
+        if (preg_match_all($pattern, $markdown, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $level = strlen($match[1]);
+                $text = trim($match[2]);
+
+                // Remove inline markdown formatting (bold, italic, code)
+                $text = preg_replace('/\*\*|__|\*|_|`/', '', $text);
+
+                // Generate slug from heading text
+                $id = $this->generateSlug($text);
+
+                $headings[] = [
+                    'level' => $level,
+                    'text' => $text,
+                    'id' => $id,
+                ];
+            }
+        }
+
+        return $headings;
+    }
+
+    /**
+     * Generate a URL-friendly slug from heading text.
+     */
+    protected function generateSlug(string $text): string
+    {
+        // Convert to lowercase
+        $slug = strtolower($text);
+
+        // Replace spaces and underscores with hyphens
+        $slug = preg_replace('/[\s_]+/', '-', $slug);
+
+        // Remove special characters (keep only alphanumeric and hyphens)
+        $slug = preg_replace('/[^a-z0-9-]/', '', $slug);
+
+        // Remove multiple consecutive hyphens
+        $slug = preg_replace('/-+/', '-', $slug);
+
+        // Trim hyphens from start and end
+        $slug = trim($slug, '-');
+
+        // Ensure we have something (fallback for empty slugs)
+        if (empty($slug)) {
+            $slug = 'heading';
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Highlight code blocks in HTML using ShikiHighlighter.
+     * Finds all <pre><code class="language-{lang}"> blocks and replaces them
+     * with Shiki's syntax-highlighted output.
+     */
+    protected function highlightCodeBlocks(string $html): string
+    {
+        // Pattern to match code blocks: <pre><code class="language-{lang}">...</code></pre>
+        // Also handles <pre><code class="lang-{lang}"> variants
+        $pattern = '/<pre><code(?:\s+class="(?:language-|lang-)?([^"]*)")?>([^<]*)<\/code><\/pre>/s';
+
+        return preg_replace_callback($pattern, function ($matches) {
+            $language = $matches[1] ?? 'text';
+            // Decode HTML entities back to raw code
+            $code = htmlspecialchars_decode($matches[2] ?? '', ENT_QUOTES | ENT_HTML5);
+
+            if (empty($code)) {
+                return $matches[0]; // Return original if no code content
+            }
+
+            // Use Shiki to highlight the code
+            try {
+                $highlighted = $this->highlighter->highlight($code, $language);
+
+                // Wrap in code-block component structure if needed
+                return $highlighted;
+            } catch (\Exception $e) {
+                // If highlighting fails, return original but add shiki class for styling
+                return '<div class="shiki"><pre><code class="language-'.$language.'">'.$matches[2].'</code></pre></div>';
+            }
+        }, $html);
     }
 }
