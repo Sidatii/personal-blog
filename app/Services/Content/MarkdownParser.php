@@ -3,7 +3,6 @@
 namespace App\Services\Content;
 
 use App\Services\ShikiHighlighter;
-use Illuminate\Support\Facades\View;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
@@ -206,18 +205,25 @@ class MarkdownParser
                 $highlighted = $this->highlighter->highlight($code, $language);
 
                 // Shiki returns: <pre class="shiki" style="background-color: #191724"><code>...</code></pre>
-                // We need to keep .shiki class for line numbers, remove ONLY background-color style
+                // Remove ONLY background-color style from pre
                 $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="[^"]*background-color:[^"]*")/', '$1', $highlighted);
-
-                // Remove empty style attribute if that's all it contained
                 $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="")/', '$1', $highlighted);
                 $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="\s*")/', '$1', $highlighted);
 
-                // Wrap in code-block component (keep Shiki's pre/code structure for line numbers)
-                return View::make('components.code-block', [
-                    'language' => $language,
-                    'slot' => $highlighted,
-                ])->render();
+                // Build the code-block component HTML directly (avoiding slot auto-wrapping)
+                return '<div x-ref="container" class="relative group my-6 rounded-lg overflow-hidden border border-rose-pine-overlay">'
+                    .'<div class="flex justify-between items-center px-4 py-2 bg-rose-pine-surface border-b border-rose-pine-overlay">'
+                    .'<span class="text-xs font-mono text-rose-pine-muted">'.e($language).'</span>'
+                    .'<button x-data="{ copied: false }" @click="navigator.clipboard.writeText($refs.container.querySelector(\'pre\').textContent); copied = true; setTimeout(() => copied = false, 2000)" class="text-xs text-rose-pine-subtle hover:text-rose-pine-text transition-colors flex items-center gap-1">'
+                    .'<span x-show="!copied"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>'
+                    .'<span x-show="copied" class="text-rose-pine-pine flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Copied!</span>'
+                    .'<span x-show="!copied">Copy</span>'
+                    .'</button>'
+                    .'</div>'
+                    .'<div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0 shiki-line-numbers">'
+                    .$highlighted
+                    .'</div>'
+                    .'</div>';
             } catch (\Exception $e) {
                 // If highlighting fails, return original but add shiki class for styling
                 return '<div class="shiki"><pre><code class="language-'.$language.'">'.$matches[2].'</code></pre></div>';
