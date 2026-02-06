@@ -205,12 +205,10 @@ class MarkdownParser
                 $highlighted = $this->highlighter->highlight($code, $language);
 
                 // Shiki returns: <pre class="shiki" style="background-color: #191724"><code>...</code></pre>
-                // Remove ONLY background-color style from pre
-                $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="[^"]*background-color:[^"]*")/', '$1', $highlighted);
-                $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="")/', '$1', $highlighted);
-                $highlighted = preg_replace('/(<pre\s+class="shiki")(\s+style="\s*")/', '$1', $highlighted);
+                // Remove background-color style entirely
+                $highlighted = preg_replace('/(<pre\s+class="shiki")[^>]*>/', '$1>', $highlighted);
 
-                // Build the code-block component HTML directly (avoiding slot auto-wrapping)
+                // Build the code-block component HTML directly
                 return '<div x-ref="container" class="relative group my-6 rounded-lg overflow-hidden border border-rose-pine-overlay">'
                     .'<div class="flex justify-between items-center px-4 py-2 bg-rose-pine-surface border-b border-rose-pine-overlay">'
                     .'<span class="text-xs font-mono text-rose-pine-muted">'.e($language).'</span>'
@@ -220,9 +218,7 @@ class MarkdownParser
                     .'<span x-show="!copied">Copy</span>'
                     .'</button>'
                     .'</div>'
-                    .'<div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0 shiki-line-numbers">'
                     .$highlighted
-                    .'</div>'
                     .'</div>';
             } catch (\Exception $e) {
                 // If highlighting fails, return original but add shiki class for styling

@@ -18,6 +18,29 @@
     </div>
     
     {{-- Code block with syntax highlighting --}}
+    <div class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0 shiki-container">
+        {!! $slot !!}
+    </div>
+</div>
+
+{{-- Line numbers CSS --}}
+@push('head')
+<style>
+    .shiki-container .shiki { counter-reset: line; }
+    .shiki-container .shiki .line::before { 
+        counter-increment: line; 
+        content: counter(line); 
+        display: inline-block;
+        width: 2em;
+        margin-right: 1em;
+        text-align: right;
+        color: var(--rp-muted);
+        user-select: none;
+    }
+</style>
+@endpush
+    
+    {{-- Code block with syntax highlighting --}}
     <div class="shiki-line-numbers rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0">
         {!! $slot !!}
     </div>
