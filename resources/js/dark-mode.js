@@ -139,33 +139,25 @@
         initialize();
     }
 
+    // Expose API globally for components - must be done after IIFE executes
+    window.darkMode = {
+        toggle: function() {
+            return toggleTheme();
+        },
+        setTheme: function(theme) {
+            return setTheme(theme);
+        },
+        getTheme: function() {
+            return getTheme();
+        },
+        toggleViaApi: function(theme) {
+            return toggleViaApi(theme);
+        }
+    };
+
     /**
      * Theme initialization started: dark (Rose Pine Main)
      * Cookie persistence: 30 days
      * Rose Pine colors available via CSS custom properties
      */
 })();
-
-// Expose API globally for components
-window.darkMode = {
-    toggle: function() {
-        return this.constructor.prototype.toggleTheme.call(window.darkMode);
-    },
-    setTheme: function(theme) {
-        return this.constructor.prototype.setTheme.call(window.darkMode, theme);
-    },
-    getTheme: function() {
-        return this.constructor.prototype.getTheme.call(window.darkMode);
-    },
-    toggleViaApi: function(theme) {
-        return this.constructor.prototype.toggleViaApi.call(window.darkMode, theme);
-    }
-};
-
-// Bind prototype methods to the exposed object
-Object.assign(window.darkMode, {
-    toggleTheme,
-    setTheme,
-    getTheme,
-    toggleViaApi
-});
