@@ -1,12 +1,12 @@
 ---
 phase: "03-blog-features-and-seo"
-plan: "03"
+plan: "04"
 type: "complete"
 wave: "2"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 92%"
-completed_plans: "11/13"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░ 93%"
+completed_plans: "12/13"
 ---
 
 # Personal Blog Project - State
@@ -14,7 +14,7 @@ completed_plans: "11/13"
 ## Current Position
 
 **Phase:** 03-blog-features-and-seo (3 of 7)
-**Status:** In progress - Plan 03 complete
+**Status:** In progress - Plan 04 complete
 
 ### Progress Overview
 
@@ -31,6 +31,7 @@ Phase 3: Blog Features & SEO - In progress
 - [x] Plan 01: Rose Pine theme integration ✓
 - [x] Plan 02: UI components and base layout ✓
 - [x] Plan 03: Shiki syntax highlighting ✓
+- [x] Plan 04: Single post view with TOC and progress bar ✓
 
 Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 01: GitSyncService with file locking ✓
@@ -56,6 +57,7 @@ Phase 4: Blog Features & SEO - Ready to begin
 | 02-03 | Symlink approach for content path | After git pull, symlink base_path('content/posts') to git repo content path. Existing ContentIndexer works unchanged without modifications to its path assumptions. |
 | 03-01 | Hardcode Rose Pine values in app.css | User-selected option - direct CSS custom properties instead of npm package for simpler dependency management |
 | 03-03 | Use Shiki constructor injection | Shiki library API uses `new Shiki('theme')` not static factory method |
+| 03-04 | Install Alpine.js for components | Required for interactive elements (progress bar, copy button) - lightweight alternative to React/Vue |
 
 ## Blockers & Concerns
 
@@ -78,7 +80,7 @@ Phase 4: Blog Features & SEO - Ready to begin
 **Frontend:**
 - TailwindCSS 4.1.18
 - Vite 6.x
-- Alpine.js (optional, not installed)
+- Alpine.js 3.x (installed)
 - Node.js/npm
 
 **Infrastructure:**
@@ -118,30 +120,39 @@ Phase 4: Blog Features & SEO - Ready to begin
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 03-03 (Shiki syntax highlighting)
+**Stopped at:** Completed plan 03-04 (Single post view with TOC and progress bar)
 **Resume file:** None
 
 ### What Was Just Completed
-- spatie/shiki-php ^2.3 installed via Composer
-- shiki ^3.22.0 installed via npm
-- ShikiHighlighter service with Rose Pine theme configuration
-- highlight() method supporting language parameter (default: php)
-- Service dependency injection ready for markdown rendering pipeline
-- Server-side syntax highlighting for SEO-friendly code blocks
+- Alpine.js installed and integrated with Laravel Vite
+- Reading progress bar component with scroll-based calculation
+- Sticky table of contents component with smooth scroll navigation
+- Code block component with language label and copy-to-clipboard button
+- Single blog post view (show.blade.php) integrating all components
+- Rose Pine theme styling applied throughout all components
+- 4-column grid layout (responsive: sidebar hidden on mobile)
 
 ### What Comes Next
-Phase 3 Plan 03 complete! Shiki syntax highlighting service established.
-Ready for additional Phase 3 plans or integration into markdown rendering.
+Phase 3 Plan 04 complete! Single post view with reader-facing features established.
+Ready for PostsController to wire up data and routes for viewing posts.
 
 ## Notes
 
 ### Key Files
 - `.env` - Database credentials and app config (gitignored)
 - `composer.json` - PHP dependencies
-- `package.json` - NPM dependencies
+- `package.json` - NPM dependencies (now includes Alpine.js)
 - `.planning/` - Project planning documents
+- `resources/views/posts/show.blade.php` - Single blog post view
+- `resources/views/components/reading-progress.blade.php` - Reading progress bar
+- `resources/views/components/table-of-contents.blade.php` - Sticky TOC sidebar
+- `resources/views/components/code-block.blade.php` - Code block with copy button
 
 ### Git History
+- c1e2d91: feat(03-04): create single blog post view
+- 7aec42e: feat(03-04): create code block component with copy button
+- 9c17160: feat(03-04): create sticky table of contents component
+- f7793a8: feat(03-04): create reading progress bar component
 - 1147959: feat(03-03): create ShikiHighlighter service with Rose Pine theme
 - f5dfe0a: chore(03-03): install spatie/shiki-php and shiki for syntax highlighting
 - 661e34f: feat(03-02): create base layout with dark mode and component includes
