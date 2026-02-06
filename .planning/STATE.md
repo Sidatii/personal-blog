@@ -1,12 +1,12 @@
 ---
 phase: "03-blog-features-and-seo"
-plan: "06"
-type: "complete"
-wave: "3"
+plan: "07"
+type: "gap-closure"
+wave: "4"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95%"
-completed_plans: "14/14"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 100%"
+completed_plans: "15/15"
 ---
 
 # Personal Blog Project - State
@@ -62,6 +62,8 @@ Phase 4: Blog Features & SEO - Ready to begin
 | 03-04 | Install Alpine.js for components | Required for interactive elements (progress bar, copy button) - lightweight alternative to React/Vue |
 | 03-05 | Used archtechx/laravel-seo package | Modern fluent API with JSON-LD support, better than ralphjsmit for non-database SEO |
 | 03-06 | Used spatie/laravel-feed and spatie/laravel-sitemap | Industry-standard packages with Laravel 12 support, reliable RSS and sitemap generation |
+| 03-07 | Convert headings to objects for TOC compatibility | Arrays from parser converted to stdClass objects for view template property access |
+| 03-07 | Reading time calculation formula | Word count / 200, rounded up, minimum 1 minute |
 
 ## Blockers & Concerns
 
@@ -127,21 +129,30 @@ Phase 4: Blog Features & SEO - Ready to begin
 ## Session Continuity
 
 **Last session:** 2026-02-06
-**Stopped at:** Completed plan 03-06 (RSS feed and XML sitemap)
+**Stopped at:** Completed plan 03-07 (Blog markdown parsing and TOC wiring)
 **Resume file:** None
 
 ### What Was Just Completed
-- Installed spatie/laravel-feed and spatie/laravel-sitemap packages
-- Implemented Feedable interface on Post model for RSS generation
-- Created custom Atom feed template at /feed with published posts
-- Created artisan command `sitemap:generate` for XML sitemap
-- Added dynamic sitemap route at /sitemap.xml with static file fallback
-- Sitemap includes homepage, blog index, and all published posts with priority based on recency
-- Both /feed and /sitemap.xml endpoints tested and working
+- Verified ShikiHighlighter already integrated into MarkdownParser
+- Updated BlogController to import MarkdownParser and parse markdown files
+- Wired content and headings extraction to post view
+- Added reading time calculation (words/200, rounded up)
+- Fixed undefined route in post view (route('home') → url('/'))
+- Created test post with headings and code blocks
+- Verified code blocks render with .shiki class (Shiki highlighting)
+- Verified TOC displays actual headings with correct anchor links
+- All verification checks passed at /blog/getting-started-laravel
 
 ### What Comes Next
-Phase 3 Plan 06 complete! Full SEO implementation with RSS and sitemap.
-Ready for next phase or additional features.
+Phase 3 complete! All blog features and SEO implemented:
+- Rose Pine theme with dark mode toggle
+- Single post view with TOC and reading progress
+- Shiki syntax highlighting for code blocks
+- SEO meta tags with Open Graph and JSON-LD
+- RSS feed and XML sitemap
+- Markdown parsing pipeline wired to controller
+
+Ready to begin Phase 4 (Authentication system).
 
 ## Notes
 
@@ -152,19 +163,20 @@ Ready for next phase or additional features.
 - `.planning/` - Project planning documents
 - `config/seo.php` - SEO configuration defaults
 - `app/View/Components/SeoMeta.php` - SEO meta component
-- `app/Http/Controllers/BlogController.php` - Blog controller with SEO data
+- `app/Http/Controllers/BlogController.php` - Blog controller with markdown parsing
+- `app/Services/Content/MarkdownParser.php` - Markdown parser with ShikiHighlighter
+- `app/Services/ShikiHighlighter.php` - Rose Pine syntax highlighting
 - `resources/views/posts/show.blade.php` - Single blog post view
 - `resources/views/posts/index.blade.php` - Blog index view
 - `resources/views/components/seo-meta.blade.php` - SEO meta tags rendering
 - `resources/views/components/reading-progress.blade.php` - Reading progress bar
 - `resources/views/components/table-of-contents.blade.php` - Sticky TOC sidebar
 - `resources/views/components/code-block.blade.php` - Code block with copy button
-- `config/feed.php` - RSS/Atom feed configuration
-- `resources/views/feed.blade.php` - Atom feed template
-- `app/Console/Commands/GenerateSitemap.php` - Sitemap generator command
-- `public/sitemap.xml` - Generated XML sitemap
+- `storage/content/posts/getting-started-laravel.md` - Test post with headings and code blocks
 
 ### Git History
+- eb4d684: feat(03-07): wire BlogController to parse markdown files
+- f29c808: fix(03-07): fix undefined route in post view
 - 56c1e59: fix(03-06): correct feed template array key
 - 4a7407d: feat(03-06): add sitemap route and configure feed/sitemap endpoints
 - 4a66819: feat(03-06): create sitemap generation command
