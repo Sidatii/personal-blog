@@ -205,8 +205,8 @@ class MarkdownParser
                 $highlighted = $this->highlighter->highlight($code, $language);
 
                 // Shiki returns: <pre class="shiki" style="background-color: #191724"><code>...</code></pre>
-                // Remove background-color style entirely
-                $highlighted = preg_replace('/(<pre\s+class="shiki")[^>]*>/', '$1>', $highlighted);
+                // Remove background-color style entirely but keep the structure
+                $highlighted = preg_replace('/(<pre\s+class="shiki")[^>]*>/', '$1 class="rounded-t-none overflow-x-auto p-4 bg-rose-pine-overlay m-0">', $highlighted);
 
                 // Build the code-block component HTML directly
                 return '<div x-ref="container" class="relative group my-6 rounded-lg overflow-hidden border border-rose-pine-overlay">'
@@ -218,6 +218,8 @@ class MarkdownParser
                     .'<span x-show="!copied">Copy</span>'
                     .'</button>'
                     .'</div>'
+                    // Inline CSS for line numbers
+                    .'<style>.shiki .line::before{counter-increment:line;content:counter(line);display:inline-block;width:2em;margin-right:1em;text-align:right;color:var(--rp-muted);user-select:none}</style>'
                     .$highlighted
                     .'</div>';
             } catch (\Exception $e) {
