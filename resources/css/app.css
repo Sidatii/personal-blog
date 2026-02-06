@@ -5,7 +5,70 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Rose Pine Theme - Custom Properties */
+:root {
+  /* Rose Pine Main (Dark Theme - Default) */
+  --rose-pine-base: #191724;
+  --rose-pine-surface: #1f1d2e;
+  --rose-pine-overlay: #26233a;
+  --rose-pine-muted: #6e6a86;
+  --rose-pine-subtle: #908caa;
+  --rose-pine-text: #e0def4;
+  --rose-pine-love: #ebbcba;
+  --rose-pine-gold: #f6c177;
+  --rose-pine-rose: #ebbcba;
+  --rose-pine-pine: #31748f;
+  --rose-pine-foam: #9ccfd8;
+  --rose-pine-iris: #c4a7e7;
+  --rose-pine-highlight: #44415a;
+}
+
+[data-theme="light"] {
+  /* Rose Pine Dawn (Light Theme) */
+  --rose-pine-base: #faf4ed;
+  --rose-pine-surface: #fffaf5;
+  --rose-pine-overlay: #f2e9de;
+  --rose-pine-muted: #797593;
+  --rose-pine-subtle: #9893a5;
+  --rose-pine-text: #575279;
+  --rose-pine-love: #dc8a78;
+  --rose-pine-gold: #dc8a78;
+  --rose-pine-rose: #c4a7e7;
+  --rose-pine-pine: #3584e3;
+  --rose-pine-foam: #8bd5ca;
+  --rose-pine-iris: #9b70c4;
+  --rose-pine-highlight: #e6e6e9;
+}
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Rose Pine Color Mapping to TailwindCSS */
+  --color-rose-pine-base: var(--rose-pine-base);
+  --color-rose-pine-surface: var(--rose-pine-surface);
+  --color-rose-pine-overlay: var(--rose-pine-overlay);
+  --color-rose-pine-muted: var(--rose-pine-muted);
+  --color-rose-pine-subtle: var(--rose-pine-subtle);
+  --color-rose-pine-text: var(--rose-pine-text);
+  --color-rose-pine-love: var(--rose-pine-love);
+  --color-rose-pine-gold: var(--rose-pine-gold);
+  --color-rose-pine-rose: var(--rose-pine-rose);
+  --color-rose-pine-pine: var(--rose-pine-pine);
+  --color-rose-pine-foam: var(--rose-pine-foam);
+  --color-rose-pine-iris: var(--rose-pine-iris);
+  --color-rose-pine-highlight: var(--rose-pine-highlight);
+}
+
+/* Custom dark variant for Rose Pine */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark mode class - Rose Pine Main */
+.dark {
+  color-scheme: dark;
+}
+
+/* Light mode class - Rose Pine Dawn */
+[data-theme="light"] {
+  color-scheme: light;
 }
