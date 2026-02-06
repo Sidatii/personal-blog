@@ -11,6 +11,9 @@ Route::get('/', function () {
 Route::get('/blog', [BlogController::class, 'index'])->name('posts.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
 
+// Feed Routes (RSS/Atom)
+Route::feeds();
+
 Route::get('/health', function () {
     $checks = [
         'database' => false,
