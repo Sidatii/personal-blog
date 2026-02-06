@@ -11,6 +11,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "league/commonmark": "^2.8",
+        "spatie/laravel-feed": "^4.4",
+        "spatie/laravel-sitemap": "^7.3",
         "spatie/shiki-php": "^2.3",
         "spatie/yaml-front-matter": "^2.1"
     },
