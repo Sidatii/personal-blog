@@ -5,17 +5,17 @@ type: "execute"
 wave: "1"
 status: "complete"
 last_activity: "2026-02-06"
-progress: "▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 25%"
+progress: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 75%"
 total_phases: "4"
-completed_plans: "3/8"
+completed_plans: "6/8"
 ---
 
 # Personal Blog Project - State
 
 ## Current Position
 
-**Phase:** 01-core-publishing (3 of 4)
-**Plan:** 02 of 03
+**Phase:** 01-core-publishing (4 of 4)
+**Plan:** 03 of 03
 **Status:** Plan complete
 
 ### Progress Overview
@@ -24,10 +24,10 @@ Phase 1: Setup (Laravel + PostgreSQL) - 100% complete ✓
 - [x] Plan 01: Laravel installation and configuration ✓
 - [x] Plan 02: Database schema design ✓
 
-Phase 2: Foundation - 67% complete
+Phase 2: Foundation - 100% complete ✓
 - [x] Plan 01: Core publishing foundation ✓
 - [x] Plan 02: Markdown engine ✓
-- [ ] Plan 03: Content pipeline (pending)
+- [x] Plan 03: Content pipeline ✓
 
 Phase 3: Content Management
 - [ ] Plan 01: Authentication system (pending)
@@ -101,20 +101,18 @@ Phase 4: Frontend & Polish
 **Resume file:** None
 
 ### What Was Just Completed
-- PostRepository with constructor injection and eager loading
-- CategoryRepository with constructor injection and post counts
-- TagRepository with many-to-many sync capability
-- MarkdownParser service with security-first configuration
-- XSS prevention verified (script tags stripped)
-- Unsafe link blocking verified (javascript: links blocked)
-- Frontmatter parsing working (yaml extraction correct)
+- ContentIndexer service with MD5-based change detection
+- SyncContentCommand artisan command (php artisan content:sync)
+- Support for --force flag to bypass change detection
+- Auto-detect initial sync when no posts exist
+- Tag sync via pivot table, category resolution
+- Working end-to-end pipeline from markdown to database
 
 ### What Comes Next
-- Plan 01-03: Content pipeline
-  - Create SyncContentCommand artisan command
-  - Build content/posts/ directory structure
-  - Implement file watching and change detection
-  - Connect markdown parsing to database operations
+Phase 3: Content Management
+- Plan 01: Authentication system
+- Plan 02: User profiles
+- Enables admin access to manage content
 
 ## Notes
 
@@ -125,6 +123,7 @@ Phase 4: Frontend & Polish
 - `.planning/` - Project planning documents
 
 ### Git History
+- 65b50d1: feat(01-03): Add content indexer service and sync command
 - c93b86a: docs(01-02): Complete markdown engine plan
 - 2c695bd: feat(01-02): Add repository implementations and secure MarkdownParser
 - 414b7d9: docs(01-01): Complete core publishing foundation plan
