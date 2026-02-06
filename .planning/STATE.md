@@ -1,32 +1,33 @@
 ---
-phase: "00-laravel-setup"
+phase: "01-core-publishing"
 plan: "01"
 type: "execute"
 wave: "1"
 status: "complete"
-last_activity: "2026-02-05"
-progress: "▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 50%"
+last_activity: "2026-02-06"
+progress: "▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░ 75%"
 total_phases: "4"
-completed_plans: "1/2"
+completed_plans: "2/4"
 ---
 
 # Personal Blog Project - State
 
 ## Current Position
 
-**Phase:** 00-laravel-setup (1 of 4)
-**Plan:** 01 of 02
-**Status:** Phase in progress
+**Phase:** 01-core-publishing (2 of 4)
+**Plan:** 01 of 03
+**Status:** Plan complete
 
 ### Progress Overview
 
-Phase 1: Setup (Laravel + PostgreSQL) - 50% complete
+Phase 1: Setup (Laravel + PostgreSQL) - 100% complete
 - [x] Plan 01: Laravel installation and configuration ✓
-- [ ] Plan 02: Database schema design (pending)
+- [x] Plan 02: Database schema design ✓ (implicit in 01-01)
 
-Phase 2: Foundation
-- [ ] Plan 01: Authentication system (pending)
-- [ ] Plan 02: User profiles (pending)
+Phase 2: Core Publishing - 33% complete
+- [x] Plan 01: Database schema, models, and repository interfaces ✓
+- [ ] Plan 02: Repository implementations (pending)
+- [ ] Plan 03: Markdown parser and content services (pending)
 
 Phase 3: Content Management
 - [ ] Plan 01: Blog posts CRUD (pending)
@@ -44,6 +45,9 @@ Phase 4: Frontend & Polish
 | 00-01 | PostgreSQL over MySQL | PostgreSQL offers better JSON support for flexible content schema |
 | 00-01 | TailwindCSS 4.x | Latest version with improved DX and smaller bundle size |
 | 00-01 | Skipped Pest for PHPUnit | Laravel 12 requires PHPUnit 11.x, Pest not yet compatible |
+| 01-01 | Soft Deletes on Posts | Added for content safety and accidental deletion recovery |
+| 01-01 | Denormalized Post Counters | Trade-off: extra write overhead for significantly faster queries on categories/tags |
+| 01-01 | Content Hash (MD5) for Change Detection | Enables efficient sync - skip unchanged files, prevent unnecessary re-parsing |
 
 ## Blockers & Concerns
 
@@ -51,8 +55,9 @@ Phase 4: Frontend & Polish
 - None
 
 ### Concerns to Watch
+- Repository interfaces are defined but not yet bound to implementations
+- Tinker runs in restricted mode - full integration testing deferred to subsequent phases
 - Laravel 12 is very new (released Dec 2025) - may have edge case issues
-- Consider waiting for Pest compatibility if TDD is important in early phases
 
 ## Tech Stack Summary
 
@@ -90,23 +95,21 @@ Phase 4: Frontend & Polish
 
 ## Session Continuity
 
-**Last session:** 2026-02-05 23:48:14 UTC
-**Stopped at:** Completed plan 00-01 (Laravel installation)
+**Last session:** 2026-02-06 01:02:00 UTC
+**Stopped at:** Completed plan 01-01 (Core publishing foundation)
 **Resume file:** None
 
 ### What Was Just Completed
-- Laravel 12 framework installation
-- PostgreSQL database setup and connection
-- Core dependencies installed (CommonMark, YAML FrontMatter, TailwindCSS)
-- Application serves at http://localhost:8000
-- All migrations run successfully
+- Database migrations for posts, categories, tags, and post_tag pivot table
+- Eloquent models with relationships (Post → Category, Post ↔ Tag)
+- Repository interfaces defining data access contracts
+- All migrations executed successfully
 
 ### What Comes Next
-- Plan 00-02: Database schema design
-  - Design users table
-  - Create posts table
-  - Design categories/tags structure
-  - Set up migrations for all tables
+- Plan 01-02: Repository implementations and concrete bindings
+- Plan 01-03: Markdown parser service with security configuration
+- Content sync command implementation
+- Test content pipeline from markdown files to database records
 
 ## Notes
 
@@ -117,9 +120,13 @@ Phase 4: Frontend & Polish
 - `.planning/` - Project planning documents
 
 ### Git History
+- 833a04e: feat(01-01): Create repository interfaces for posts and categories
+- bc797e1: feat(01-01): Create Eloquent models for Post, Category, Tag
+- 4215f08: feat(01-01): Create database schema for posts, categories, tags
 - 8bef144: feat(00-01): Install Laravel 12 with PostgreSQL configuration
 
 ### Database Status
 - personal_blog database created
-- 3 tables: users, cache, jobs
-- Ready for custom schema in plan 00-02
+- 7 tables: users, cache, jobs, posts, categories, tags, post_tag
+- All custom migrations executed successfully
+- Ready for repository implementations in plan 01-02
