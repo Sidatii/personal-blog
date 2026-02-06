@@ -2,19 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -24,7 +15,7 @@ class Tag extends Model
     /**
      * Get the posts for the tag.
      */
-    public function posts(): BelongsToMany
+    public function posts()
     {
         return $this->belongsToMany(Post::class)->withTimestamps();
     }
