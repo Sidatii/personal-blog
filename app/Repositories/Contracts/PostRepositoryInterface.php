@@ -48,4 +48,9 @@ interface PostRepositoryInterface
      * Get all published posts.
      */
     public function allPublished(): Collection;
+
+    /**
+     * Find a post by filepath.
+     */
+    public function findByFilepath(string $filepath): ?Post;
 }

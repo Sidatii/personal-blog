@@ -119,4 +119,12 @@ class PostRepository implements PostRepositoryInterface
             ->with(['category', 'tags'])
             ->get();
     }
+
+    /**
+     * Find a post by filepath.
+     */
+    public function findByFilepath(string $filepath): ?Post
+    {
+        return $this->post->where('filepath', $filepath)->first();
+    }
 }
