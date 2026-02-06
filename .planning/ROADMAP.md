@@ -88,7 +88,7 @@ Plans:
 - RSS/Atom feed
 - Syntax highlighting
 
-**Plans:** 8/7 complete
+**Plans:** 8/8 complete
 
 Plans:
 - [x] 03-01-PLAN.md — Foundation & Theme: Install Rose Pine theme, configure TailwindCSS, create base layout with header, footer, dark mode toggle
@@ -98,7 +98,7 @@ Plans:
 - [x] 03-05-PLAN.md — Feeds: RSS/Atom feed with spatie/laravel-feed, XML sitemap with spatie/laravel-sitemap
 - [x] 03-06-PLAN.md — BlogController: Markdown parsing integration (from gap closure)
 - [x] 03-07-PLAN.md — Gap Closure: Wire BlogController to parse markdown files
-- [ ] 03-08-PLAN.md — UAT Fixes: Code block container, header typography, toggleTheme JS
+- [x] 03-08-PLAN.md — UAT Fixes: Code block container, header typography, toggleTheme JS
 
 ---
 
