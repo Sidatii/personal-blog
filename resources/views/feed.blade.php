@@ -2,9 +2,9 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>{{ $meta['title'] }}</title>
     <subtitle>{{ $meta['description'] }}</subtitle>
-    <link href="{{ url($meta['url']) }}" rel="self" />
+    <link href="{{ url($meta['link']) }}" rel="self" />
     <link href="{{ url('/') }}" />
-    <id>{{ url($meta['url']) }}</id>
+    <id>{{ url($meta['link']) }}</id>
     <updated>{{ $meta['updated'] ?? now()->toAtomString() }}</updated>
     <author>
         <name>{{ config('app.name', 'Blog Author') }}</name>
