@@ -24,9 +24,13 @@
 {{-- Line numbers CSS (will be applied to Shiki output) --}}
 @push('head')
 <style>
-    .shiki {
+    .shiki,
+    .shiki span,
+    .shiki code,
+    .shiki pre {
         background-color: transparent !important;
         background: transparent !important;
+        background-image: none !important;
     }
     .shiki { counter-reset: line; }
     .shiki .line::before { 

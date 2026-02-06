@@ -205,6 +205,12 @@ class MarkdownParser
             try {
                 $highlighted = $this->highlighter->highlight($code, $language);
 
+                // Remove inline background-color from Shiki output so container background is used
+                $highlighted = preg_replace('/\s*style="[^"]*background-color:[^"]*" /', '', $highlighted);
+                $highlighted = preg_replace('/\s*style="[^"]*background:[^"]*" /', '', $highlighted);
+                $highlighted = preg_replace('/\s*style="[^"]*background-color:[^"]*"$/', '', $highlighted);
+                $highlighted = preg_replace('/\s*style="[^"]*background:[^"]*"$/', '', $highlighted);
+
                 // Wrap in code-block component structure for container isolation, copy button, and language label
                 return View::make('components.code-block', [
                     'language' => $language,
