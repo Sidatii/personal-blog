@@ -14,6 +14,55 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
 // Feed Routes (RSS/Atom)
 Route::feeds();
 
+// Sitemap Route
+Route::get('/sitemap.xml', function () {
+    $sitemapPath = public_path('sitemap.xml');
+
+    // If static sitemap exists, serve it
+    if (file_exists($sitemapPath)) {
+        return response(file_get_contents($sitemapPath))
+            ->header('Content-Type', 'application/xml');
+    }
+
+    // Otherwise, generate on demand
+    $sitemap = \Spatie\Sitemap\Sitemap::create();
+
+    // Add homepage
+    $sitemap->add(
+        \Spatie\Sitemap\Tags\Url::create('/')
+            ->setLastModificationDate(now())
+            ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_DAILY)
+            ->setPriority(1.0)
+    );
+
+    // Add blog index
+    $sitemap->add(
+        \Spatie\Sitemap\Tags\Url::create('/blog')
+            ->setLastModificationDate(now())
+            ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
+            ->setPriority(0.9)
+    );
+
+    // Add all published posts
+    $posts = \App\Models\Post::published()
+        ->orderBy('published_at', 'desc')
+        ->get();
+
+    foreach ($posts as $index => $post) {
+        $priority = max(0.5, 0.8 - ($index / max($posts->count(), 1)) * 0.3);
+
+        $sitemap->add(
+            \Spatie\Sitemap\Tags\Url::create(route('posts.show', $post))
+                ->setLastModificationDate($post->updated_at)
+                ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
+                ->setPriority($priority)
+        );
+    }
+
+    return response($sitemap->toXml())
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
 Route::get('/health', function () {
     $checks = [
         'database' => false,
