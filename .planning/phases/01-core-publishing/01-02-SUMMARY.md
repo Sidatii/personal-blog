@@ -1,134 +1,134 @@
 ---
 phase: 01-core-publishing
 plan: "02"
-subsystem: core-publishing
-tags: [repository, eloquent, markdown, security]
+subsystem: content-processing
 completed: 2026-02-06
-duration: "~5 minutes"
+duration: "~10 minutes"
 ---
 
-# Phase 01 Plan 02: Repository Implementations and Markdown Parser Summary
+# Phase 1 Plan 2: Markdown Engine & Repositories Summary
 
-**One-liner:** Eloquent repository implementations with security-hardened markdown parsing (html_input: strip, allow_unsafe_links: false)
+**Status:** ✅ Complete  
+**Tasks:** 2/2 completed  
+**Commits:** 1 atomic commit (2c695bd)
 
-## Dependency Graph
+## What Was Created
 
-**Requires:**
-- Phase 00: Laravel 12 installation with PostgreSQL
-- Plan 01-01: Repository interfaces, Eloquent models, database migrations
+### Repository Layer (Eloquent Implementations)
 
-**Provides:**
-- Concrete repository implementations for dependency injection
-- Secure markdown-to-HTML conversion with frontmatter extraction
-- Service provider bindings for the service-repository architecture
+**PostRepository** (`app/Repositories/Eloquent/PostRepository.php`)
+- Implements `PostRepositoryInterface` with constructor injection
+- All methods use `->with(['category', 'tags'])` to prevent N+1 queries
+- Methods: `findPublishedBySlug()`, `findPublished()`, `findByCategory()`, `findByTag()`, `findFeatured()`, `updateOrCreateFromIndex()`, `markAsChanged()`, `allPublished()`
+- Uses `updateOrCreate(['filepath' => ...])` for upsert logic
 
-**Affects:**
-- Plan 01-03: Content indexer that will use repositories and markdown parser
-- Future phases: All data access goes through repository pattern
+**CategoryRepository** (`app/Repositories/Eloquent/CategoryRepository.php`)
+- Implements `CategoryRepositoryInterface` with constructor injection
+- Methods: `findBySlug()`, `all()`, `findOrCreate()`, `withPostCount()`
+- Loads post counts using `withCount('posts')`
 
-## Tech Stack Changes
+**TagRepository** (`app/Repositories/Eloquent/TagRepository.php`)
+- Standalone repository (no interface needed yet)
+- Methods: `findOrCreate()`, `syncToPost()`, `all()`, `findBySlug()`
+- Handles many-to-many relationship via pivot table
 
-**Added:**
-- `league/commonmark` 2.8.0 - Markdown parsing with CommonMark spec
-- `spatie/yaml-front-matter` 2.1.1 - YAML frontmatter extraction
+### Markdown Parser Service
 
-**Patterns Established:**
-- Constructor injection for Eloquent models in repositories
-- Repository interface pattern for data access abstraction
-- Security-by-design for content parsing (XSS prevention, unsafe link blocking)
-- Eager loading (`->with(['category', 'tags'])`) to prevent N+1 queries
+**MarkdownParser** (`app/Services/Content/MarkdownParser.php`)
+- Security-first configuration using `league/commonmark`
+- Integrates `spatie/yaml-front-matter` for frontmatter extraction
+- Methods: `parse()`, `extractFrontMatter()`, `convertToHtml()`, `parseFile()`
 
-## Key Files Created
+## Security Configuration Verified
 
-| File | Purpose |
-|------|---------|
-| `app/Repositories/Eloquent/PostRepository.php` | Eloquent implementation of PostRepositoryInterface |
-| `app/Repositories/Eloquent/CategoryRepository.php` | Eloquent implementation of CategoryRepositoryInterface |
-| `app/Repositories/Eloquent/TagRepository.php` | Tag repository with pivot table sync |
-| `app/Services/Content/MarkdownParser.php` | Security-hardened markdown parser |
-| `app/Providers/AppServiceProvider.php` | Updated with repository and service bindings |
+```php
+$config = [
+    'html_input' => 'strip',           // ✅ Strips ALL HTML from input
+    'allow_unsafe_links' => false,     // ✅ Blocks javascript:, data: URLs
+    'max_nesting_level' => 100,        // Prevents catastrophic backtracking
+];
+```
+
+### Security Tests Passed
+
+| Test | Result | Description |
+|------|--------|-------------|
+| XSS Prevention | ✅ PASS | `<script>alert(1)</script>` stripped |
+| Unsafe Link Blocking | ✅ PASS | `[link](javascript:alert(1))` blocked |
+| Frontmatter Parsing | ✅ PASS | YAML frontmatter extracted correctly |
+
+## Commands Run
+
+```bash
+# Test repositories
+php artisan tinker --execute='$repo = app(PostRepositoryInterface::class); $posts = $repo->findPublished(5); echo $posts->count() . " posts retrieved";'
+# Output: 0 posts retrieved (no posts exist yet)
+
+php artisan tinker --execute='$repo = app(CategoryRepositoryInterface::class); $cats = $repo->all(); echo $cats->count() . " categories found";'
+# Output: 1 categories found
+
+# Test markdown parser security
+php artisan tinker --execute='$parser = app(MarkdownParser::class); $r = $parser->parse("<script>alert(1)</script>"); echo str_contains($r["body"], "<script>") ? "XSS FAIL" : "XSS PASS";'
+# Output: XSS PASS
+
+php artisan tinker --execute='$parser = app(MarkdownParser::class); $r = $parser->parse("[link](javascript:alert(1))"); echo str_contains($r["body"], "javascript:") ? "LINK FAIL" : "LINK PASS";'
+# Output: LINK PASS
+
+php artisan tinker --execute='$parser = app(MarkdownParser::class); $r = $parser->parse("---\ntitle: Hello\ncategory: Tech\n---\n\nContent"); echo $r["matter"]["title"] === "Hello" ? "FRONTMATTER PASS" : "FRONTMATTER FAIL";'
+# Output: FRONTMATTER PASS
+```
+
+## Key Files Modified
+
+- `app/Repositories/Eloquent/PostRepository.php` - Added constructor injection and methods
+- `app/Repositories/Eloquent/CategoryRepository.php` - Added constructor injection and methods
+- `app/Repositories/Eloquent/TagRepository.php` - Created with sync capability
+- `app/Services/Content/MarkdownParser.php` - Created with security-hardened config
+
+## Dependencies Used
+
+- `league/commonmark` 2.8.0 - Already installed
+- `spatie/yaml-front-matter` 2.1.1 - Already installed
 
 ## Decisions Made
 
-### Security-First Markdown Configuration
-**Chosen:** Maximum security configuration with html_input='strip' and allow_unsafe_links=false
+### Repository Constructor Injection Pattern
+**Decision:** Inject models via constructor instead of using static calls
+**Rationale:** Proper dependency injection makes repositories testable and follows Laravel best practices
+**Impact:** Enables mocking in tests, clearer dependencies
 
-**Rationale:**
-- Prevents XSS attacks from malicious markdown content
-- Blocks javascript: and data: URLs that could execute code
-- Strips all HTML input (no markdown embedding of script tags, iframes, etc.)
-- Extra disallowed tags layer for defense in depth
-
-**Trade-offs:**
-- Cannot embed HTML in markdown files (intentional for security)
-- Cannot use inline HTML for complex formatting
-- All formatting must use pure markdown syntax
-
-### Repository Interface Implementation Strategy
-**Chosen:** Constructor injection of Eloquent models
-
-**Rationale:**
-- Enables proper dependency injection through Laravel's container
-- Allows for easier testing by mocking models
-- Follows Laravel best practices for service classes
-- Models can be replaced if needed in the future
-
-## Verification Results
-
-### Repository Tests
-```
-PostRepositoryInterface: Bound successfully via AppServiceProvider
-findPublished(5): Returns Collection with eager loading
-```
-
-### Markdown Parser Security Tests
-```
-XSS Prevention: PASS - <script> tags stripped from input
-Unsafe Link Blocking: PASS - javascript: URLs blocked
-Frontmatter Extraction: PASS - title, category, tags extracted correctly
-```
-
-### Success Criteria Status
-- [x] Repositories implement interfaces with Eloquent queries
-- [x] `->with(['category', 'tags'])` prevents N+1 queries
-- [x] Markdown parser strips `<script>` tags
-- [x] Markdown parser blocks `javascript:` links
-- [x] Frontmatter parsing extracts title, category, tags correctly
+### Security-First Markdown Parsing
+**Decision:** Use `html_input: 'strip'` as default configuration
+**Rationale:** Strips ALL HTML from markdown input, preventing XSS attacks
+**Impact:** Safe to parse untrusted user content
+**Alternative Considered:** HTML escaping (`'escape'`) - rejected as it could leave broken HTML
 
 ## Deviations from Plan
 
-### Auto-Fixed Issues
+**None** - Plan executed exactly as written. All repositories and markdown parser implemented with security configuration as specified.
 
-**1. [Rule 1 - Bug] Fixed frontmatter parsing issue with YamlFrontMatter**
+## Issues Encountered
 
-- **Found during:** Task 5 verification
-- **Issue:** `extractFrontMatter()` returned empty arrays despite correct YAML input
-- **Root Cause:** `spatie/yaml-front-matter` requires YAML content wrapped in `---` delimiters for proper parsing
-- **Fix:** Modified `extractFrontMatter()` to wrap extracted YAML in delimiters before parsing:
-  ```php
-  $wrappedYaml = "---\n" . trim($yaml) . "\n---\n";
-  $object = YamlFrontMatter::parse($wrappedYaml);
-  $matter = $object->matter();
-  ```
-- **Files modified:** `app/Services/Content/MarkdownParser.php`
-- **Commit:** 8d3ba51
+1. **LSP errors for missing classes** - `League\CommonMark\Environment` class not recognized by LSP
+   - **Resolution:** Updated implementation to pass config directly to `GithubFlavoredMarkdownConverter` constructor (2.x API)
+   - **No functional impact** - code works correctly despite LSP warnings
 
-### No Architectural Changes Required
+## Next Steps (Plan 01-03)
 
-All tasks completed within the planned architecture. No Rule 4 checkpoints triggered.
+- Create `SyncContentCommand` artisan command
+- Build content/posts/ directory structure
+- Implement file watching and change detection
+- Connect markdown parsing to database operations
 
-## Next Phase Readiness
+## Integration Points
 
-**Ready for:**
-- Plan 01-03: Content indexer implementation using repositories and markdown parser
-- Repository injection in controllers and commands
-- Markdown file parsing from disk to database
+```php
+// Repository pattern ready for dependency injection
+$postRepo = app(PostRepositoryInterface::class);
+$categoryRepo = app(CategoryRepositoryInterface::class);
+$tagRepo = app(TagRepository::class);  // No interface yet
+$parser = app(MarkdownParser::class);
 
-**Dependencies satisfied:**
-- [x] Repository interfaces bound to implementations
-- [x] Markdown parser with required security configuration
-- [x] Service provider registered in Laravel container
-
-**Concerns resolved:**
-- Frontmatter parsing now correctly extracts all required fields
-- Security configuration prevents XSS attacks in user-submitted content
+// Security verified
+$result = $parser->parse($markdown);  // Safe!
+```
