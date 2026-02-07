@@ -178,5 +178,37 @@
     [id] {
         scroll-margin-top: 6rem;
     }
+
+    /* Code block line numbers and transparent background */
+    .shiki {
+        counter-reset: line;
+        background-color: transparent !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .shiki .line {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .shiki .line::before {
+        counter-increment: line;
+        content: counter(line);
+        display: inline-block;
+        width: 2.5em;
+        margin-right: 1em;
+        text-align: right;
+        color: var(--rp-muted);
+        user-select: none;
+        font-size: 0.85em;
+        opacity: 0.6;
+    }
+
+    .shiki code {
+        display: block;
+        background: transparent !important;
+    }
 </style>
 @endpush
