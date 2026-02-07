@@ -73,6 +73,7 @@ Phase 4: Portfolio Features - In Progress
 | 04-03 | Config file pattern for portfolio | Use config/portfolio.php as editable data source for static content instead of database |
 | 04-03 | Tech stack badge colors | Match categories to Rose Pine colors (Languages=foam, Frameworks=iris, Tools=gold, Specializations=love) |
 | 04-03 | Tooltip implementation | Alpine.js x-data with @mouseenter/@mouseleave + x-transition for smooth hover UX |
+| 04-02 | CSS columns for masonry | Pure CSS columns-1 sm:columns-2 lg:columns-3 with break-inside-avoid - no JS library needed |
 
 ## Blockers & Concerns
 
@@ -142,21 +143,23 @@ Phase 4: Portfolio Features - In Progress
 **Resume file:** None
 
 ### What Was Just Completed
-- Created config/portfolio.php as data source for About page content
-- Built AboutController loading config and building SEO data
-- Created tech-stack-badges component with 4 Rose Pine color categories
-- Implemented hover tooltips via Alpine.js showing experience notes
-- Created about/index view with 3 sections: Hero/Bio, Skills, Interests
-- Responsive two-column layout (desktop) stacking on mobile
-- Registered /about route matching existing header navigation
-- Page verified at http://localhost:8000/about with all sections rendering
+- Created ProjectController with ProjectRepositoryInterface injection
+- Built index() action with status filter support via ?status= query parameter
+- Built show() action with slug lookup and 404 handling
+- Created project-card.blade.php component with thumbnail, status badge, tech stack pills
+- Created projects/index.blade.php with CSS columns masonry layout
+- Implemented status filter bar (All, Active, Completed, In Progress, Archived)
+- Created projects/show.blade.php with full project details, screenshots, external links
+- All views use consistent Rose Pine theme colors
+- Registered /projects and /projects/{slug} routes
 
 ### What Comes Next
 Phase 4 Portfolio Features progressing:
+- Plan 02 complete: Projects showcase with masonry grid
 - Plan 03 complete: About page with config-driven content and badges
 - Plan 04 ready: Contact form with validation and notification
 
-Portfolio config pattern established for future pages (Projects, Contact).
+Portfolio showcase now fully functional for content population.
 
 ## Notes
 
@@ -169,20 +172,26 @@ Portfolio config pattern established for future pages (Projects, Contact).
 - `config/portfolio.php` - Portfolio content data source (bio, skills, interests)
 - `app/View/Components/SeoMeta.php` - SEO meta component
 - `app/Http/Controllers/BlogController.php` - Blog controller with markdown parsing
+- `app/Http/Controllers/ProjectController.php` - Projects showcase controller with repository injection
 - `app/Http/Controllers/AboutController.php` - About page controller
 - `app/Services/Content/MarkdownParser.php` - Markdown parser with ShikiHighlighter
 - `app/Services/ShikiHighlighter.php` - Rose Pine syntax highlighting
 - `resources/views/posts/show.blade.php` - Single blog post view
 - `resources/views/posts/index.blade.php` - Blog index view
+- `resources/views/projects/index.blade.php` - Projects masonry grid index
+- `resources/views/projects/show.blade.php` - Project detail page
 - `resources/views/about/index.blade.php` - About page with 3 sections
 - `resources/views/components/seo-meta.blade.php` - SEO meta tags rendering
 - `resources/views/components/reading-progress.blade.php` - Reading progress bar
 - `resources/views/components/table-of-contents.blade.php` - Sticky TOC sidebar
 - `resources/views/components/code-block.blade.php` - Code block with copy button
 - `resources/views/components/tech-stack-badges.blade.php` - Categorized skill badges with tooltips
+- `resources/views/components/project-card.blade.php` - Project card for masonry grid
 - `storage/content/posts/getting-started-laravel.md` - Test post with headings and code blocks
 
 ### Git History
+- 05dd601: feat(04-02): create masonry grid views and project card component
+- 6c4605e: feat(04-02): create ProjectController with index and show actions
 - ae1b43e: feat(04-03): create About page view and tech stack badges component
 - 33e6033: feat(04-03): create portfolio config and AboutController
 - eb4d684: feat(03-07): wire BlogController to parse markdown files
