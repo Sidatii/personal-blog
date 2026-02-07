@@ -6,9 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => redirect()->route('posts.index'));
 
 // About Page Route
 Route::get('/about', [AboutController::class, 'index'])->name('about');
