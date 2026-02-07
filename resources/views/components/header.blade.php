@@ -13,8 +13,14 @@
                 <a href="/blog" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     Blog
                 </a>
+                <a href="/projects" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Projects
+                </a>
                 <a href="/about" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     About
+                </a>
+                <a href="/contact" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Contact
                 </a>
                 @include('components.dark-mode-toggle')
             </nav>
@@ -47,27 +53,33 @@
             </button>
         </div>
 
-        {{-- Mobile Menu Dropdown --}}
-        <div
-            x-show="open"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 -translate-y-2"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-2"
-            @click.away="open = false"
-            class="md:hidden absolute top-16 left-0 right-0 bg-rose-pine-base border-b border-rose-pine-overlay p-4 space-y-4"
-        >
-            <a href="/blog" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
-                Blog
-            </a>
-            <a href="/about" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
-                About
-            </a>
-            <div class="pt-2 border-t border-rose-pine-overlay">
-                @include('components.dark-mode-toggle')
+            {{-- Mobile Menu Dropdown --}}
+            <div
+                x-show="open"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                @click.away="open = false"
+                class="md:hidden absolute top-16 left-0 right-0 bg-rose-pine-base border-b border-rose-pine-overlay p-4 space-y-4"
+            >
+                <a href="/blog" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Blog
+                </a>
+                <a href="/projects" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Projects
+                </a>
+                <a href="/about" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    About
+                </a>
+                <a href="/contact" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Contact
+                </a>
+                <div class="pt-2 border-t border-rose-pine-overlay">
+                    @include('components.dark-mode-toggle')
+                </div>
             </div>
-        </div>
     </div>
 </header>

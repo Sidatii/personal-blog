@@ -13,8 +13,14 @@
                 <a href="/blog" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     Blog
                 </a>
+                <a href="/projects" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Projects
+                </a>
                 <a href="/about" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     About
+                </a>
+                <a href="/contact" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
+                    Contact
                 </a>
                 <a href="/feed" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     RSS
