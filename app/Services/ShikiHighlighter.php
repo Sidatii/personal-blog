@@ -29,10 +29,20 @@ class ShikiHighlighter
      *
      * @param  string  $code  The code to highlight
      * @param  string  $language  The programming language (default: 'php')
-     * @return string HTML with syntax highlighting
+     * @return string HTML with syntax highlighting and line numbers support
      */
     public function highlight(string $code, string $language = 'php'): string
     {
-        return $this->shiki->highlightCode($code, $language);
+        // Get highlighted code from Shiki
+        $highlighted = $this->shiki->highlightCode($code, $language);
+
+        // Remove the inline background-color style to make it transparent
+        // This allows the container background (bg-rose-pine-overlay) to show through
+        $highlighted = preg_replace('/style="background-color: #[0-9a-fA-F]+"/', 'style=""', $highlighted);
+
+        // Shiki already wraps each line in <span class="line">...</span>
+        // So line numbers will work with the CSS counter on .line::before
+
+        return $highlighted;
     }
 }
