@@ -19,8 +19,35 @@
         :author="$seo['author'] ?? null"
     />
 
-    {{-- Dark mode script (blocking to prevent FOUC) --}}
-    <script src="{{ asset('js/dark-mode.js') }}"></script>
+    {{-- Dark mode script (blocking inline to prevent FOUC) --}}
+    <script>
+        (function() {
+            const DEFAULT_THEME = 'dark';
+            const THEME_KEY = 'theme';
+            
+            function getTheme() {
+                const saved = localStorage.getItem(THEME_KEY);
+                if (saved === 'dark' || saved === 'light') {
+                    return saved;
+                }
+                return DEFAULT_THEME;
+            }
+            
+            function applyTheme(theme) {
+                const html = document.documentElement;
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                    html.removeAttribute('data-theme');
+                } else {
+                    html.classList.remove('dark');
+                    html.setAttribute('data-theme', 'light');
+                }
+            }
+            
+            applyTheme(getTheme());
+        })();
+    </script>
+    @vite(['resources/js/dark-mode.js'])
 
     {{-- Vite CSS --}}
     @vite(['resources/css/app.css'])

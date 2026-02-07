@@ -8,6 +8,7 @@
     'use strict';
 
     const DEFAULT_THEME = 'dark';
+    const THEME_KEY = 'theme';
     const THEME_COOKIE_NAME = 'theme';
     const THEME_COOKIE_EXPIRY_DAYS = 30;
 
@@ -39,14 +40,24 @@
     }
 
     /**
-     * Get current theme from cookie or default
+     * Get current theme from localStorage, cookie, or default
      * @returns {string} 'dark' or 'light'
      */
     function getTheme() {
-        const savedTheme = getCookie(THEME_COOKIE_NAME);
+        // Check localStorage first (primary storage)
+        const savedTheme = localStorage.getItem(THEME_KEY);
         if (savedTheme === 'dark' || savedTheme === 'light') {
             return savedTheme;
         }
+        
+        // Fallback to cookie
+        const cookieTheme = getCookie(THEME_COOKIE_NAME);
+        if (cookieTheme === 'dark' || cookieTheme === 'light') {
+            // Sync to localStorage
+            localStorage.setItem(THEME_KEY, cookieTheme);
+            return cookieTheme;
+        }
+        
         return DEFAULT_THEME;
     }
 
@@ -70,6 +81,8 @@
     function toggleTheme() {
         const currentTheme = getTheme();
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        // Persist to both localStorage and cookie
+        localStorage.setItem(THEME_KEY, newTheme);
         setCookie(THEME_COOKIE_NAME, newTheme, THEME_COOKIE_EXPIRY_DAYS);
         applyTheme(newTheme);
 
@@ -80,7 +93,7 @@
     }
 
     /**
-     * Set specific theme
+     * Set theme and persist
      * @param {string} theme - 'dark' or 'light'
      */
     function setTheme(theme) {
@@ -88,6 +101,8 @@
             console.warn(`Invalid theme: ${theme}. Expected 'dark' or 'light'.`);
             return;
         }
+        // Persist to both localStorage and cookie
+        localStorage.setItem(THEME_KEY, theme);
         setCookie(THEME_COOKIE_NAME, theme, THEME_COOKIE_EXPIRY_DAYS);
         applyTheme(theme);
 
