@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,11 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
 // Portfolio Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
+
+// Contact Routes
+Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/contact/thank-you', [ContactController::class, 'thankYou'])->name('contact.thank-you');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
