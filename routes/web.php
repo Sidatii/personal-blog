@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// About Page Route
+Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 // Blog Routes
 Route::get('/blog', [BlogController::class, 'index'])->name('posts.index');
