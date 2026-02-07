@@ -43,8 +43,8 @@ Phase 3: Git Integration and Deployment - 100% complete ✓
 - [x] Plan 04: Health check and Deployer configuration ✓
 
 Phase 4: Portfolio Features - In Progress
-- [x] Plan 01: Authentication system ✓
-- [x] Plan 02: User profiles ✓
+- [x] Plan 01: Database schema and models ✓
+- [x] Plan 02: Projects showcase page ✓
 - [x] Plan 03: About page with tech stack badges ✓
 - [ ] Plan 04: Contact form (pending)
 
@@ -67,6 +67,9 @@ Phase 4: Portfolio Features - In Progress
 | 03-06 | Used spatie/laravel-feed and spatie/laravel-sitemap | Industry-standard packages with Laravel 12 support, reliable RSS and sitemap generation |
 | 03-07 | Convert headings to objects for TOC compatibility | Arrays from parser converted to stdClass objects for view template property access |
 | 03-07 | Reading time calculation formula | Word count / 200, rounded up, minimum 1 minute |
+| 04-01 | JSON columns for tech_stack and screenshots | Flexibility without separate tables |
+| 04-01 | Status field vs published_at for projects | Support multiple project states (active/completed/archived/in-progress) |
+| 04-01 | Repository pattern for projects | Follow existing Phase 1 pattern for consistency |
 | 04-03 | Config file pattern for portfolio | Use config/portfolio.php as editable data source for static content instead of database |
 | 04-03 | Tech stack badge colors | Match categories to Rose Pine colors (Languages=foam, Frameworks=iris, Tools=gold, Specializations=love) |
 | 04-03 | Tooltip implementation | Alpine.js x-data with @mouseenter/@mouseleave + x-transition for smooth hover UX |
@@ -217,11 +220,12 @@ Portfolio config pattern established for future pages (Projects, Contact).
 
 ### Database Status
 - personal_blog database
-- 7 tables: users, cache, jobs, posts, categories, tags, post_tag
+- 9 tables: users, cache, jobs, posts, categories, tags, post_tag, projects, contact_submissions
 - All indexes created for performance
 - Foreign key constraints in place
 
 ### Repository Pattern Established
 - PostRepositoryInterface bound to PostRepository
 - CategoryRepositoryInterface bound to CategoryRepository
+- ProjectRepositoryInterface bound to ProjectRepository
 - Ready for dependency injection throughout application
