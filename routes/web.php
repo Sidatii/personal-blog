@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +15,10 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 // Blog Routes
 Route::get('/blog', [BlogController::class, 'index'])->name('posts.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
+
+// Portfolio Routes
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
