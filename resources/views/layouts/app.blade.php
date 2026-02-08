@@ -54,6 +54,9 @@
 
     {{-- Additional head content --}}
     @stack('head')
+
+    {{-- Umami Analytics (production only) --}}
+    <x-umami-tracking />
 </head>
 <body class="bg-rose-pine-base text-rose-pine-text antialiased min-h-screen flex flex-col">
     {{-- Header --}}

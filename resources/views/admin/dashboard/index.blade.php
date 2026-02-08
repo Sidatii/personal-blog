@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <!-- Total Projects -->
         <div class="bg-gradient-to-br from-rose-pine-foam/90 to-rose-pine-foam rounded-lg p-6 hover:shadow-lg transition-all duration-200">
             <div class="flex items-center justify-between">
@@ -75,6 +75,34 @@
             <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}" class="text-white text-sm mt-4 inline-block hover:underline font-semibold">
                 Moderate comments →
             </a>
+        </div>
+
+        <!-- Analytics -->
+        <div class="bg-gradient-to-br from-rose-pine-muted/90 to-rose-pine-muted rounded-lg p-6 hover:shadow-lg transition-all duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-white text-sm font-semibold uppercase tracking-wide">Analytics</p>
+                    <p class="text-lg font-bold text-white mt-2">
+                        @if(config('services.umami.host') && config('services.umami.website_id'))
+                            Active
+                        @else
+                            Not configured
+                        @endif
+                    </p>
+                </div>
+                <div class="w-14 h-14 bg-black/10 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+            </div>
+            @if(config('services.umami.host'))
+                <a href="{{ config('services.umami.host') }}" target="_blank" class="text-white text-sm mt-4 inline-block hover:underline font-semibold">
+                    Open dashboard ↗
+                </a>
+            @else
+                <p class="text-white text-xs mt-4 font-semibold">Configure Umami in .env</p>
+            @endif
         </div>
     </div>
 
