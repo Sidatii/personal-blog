@@ -8,10 +8,15 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function __construct(
+        protected ActivityLogger $activityLogger
+    ) {}
+
     /**
      * Display a listing of the posts.
      */
@@ -78,6 +83,9 @@ class PostController extends Controller
             $post->tags()->sync($request->input('tags', []));
         }
 
+        // Log activity
+        $this->activityLogger->log('created', $post, "Created post: {$post->title}");
+
         return redirect()
             ->route('admin.posts.index')
             ->with('success', 'Post created successfully.');
@@ -122,6 +130,9 @@ class PostController extends Controller
             $post->tags()->sync($request->input('tags', []));
         }
 
+        // Log activity
+        $this->activityLogger->log('updated', $post, "Updated post: {$post->title}");
+
         return redirect()
             ->route('admin.posts.index')
             ->with('success', 'Post updated successfully.');
@@ -132,7 +143,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $title = $post->title;
+        $id = $post->id;
         $post->delete();
+
+        // Log activity (model is deleted, so pass null)
+        $this->activityLogger->log('deleted', null, "Deleted post: {$title} (ID: {$id})");
 
         return redirect()
             ->route('admin.posts.index')
