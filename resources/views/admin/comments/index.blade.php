@@ -14,11 +14,6 @@
         </h1>
     </div>
 
-    @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
-        {{ session('success') }}
-    </div>
-    @endif
 
     <!-- Filter Tabs -->
     <div class="mb-6 bg-rose-pine-surface rounded-lg p-4">

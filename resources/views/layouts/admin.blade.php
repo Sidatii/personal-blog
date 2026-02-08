@@ -57,5 +57,8 @@
          @click="sidebarOpen = false"
          class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
          style="display: none;"></div>
+
+    <!-- Admin Toast Notifications -->
+    @include('components.admin-toast')
 </body>
 </html>

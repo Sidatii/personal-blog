@@ -9,11 +9,6 @@
         <h1 class="text-3xl font-bold text-rose-pine-text">Contact Submissions</h1>
     </div>
 
-    @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
-        {{ session('success') }}
-    </div>
-    @endif
 
     <!-- Filter Buttons -->
     <div class="mb-6 bg-rose-pine-surface rounded-lg p-4">

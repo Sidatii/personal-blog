@@ -11,11 +11,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg">
-            <p class="text-sm text-rose-pine-base font-medium">{{ session('success') }}</p>
-        </div>
-    @endif
 
     <div class="bg-rose-pine-surface rounded-lg border border-rose-pine-highlight">
         <form action="{{ route('admin.settings.update') }}" method="POST">
