@@ -28,27 +28,20 @@ class CommentController extends Controller
      */
     public function index(Request $request, Post $post): JsonResponse|View
     {
-        $comments = $this->commentRepository->getThreadForPost($post);
+        $perPage = $request->input('per_page', 5);
+        $offset = $request->input('offset', 0);
 
-        // Return HTML fragment for HTMX requests
-        if ($request->header('HX-Request')) {
+        $comments = $this->commentRepository->getThreadForPost($post, $perPage, $offset);
+
+        // Return HTML fragment for HTMX/AJAX requests
+        if ($request->header('HX-Request') || $request->wantsJson()) {
             return view('comments._thread', [
                 'comments' => $comments,
                 'depth' => 0,
             ]);
         }
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'data' => $comments,
-                'meta' => [
-                    'post_id' => $post->id,
-                    'count' => $comments->count(),
-                ],
-            ]);
-        }
-
-        // Return HTML fragment for AJAX requests
+        // Return full view
         return view('components.comments.thread', [
             'comments' => $comments,
             'post' => $post,

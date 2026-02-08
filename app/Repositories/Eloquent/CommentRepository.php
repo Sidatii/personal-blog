@@ -30,25 +30,35 @@ class CommentRepository implements CommentRepositoryInterface
      *
      * @return Collection<int, object>
      */
-    public function getThreadForPost(Post $post, int $perPage = 50): Collection
+    public function getThreadForPost(Post $post, int $perPage = 50, int $offset = 0): Collection
     {
         $maxDepth = config('comments.max_depth', 5);
 
         $sql = <<<'SQL'
-WITH RECURSIVE comment_tree AS (
-    -- Base case: root comments (no parent)
+WITH root_comments AS (
+    -- Get paginated root comments
+    SELECT id
+    FROM comments
+    WHERE post_id = :post_id
+        AND parent_id IS NULL
+        AND status = 'approved'
+    ORDER BY created_at DESC
+    LIMIT :limit OFFSET :offset
+),
+RECURSIVE comment_tree AS (
+    -- Base case: selected root comments
     SELECT
         c.*,
         0 as depth,
         ARRAY[c.id] as path
     FROM comments c
+    INNER JOIN root_comments rc ON c.id = rc.id
     WHERE c.post_id = :post_id
-        AND c.parent_id IS NULL
         AND c.status = 'approved'
 
     UNION ALL
 
-    -- Recursive case: replies
+    -- Recursive case: all replies to selected roots
     SELECT
         c.*,
         ct.depth + 1,
@@ -61,13 +71,13 @@ WITH RECURSIVE comment_tree AS (
 )
 SELECT * FROM comment_tree
 ORDER BY path, created_at ASC
-LIMIT :limit
 SQL;
 
         $results = DB::select($sql, [
             'post_id' => $post->id,
             'max_depth' => $maxDepth,
             'limit' => $perPage,
+            'offset' => $offset,
         ]);
 
         // Hydrate results into Comment models using newFromBuilder
@@ -160,5 +170,17 @@ SQL;
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get();
+    }
+
+    /**
+     * Get count of root-level comments for a post.
+     */
+    public function getRootCommentCount(Post $post): int
+    {
+        return $this->comment
+            ->where('post_id', $post->id)
+            ->whereNull('parent_id')
+            ->where('status', 'approved')
+            ->count();
     }
 }

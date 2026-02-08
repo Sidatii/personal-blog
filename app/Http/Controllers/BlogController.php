@@ -95,8 +95,9 @@ class BlogController extends Controller
         // Get featured image or use default
         $image = null; // Will fall back to default OG image
 
-        // Load comments for this post
-        $comments = $this->commentRepository->getThreadForPost($post);
+        // Load initial comments (5 root comments with all replies)
+        $comments = $this->commentRepository->getThreadForPost($post, 5, 0);
+        $totalRootComments = $this->commentRepository->getRootCommentCount($post);
 
         // SEO data for individual post
         $seo = [
@@ -110,7 +111,7 @@ class BlogController extends Controller
             'author' => $authorName,
         ];
 
-        return view('posts.show', compact('post', 'seo', 'content', 'headings', 'readingTime', 'comments'));
+        return view('posts.show', compact('post', 'seo', 'content', 'headings', 'readingTime', 'comments', 'totalRootComments'));
     }
 
     /**
