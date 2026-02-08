@@ -1,21 +1,21 @@
 ---
-phase: "05-admin-panel-and-auth"
-plan: "04"
+phase: "06-reader-engagement"
+plan: "01"
 type: "execute"
 wave: "1"
 status: "in_progress"
 last_activity: "2026-02-08"
-progress: "▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 8%"
-completed_plans: "20/20"
+progress: "▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 9%"
+completed_plans: "21/21"
 ---
 
 # Personal Blog Project - State
 
 ## Current Position
 
-**Phase:** 05-admin-panel-and-auth (5 of 7)
-**Status:** Plan 04 complete
-**Last completed:** 05-04 Project and contact management
+**Phase:** 06-reader-engagement (6 of 7)
+**Status:** Plan 01 complete
+**Last completed:** 06-01 Comments infrastructure
 
 ### Progress Overview
 
@@ -48,11 +48,14 @@ Phase 4: Portfolio Features - 100% complete ✓
 - [x] Plan 03: About page with tech stack badges ✓
 - [x] Plan 04: Contact form ✓
 
-Phase 5: Admin Panel and Auth - In Progress
+Phase 5: Admin Panel and Auth - 100% complete ✓
 - [x] Plan 01: Admin authentication ✓
 - [x] Plan 02: Admin layout and dashboard ✓
 - [x] Plan 03: Post CRUD (skipped - git-based architecture) ✓
 - [x] Plan 04: Project and contact management ✓
+
+Phase 6: Reader Engagement - In Progress
+- [x] Plan 01: Comments infrastructure ✓
 
 ## Decisions Made
 
@@ -94,6 +97,11 @@ Phase 5: Admin Panel and Auth - In Progress
 | 05-04 | Alpine.js tag input for tech stack | Consistent with existing frontend tech, interactive without additional dependencies |
 | 05-04 | No edit for contact submissions | Contact submissions are user-generated data, should remain immutable for authenticity |
 | 05-04 | Tech stack as simple array input | No need for separate tech_stack table - project scoped, displayed as badges |
+| 06-01 | PostgreSQL recursive CTE for threaded comments | Efficient single-query retrieval of entire comment threads with depth tracking |
+| 06-01 | Anonymous commenting with optional identity | No authentication required for readers to engage, optional name/email fields |
+| 06-01 | Pending moderation by default | Comments require approval before public display unless auto_approve enabled |
+| 06-01 | Honeypot field for bot detection | Hidden form field catches bots without CAPTCHA UX friction |
+| 06-01 | Rate limiting per IP (5/hour) | Prevents spam while allowing legitimate discussion |
 
 ## Blockers & Concerns
 
@@ -159,28 +167,25 @@ Phase 5: Admin Panel and Auth - In Progress
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed plan 05-04 (Project and contact management)
+**Stopped at:** Completed plan 06-01 (Comments infrastructure)
 **Resume file:** None
 
 ### What Was Just Completed
-- ProjectController with full CRUD (index, create, store, edit, update, destroy)
-- ContactController for viewing and managing contact submissions
-- Tech stack tag input with Alpine.js for dynamic add/remove
-- Status filtering for projects (active/completed/in-progress/archived)
-- Read/unread filtering for contacts with count badges
-- Auto-mark contacts as read when viewing
-- Form validation via StoreProjectRequest and UpdateProjectRequest
-- Email reply integration with pre-filled subject
-- Technical metadata display (IP address, user agent)
+- Comments database schema with threading support (parent-child relationships)
+- Comment and CommentReaction models with relationships and scopes
+- CommentRepository using PostgreSQL recursive CTE for threaded queries
+- CommentController with public endpoints for viewing and submitting comments
+- StoreCommentRequest with validation, honeypot, and parent verification
+- Rate limiting (5 comments/hour per IP) in bootstrap/app.php
+- Config file for comment moderation settings
+- Repository binding in RepositoryServiceProvider
 
 ### What Comes Next
-Phase 5 Admin Panel and Auth progressing:
-- Plan 01 complete: Admin authentication foundation ✓
-- Plan 02 complete: Admin layout and dashboard ✓
-- Plan 03 skipped: Post CRUD (git-based architecture)
-- Plan 04 complete: Project and contact management ✓
-- Plan 05 ready: Media library integration
-- Plan 06 ready: Settings and configuration
+Phase 6 Reader Engagement progressing:
+- Plan 01 complete: Comments infrastructure ✓
+- Plan 02 ready: Frontend comment components and display
+- Plan 03 ready: Comment moderation admin UI
+- Plan 04 ready: Reaction (emoji) system
 
 ## Notes
 
@@ -284,7 +289,7 @@ Phase 5 Admin Panel and Auth progressing:
 
 ### Database Status
 - personal_blog database
-- 10 tables: users, cache, jobs, posts, categories, tags, post_tag, projects, contact_submissions, admins
+- 12 tables: users, cache, jobs, posts, categories, tags, post_tag, projects, contact_submissions, admins, comments, comment_reactions
 - All indexes created for performance
 - Foreign key constraints in place
 
@@ -292,4 +297,5 @@ Phase 5 Admin Panel and Auth progressing:
 - PostRepositoryInterface bound to PostRepository
 - CategoryRepositoryInterface bound to CategoryRepository
 - ProjectRepositoryInterface bound to ProjectRepository
+- CommentRepositoryInterface bound to CommentRepository
 - Ready for dependency injection throughout application
