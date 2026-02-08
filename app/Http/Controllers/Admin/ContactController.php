@@ -35,11 +35,6 @@ class ContactController extends Controller
      */
     public function show(ContactSubmission $contact)
     {
-        // Mark as read when viewing
-        if (!$contact->is_read) {
-            $contact->update(['is_read' => true]);
-        }
-
         return view('admin.contacts.show', compact('contact'));
     }
 

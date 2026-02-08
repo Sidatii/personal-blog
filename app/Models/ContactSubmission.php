@@ -13,6 +13,7 @@ class ContactSubmission extends Model
         'message',
         'ip_address',
         'user_agent',
+        'is_read',
     ];
 
     protected $casts = [
