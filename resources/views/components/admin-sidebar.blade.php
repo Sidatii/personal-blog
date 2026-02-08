@@ -53,6 +53,25 @@
                 </a>
             </li>
 
+            <!-- Comments -->
+            <li>
+                <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.comments.*') ? 'bg-rose-pine-highlight-med text-rose-pine-foam' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span class="font-medium">Comments</span>
+                    @php
+                        $pendingCount = \App\Models\Comment::pending()->count();
+                    @endphp
+                    @if($pendingCount > 0)
+                        <span class="ml-auto px-2 py-0.5 bg-rose-pine-love text-white text-xs rounded-full">
+                            {{ $pendingCount }}
+                        </span>
+                    @endif
+                </a>
+            </li>
+
             <!-- Activity Log -->
             <li>
                 <a href="{{ route('admin.activity.index') }}"
