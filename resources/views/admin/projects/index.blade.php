@@ -14,7 +14,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam bg-opacity-20 border border-rose-pine-foam rounded-lg text-rose-pine-foam">
+    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
         {{ session('success') }}
     </div>
     @endif
@@ -127,9 +127,15 @@
 
     <!-- Pagination -->
     @if($projects->hasPages())
-    <div class="mt-6">
-        {{ $projects->appends(request()->query())->links() }}
-    </div>
+        <div class="mt-6">
+            {{ $projects->appends(request()->query())->links() }}
+        </div>
+    @elseif($projects->total() > 0)
+        <div class="mt-6">
+            <p class="text-sm text-rose-pine-subtle">
+                Showing all {{ $projects->total() }} {{ Str::plural('project', $projects->total()) }}
+            </p>
+        </div>
     @endif
 </div>
 @endsection

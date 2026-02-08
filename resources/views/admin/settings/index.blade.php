@@ -12,8 +12,8 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-6 p-4 bg-rose-pine-foam/20 border border-rose-pine-foam/30 rounded-lg">
-            <p class="text-sm text-rose-pine-foam font-medium">{{ session('success') }}</p>
+        <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg">
+            <p class="text-sm text-rose-pine-base font-medium">{{ session('success') }}</p>
         </div>
     @endif
 

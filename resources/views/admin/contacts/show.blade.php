@@ -32,7 +32,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam bg-opacity-20 border border-rose-pine-foam rounded-lg text-rose-pine-foam">
+    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
         {{ session('success') }}
     </div>
     @endif

@@ -162,14 +162,16 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-6">
-        @if($activities->hasPages())
+    @if($activities->hasPages())
+        <div class="mt-6">
             {{ $activities->appends(request()->query())->links() }}
-        @else
+        </div>
+    @elseif($activities->total() > 0)
+        <div class="mt-6">
             <p class="text-sm text-rose-pine-subtle">
-                Showing {{ $activities->count() }} of {{ $activities->total() }} results
+                Showing all {{ $activities->total() }} {{ Str::plural('result', $activities->total()) }}
             </p>
-        @endif
-    </div>
+        </div>
+    @endif
 </div>
 @endsection

@@ -15,7 +15,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam bg-opacity-20 border border-rose-pine-foam rounded-lg text-rose-pine-foam">
+    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
         {{ session('success') }}
     </div>
     @endif
@@ -63,9 +63,15 @@
 
     <!-- Pagination -->
     @if($comments->hasPages())
-    <div class="mt-6">
-        {{ $comments->appends(['status' => $status])->links() }}
-    </div>
+        <div class="mt-6">
+            {{ $comments->appends(['status' => $status])->links() }}
+        </div>
+    @elseif($comments->total() > 0)
+        <div class="mt-6">
+            <p class="text-sm text-rose-pine-subtle">
+                Showing all {{ $comments->total() }} {{ Str::plural('comment', $comments->total()) }}
+            </p>
+        </div>
     @endif
 </div>
 @endsection

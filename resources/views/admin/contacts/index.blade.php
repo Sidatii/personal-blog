@@ -10,7 +10,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-6 p-4 bg-rose-pine-foam bg-opacity-20 border border-rose-pine-foam rounded-lg text-rose-pine-foam">
+    <div class="mb-6 p-4 bg-rose-pine-foam border border-rose-pine-foam rounded-lg text-rose-pine-base">
         {{ session('success') }}
     </div>
     @endif
@@ -112,9 +112,15 @@
 
     <!-- Pagination -->
     @if($contacts->hasPages())
-    <div class="mt-6">
-        {{ $contacts->appends(request()->query())->links() }}
-    </div>
+        <div class="mt-6">
+            {{ $contacts->appends(request()->query())->links() }}
+        </div>
+    @elseif($contacts->total() > 0)
+        <div class="mt-6">
+            <p class="text-sm text-rose-pine-subtle">
+                Showing all {{ $contacts->total() }} {{ Str::plural('contact', $contacts->total()) }}
+            </p>
+        </div>
     @endif
 </div>
 @endsection
