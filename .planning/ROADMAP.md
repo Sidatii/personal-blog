@@ -127,7 +127,31 @@ Plans:
 
 ---
 
-### Phase 5: Reader Engagement
+### Phase 5: Admin Panel & Authentication
+**Goal:** Admin authentication, dashboard, and content management capabilities
+
+**Depends on:** Phase 1
+
+**Delivers:**
+- Admin authentication with secure login, logout, and session management
+- Admin dashboard with overview stats and recent activity
+- Content management (posts, categories, tags) with CRUD operations
+- Project management (projects, contact submissions) with CRUD operations
+- Role-based access control (admin vs viewer)
+- Activity logging for admin actions
+
+**Status:** ✓ Planned
+
+**Plans:**
+- [ ] 05-01-PLAN.md — Authentication: Admin model, login/logout, middleware (Wave 1)
+- [ ] 05-02-PLAN.md — Dashboard: Admin layout, sidebar navigation, stats overview (Wave 1)
+- [ ] 05-03-PLAN.md — Content Management: Posts, categories, tags CRUD (Wave 2)
+- [ ] 05-04-PLAN.md — Portfolio Management: Projects, contact submissions (Wave 3)
+- [ ] 05-05-PLAN.md — Activity Logging: Audit trail and verification (Wave 3)
+
+---
+
+### Phase 6: Reader Engagement
 **Goal:** Comments, reactions, analytics
 
 **Depends on:** Phase 3
@@ -142,7 +166,7 @@ Plans:
 
 ---
 
-### Phase 6: Search & Discovery
+### Phase 7: Search & Discovery
 **Goal:** Search functionality, table of contents, newsletter
 
 **Depends on:** Phase 3+
