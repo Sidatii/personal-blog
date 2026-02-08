@@ -5,22 +5,22 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-/* Rose Pine Theme - Custom Properties */
+/* Rose Pine Theme - Custom Properties (Warm Variant) */
 :root {
-  /* Rose Pine Main (Dark Theme - Default) */
-  --rose-pine-base: #191724;
-  --rose-pine-surface: #1f1d2e;
-  --rose-pine-overlay: #26233a;
-  --rose-pine-muted: #6e6a86;
-  --rose-pine-subtle: #908caa;
-  --rose-pine-text: #e0def4;
-  --rose-pine-love: #ebbcba;
-  --rose-pine-gold: #f6c177;
-  --rose-pine-rose: #ebbcba;
-  --rose-pine-pine: #31748f;
-  --rose-pine-foam: #9ccfd8;
-  --rose-pine-iris: #c4a7e7;
-  --rose-pine-highlight: #44415a;
+  /* Rose Pine Main (Dark Theme - Warm) */
+  --rose-pine-base: #100f14;
+  --rose-pine-surface: #1a1520;
+  --rose-pine-overlay: #221c2a;
+  --rose-pine-muted: #857a96;
+  --rose-pine-subtle: #9d92b0;
+  --rose-pine-text: #e8e4f0;
+  --rose-pine-love: #f4b8a8;
+  --rose-pine-gold: #f9c97c;
+  --rose-pine-rose: #f4b8a8;
+  --rose-pine-pine: #4a8ca0;
+  --rose-pine-foam: #a8d5d8;
+  --rose-pine-iris: #d4b5ea;
+  --rose-pine-highlight: #4a4158;
 }
 
 [data-theme="light"] {
