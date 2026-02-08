@@ -137,4 +137,12 @@ class Post extends Model implements Feedable
     {
         return 'posts_index';
     }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }
