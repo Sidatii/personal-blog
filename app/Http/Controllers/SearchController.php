@@ -43,13 +43,13 @@ class SearchController extends Controller
         // Return JSON for autocomplete requests
         if ($request->wantsJson()) {
             return response()->json([
-                'posts' => $posts->take(3)->map(fn ($post) => [
+                'posts' => collect($posts->items())->slice(0, 3)->map(fn ($post) => [
                     'id' => $post->id,
                     'title' => $post->title,
                     'url' => route('posts.show', $post),
                     'excerpt' => $post->excerpt,
                 ]),
-                'projects' => $projects->take(3)->map(fn ($project) => [
+                'projects' => collect($projects->items())->slice(0, 3)->map(fn ($project) => [
                     'id' => $project->id,
                     'title' => $project->title,
                     'url' => route('projects.show', $project),

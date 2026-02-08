@@ -1,6 +1,69 @@
 {{-- Newsletter Signup Component --}}
-{{-- Double-opt-in newsletter subscription form with Alpine.js loading state --}}
-<div x-data="{ loading: false, message: '' }" class="space-y-4">
+{{-- Double-opt-in newsletter subscription form with Alpine.js loading state and toast notifications --}}
+<div
+    x-data="{
+        loading: false,
+        error: '',
+        success: '',
+        async submitForm(event) {
+            event.preventDefault();
+            this.loading = true;
+            this.error = '';
+            this.success = '';
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                } else {
+                    this.error = data.message || 'Something went wrong. Please try again.';
+                    this.scrollToError();
+                }
+            } catch (e) {
+                this.error = 'Network error. Please check your connection and try again.';
+                this.scrollToError();
+            } finally {
+                this.loading = false;
+            }
+        },
+        scrollToError() {
+            this.$nextTick(() => {
+                const form = this.$el.querySelector('form');
+                const errorEl = this.$el.querySelector('[x-ref=\"error\"]');
+                if (errorEl) {
+                    errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+    }"
+    x-init="
+        $watch('error', (value) => {
+            if (value) {
+                dispatchToast('error', value);
+            }
+        });
+        $watch('success', (value) => {
+            if (value) {
+                dispatchToast('success', value);
+            }
+        });
+    "
+    class="space-y-4"
+>
     {{-- Description --}}
     <p class="text-sm text-rose-pine-subtle">
         Get the latest posts and updates delivered to your inbox.
@@ -10,7 +73,7 @@
     <form
         action="{{ route('newsletter.subscribe') }}"
         method="POST"
-        @submit="loading = true"
+        @submit="submitForm($event)"
         class="space-y-3"
     >
         @csrf
@@ -59,22 +122,33 @@
         </button>
 
         {{-- Error Messages --}}
-        @if ($errors->has('email'))
-            <p class="text-sm text-red-400 mt-2">
-                {{ $errors->first('email') }}
-            </p>
-        @endif
+        <div x-ref="error" x-show="error" x-cloak class="hidden">
+            <p
+                x-text="error"
+                class="text-sm text-red-400 mt-2 bg-red-900/20 border border-red-400/30 rounded-lg p-3"
+            ></p>
+        </div>
 
         {{-- Success Message --}}
-        @if (session('message'))
-            <p class="text-sm text-green-400 mt-2">
-                {{ session('message') }}
-            </p>
-        @endif
+        <div x-show="success" x-cloak class="hidden">
+            <p
+                x-text="success"
+                class="text-sm text-green-400 mt-2 bg-green-900/20 border border-green-400/30 rounded-lg p-3"
+            ></p>
+        </div>
     </form>
 
     {{-- Privacy Note --}}
-    <p class="text-xs text-rose-pine-muted">
+    <p class="xs text-rose-pine-muted">
         We respect your privacy. Unsubscribe at any time.
     </p>
 </div>
+
+{{-- Toast Notification Container (should be in layout) --}}
+<script>
+    function dispatchToast(type, message) {
+        if (typeof window.dispatchEvent === 'function') {
+            window.dispatchEvent(new CustomEvent('toast', { detail: { type, message } }));
+        }
+    }
+</script>

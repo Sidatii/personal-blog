@@ -70,6 +70,9 @@
     {{-- Footer --}}
     @include('components.footer')
 
+    {{-- Toast Notifications --}}
+    <x-toast-notifications />
+
     {{-- Scripts stack --}}
     @stack('scripts')
 

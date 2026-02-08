@@ -20,6 +20,29 @@ class NewsletterController extends Controller
             'name' => 'nullable|string|max:255',
         ]);
 
+        // Check if email already confirmed
+        $existing = NewsletterSubscriber::where('email', $validated['email'])->first();
+        if ($existing && $existing->confirmed_at) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'This email is already subscribed to the newsletter.',
+                ], 422);
+            }
+
+            return back()->with('error', 'This email is already subscribed to the newsletter.');
+        }
+
+        // Check if email is pending confirmation
+        if ($existing && ! $existing->confirmed_at) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'This email is already pending confirmation. Please check your inbox.',
+                ], 422);
+            }
+
+            return back()->with('error', 'This email is already pending confirmation. Please check your inbox.');
+        }
+
         $subscriber = NewsletterSubscriber::create([
             'email' => $validated['email'],
             'name' => $validated['name'] ?? null,
@@ -28,6 +51,12 @@ class NewsletterController extends Controller
         ]);
 
         Mail::to($subscriber->email)->queue(new NewsletterConfirmation($subscriber));
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'redirect' => route('newsletter.confirmation'),
+            ]);
+        }
 
         return view('newsletter.confirmation');
     }
