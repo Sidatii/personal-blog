@@ -151,6 +151,7 @@ Plans:
 ---
 
 ### Phase 6: Reader Engagement
+**Status:** ✓ Complete
 **Goal:** Self-hosted comments system with moderation, post reactions, and privacy-first analytics
 
 **Depends on:** Phase 3
@@ -163,16 +164,27 @@ Plans:
 - Privacy-first Umami analytics (self-hosted)
 - Spam protection (honeypot + rate limiting)
 - Real-time comment updates with HTMX
-- Admin moderation interface
+- Admin moderation interface with pagination
+- Settings page for auto-approve configuration
+- Toast notifications for comment submission
+- Rose Pine themed pagination throughout admin panel
 
-**Status:** ✓ Planned
+**Plans:** 5/5 complete
 
-**Plans:**
-- [ ] 06-01-PLAN.md — Comments Core: Database, models, repository, public API (Wave 1)
-- [ ] 06-02-PLAN.md — Reactions System: Polymorphic reactions, controller, Alpine.js component (Wave 2)
-- [ ] 06-03-PLAN.md — Admin Moderation: Comment queue, approval workflow, dashboard integration (Wave 2)
-- [ ] 06-04-PLAN.md — Analytics Integration: Umami Docker setup, tracking script, configuration (Wave 3)
-- [ ] 06-05-PLAN.md — Spam Protection & Polish: Honeypot, HTMX, threaded comments UI (Wave 3)
+Plans:
+- [x] 06-01-PLAN.md — Comments Core: Database, models, repository, public API (Wave 1)
+- [x] 06-02-PLAN.md — Reactions System: Polymorphic reactions, controller, Alpine.js component (Wave 2)
+- [x] 06-03-PLAN.md — Admin Moderation: Comment queue, approval workflow, dashboard integration (Wave 2)
+- [x] 06-04-PLAN.md — Analytics Integration: Umami Docker setup, tracking script, configuration (Wave 3)
+- [x] 06-05-PLAN.md — Spam Protection & Polish: Honeypot, HTMX, threaded comments UI (Wave 3)
+
+**Additional Enhancements:**
+- Custom Rose Pine pagination theme with proper contrast
+- Admin panel color contrast fixes (all colored containers now readable)
+- Success toast notifications with solid backgrounds
+- Contact data seeding (25 realistic entries)
+- Sidebar updated to gold theme for consistency
+- All tables normalized (no colored rows)
 
 ---
 
@@ -192,5 +204,10 @@ Plans:
 
 ## Current Position
 
-**Phase:** 4
-**Next:** Execute phase 4
+**Phase:** 6 ✓ Complete
+**Next:** Phase 7 — Search & Discovery
+
+**Recent Completion:** Phase 6 (Reader Engagement)
+- All core features delivered
+- Admin panel fully polished with consistent theming
+- Pagination, color contrast, and UX improvements applied throughout
