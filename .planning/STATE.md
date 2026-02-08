@@ -1,12 +1,12 @@
 ---
 phase: "07-search-and-discovery"
-plan: "02"
+plan: "03"
 type: "execute"
 wave: "3"
 status: "in_progress"
 last_activity: "2026-02-08"
-progress: "▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 17%"
-completed_plans: "24/24"
+progress: "▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 18%"
+completed_plans: "25/27"
 ---
 
 # Personal Blog Project - State
@@ -14,8 +14,8 @@ completed_plans: "24/24"
 ## Current Position
 
 **Phase:** 07-search-and-discovery (7 of 7)
-**Status:** Plan 02 complete
-**Last completed:** 07-02 TOC anchor links (functional table of contents navigation)
+**Status:** Plan 03 complete
+**Last completed:** 07-03 Newsletter subscription system (double-opt-in with footer integration)
 
 ### Progress Overview
 
@@ -63,7 +63,7 @@ Phase 6: Reader Engagement - 100% complete ✓
 Phase 7: Search and Discovery - In Progress
 - [x] Plan 01: Search functionality ✓
 - [x] Plan 02: TOC anchor links ✓
-- [ ] Plan 03: Newsletter subscription
+- [x] Plan 03: Newsletter subscription ✓
 - [ ] Plan 04: Advanced search features
 
 ## Decisions Made
@@ -117,7 +117,15 @@ Phase 7: Search and Discovery - In Progress
 | 06-04 | Self-hosted Umami analytics | Privacy-first analytics with full data ownership vs Google Analytics |
 | 06-04 | Production-only script loading | Avoid tracking local development, respect privacy |
 | 06-04 | Isolated PostgreSQL for analytics | Separate analytics database from main application data |
+| 07-01 | Scout database driver over Meilisearch | Personal blog scale doesn't warrant external search service; PostgreSQL LIKE matching sufficient for content volume |
+| 07-01 | Database columns only in toSearchableArray | Scout database driver searches on returned columns; relationship data (category, tags) would cause SQL errors |
+| 07-01 | Separate pagination for posts and projects | Different result types need independent pagination controls for better UX |
+| 07-01 | 300ms debounce on autocomplete | Balance between responsiveness and server load, reduces API calls while maintaining good UX |
 | 07-02 | DOMDocument for HTML manipulation | Safer and more reliable than regex for parsing/modifying HTML structure |
+| 07-03 | Double-opt-in confirmation flow | Prevents spam signups and ensures legitimate subscribers |
+| 07-03 | Token-based confirmation/unsubscribe | Unique tokens per subscriber, no authentication required for actions |
+| 07-03 | Queued email sending for newsletters | Non-blocking subscription flow using ShouldQueue interface |
+| 07-03 | Newsletter signup in footer | Maximum visibility across all pages for subscription growth |
 | 07-02 | Duplicate heading IDs with counter suffix | Prevents ID collisions when multiple headings have same text |
 | 07-02 | Process heading IDs after code highlighting | Ensures final HTML structure is complete before adding IDs |
 
@@ -161,6 +169,7 @@ Phase 7: Search and Discovery - In Progress
 - archtechx/laravel-seo ^0.10.3 (installed)
 - spatie/laravel-feed ^4.4 (installed)
 - spatie/laravel-sitemap ^7.3 (installed)
+- laravel/scout ^10.23.1 (installed)
 - deployer/deployer (installed)
 
 ## Environment Variables
@@ -193,21 +202,23 @@ Phase 7: Search and Discovery - In Progress
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed plan 07-02 (TOC anchor links)
+**Stopped at:** Completed plan 07-03 (Newsletter subscription system)
 **Resume file:** None
 
 ### What Was Just Completed
-- Enhanced MarkdownParser with addHeadingIds() method
-- All blog post headings now have unique ID attributes
-- Table of contents navigation fully functional
-- Click-to-scroll behavior working for all headings
-- URL hash synchronization with section navigation
-- Edge cases handled: duplicates, special characters, UTF-8
+- Newsletter subscribers database table with confirmation/unsubscribe tokens
+- NewsletterSubscriber model with scopes and helpers
+- NewsletterController with subscribe, confirm, unsubscribe methods
+- Newsletter confirmation email with ShouldQueue
+- Newsletter signup component with Alpine.js loading state
+- Footer redesigned with newsletter section
 
 ### What Comes Next
 Phase 7 Search and Discovery progressing:
 - Plan 01 complete: Search functionality ✓
 - Plan 02 complete: TOC anchor links ✓
+- Plan 03 complete: Newsletter subscription ✓
+- Plan 04 ready: Advanced search features
 - Plan 03 ready: Newsletter subscription system
 - Plan 04 ready: Advanced search features
 
@@ -236,6 +247,9 @@ Phase 7 Search and Discovery progressing:
 - `app/Http/Requests/UpdateProjectRequest.php` - Project update validation
 - `app/Http/Requests/ContactFormRequest.php` - Form validation rules
 - `app/Mail/ContactFormSubmitted.php` - Email mailable with ShouldQueue
+- `app/Mail/NewsletterConfirmation.php` - Newsletter confirmation email mailable
+- `app/Http/Controllers/NewsletterController.php` - Newsletter subscription controller
+- `app/Models/NewsletterSubscriber.php` - Newsletter subscriber model with scopes
 - `app/Services/Content/MarkdownParser.php` - Markdown parser with ShikiHighlighter
 - `app/Services/ShikiHighlighter.php` - Rose Pine syntax highlighting
 - `resources/views/posts/show.blade.php` - Single blog post view
@@ -252,6 +266,11 @@ Phase 7 Search and Discovery progressing:
 - `resources/views/contact/form.blade.php` - Contact form with validation
 - `resources/views/contact/thank-you.blade.php` - Thank you confirmation page
 - `resources/views/emails/contact-form.blade.php` - HTML email template
+- `resources/views/emails/newsletter-confirmation.blade.php` - Newsletter confirmation email template
+- `resources/views/newsletter/confirmation.blade.php` - Newsletter "Check Your Email" page
+- `resources/views/newsletter/confirmed.blade.php` - Newsletter subscription confirmed page
+- `resources/views/newsletter/unsubscribed.blade.php` - Newsletter unsubscribed page
+- `resources/views/components/newsletter-signup.blade.php` - Newsletter signup form component
 - `resources/views/admin/auth/login.blade.php` - Rose Pine themed admin login view
 - `resources/views/layouts/admin.blade.php` - Admin base layout with sidebar and header
 - `resources/views/components/admin-sidebar.blade.php` - Navigation sidebar with route highlighting
@@ -321,7 +340,7 @@ Phase 7 Search and Discovery progressing:
 
 ### Database Status
 - personal_blog database
-- 12 tables: users, cache, jobs, posts, categories, tags, post_tag, projects, contact_submissions, admins, comments, comment_reactions
+- 13 tables: users, cache, jobs, posts, categories, tags, post_tag, projects, contact_submissions, admins, comments, comment_reactions, newsletter_subscribers
 - All indexes created for performance
 - Foreign key constraints in place
 
