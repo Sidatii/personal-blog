@@ -189,23 +189,34 @@ Plans:
 ---
 
 ### Phase 7: Search & Discovery
-**Goal:** Search functionality, table of contents, newsletter
+**Status:** ✓ Planned
+**Goal:** Full-text search with PostgreSQL Scout, functional table of contents navigation, and newsletter subscription system
 
 **Depends on:** Phase 3+
 
 **Delivers:**
-- Search (client-side or Meilisearch)
-- Auto-generated table of contents
-- Newsletter signup
+- Full-text search across posts and projects using PostgreSQL tsvector (via Scout database driver)
+- Search box in header with Alpine.js autocomplete dropdown
+- Dedicated search results page with pagination
+- HTML heading IDs for functional table of contents navigation
+- Newsletter subscription with double-opt-in confirmation flow
+- Newsletter signup form in footer with email validation
+- Unsubscribe functionality via unique tokens
 
-**Status:** [Pending]
+**Plans:** 4 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Full-text search with Scout and PostgreSQL tsvector (Wave 1)
+- [ ] 07-02-PLAN.md — Add ID anchors to HTML headings for TOC navigation (Wave 1)
+- [ ] 07-03-PLAN.md — Newsletter subscription with double-opt-in flow (Wave 1)
+- [ ] 07-04-PLAN.md — Human verification of search, TOC, newsletter features (Wave 2)
 
 ---
 
 ## Current Position
 
-**Phase:** 6 ✓ Complete
-**Next:** Phase 7 — Search & Discovery
+**Phase:** 7 — Search & Discovery (Ready to Execute)
+**Next:** Execute Phase 7 plans
 
 **Recent Completion:** Phase 6 (Reader Engagement)
 - All core features delivered
