@@ -19,17 +19,17 @@
     <div class="mb-6 bg-rose-pine-surface rounded-lg p-4">
         <div class="flex flex-wrap gap-4">
             <a href="{{ route('admin.contacts.index') }}"
-               class="px-4 py-2 rounded-lg transition {{ !request('filter') ? 'bg-rose-pine-iris text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ !request('filter') ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 All
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::count() }})</span>
             </a>
             <a href="{{ route('admin.contacts.index', ['filter' => 'unread']) }}"
-               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'unread' ? 'bg-rose-pine-iris text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'unread' ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Unread
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::unread()->count() }})</span>
             </a>
             <a href="{{ route('admin.contacts.index', ['filter' => 'read']) }}"
-               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'read' ? 'bg-rose-pine-iris text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'read' ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Read
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::where('is_read', true)->count() }})</span>
             </a>
@@ -56,7 +56,7 @@
                         <div class="font-medium">{{ $contact->name }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-rose-pine-text">
-                        <a href="mailto:{{ $contact->email }}" class="text-rose-pine-iris hover:text-rose-pine-foam">
+                        <a href="mailto:{{ $contact->email }}" class="text-rose-pine-gold hover:text-rose-pine-foam">
                             {{ $contact->email }}
                         </a>
                     </td>
@@ -80,12 +80,12 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a href="{{ route('admin.contacts.show', $contact) }}"
-                           class="text-rose-pine-iris hover:text-rose-pine-foam mr-3">View</a>
+                           class="text-rose-pine-gold hover:text-rose-pine-foam mr-3">View</a>
                         <form action="{{ route('admin.contacts.mark-as-read', $contact) }}"
                               method="POST"
                               class="inline">
                             @csrf
-                            <button type="submit" class="text-rose-pine-gold hover:text-rose-pine-iris mr-3">
+                            <button type="submit" class="text-rose-pine-gold hover:text-rose-pine-gold mr-3">
                                 {{ $contact->is_read ? 'Mark Unread' : 'Mark Read' }}
                             </button>
                         </form>

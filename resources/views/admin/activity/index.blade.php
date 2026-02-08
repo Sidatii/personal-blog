@@ -15,7 +15,7 @@
         <form method="GET" action="{{ route('admin.activity.index') }}" class="flex flex-wrap gap-4">
             <div class="min-w-[150px]">
                 <select name="action"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Actions</option>
                     <option value="created" {{ request('action') == 'created' ? 'selected' : '' }}>Created</option>
                     <option value="updated" {{ request('action') == 'updated' ? 'selected' : '' }}>Updated</option>
@@ -26,7 +26,7 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="model_type"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Models</option>
                     <option value="App\Models\Post" {{ request('model_type') == 'App\Models\Post' ? 'selected' : '' }}>Posts</option>
                     <option value="App\Models\Category" {{ request('model_type') == 'App\Models\Category' ? 'selected' : '' }}>Categories</option>
@@ -37,7 +37,7 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="admin_id"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Admins</option>
                     @foreach($admins as $admin)
                     <option value="{{ $admin->id }}" {{ request('admin_id') == $admin->id ? 'selected' : '' }}>
@@ -51,17 +51,17 @@
                        name="date_from"
                        value="{{ request('date_from') }}"
                        placeholder="From date"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <div class="min-w-[150px]">
                 <input type="date"
                        name="date_to"
                        value="{{ request('date_to') }}"
                        placeholder="To date"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
                 Filter
             </button>
             @if(request()->hasAny(['action', 'model_type', 'admin_id', 'date_from', 'date_to']))
@@ -102,7 +102,7 @@
                             Created
                         </span>
                         @elseif($activity->action === 'updated')
-                        <span class="px-2 py-1 bg-rose-pine-iris bg-opacity-20 text-rose-pine-iris rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
                             Updated
                         </span>
                         @elseif($activity->action === 'deleted')

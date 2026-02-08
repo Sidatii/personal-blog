@@ -51,7 +51,7 @@
             <!-- Email -->
             <div>
                 <label class="block text-sm font-medium text-rose-pine-subtle mb-1">Email</label>
-                <a href="mailto:{{ $contact->email }}" class="text-rose-pine-iris hover:text-rose-pine-foam">
+                <a href="mailto:{{ $contact->email }}" class="text-rose-pine-gold hover:text-rose-pine-foam">
                     {{ $contact->email }}
                 </a>
             </div>
@@ -117,12 +117,12 @@
     <!-- Actions -->
     <div class="flex items-center justify-between pt-6 border-t border-rose-pine-highlight-med">
         <a href="{{ route('admin.contacts.index') }}"
-           class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-iris transition">
+           class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-gold transition">
             ← Back to Contacts
         </a>
 
         <a href="mailto:{{ $contact->email }}?subject=Re: {{ urlencode($contact->subject) }}"
-           class="px-6 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+           class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
             Reply via Email
         </a>
     </div>

@@ -33,7 +33,7 @@
                         value="{{ old('email') }}"
                         required
                         autofocus
-                        class="w-full px-4 py-2 bg-rose-pine-base border border-rose-pine-overlay rounded-lg focus:outline-none focus:border-rose-pine-iris text-rose-pine-text"
+                        class="w-full px-4 py-2 bg-rose-pine-base border border-rose-pine-overlay rounded-lg focus:outline-none focus:border-rose-pine-gold text-rose-pine-text"
                     >
                 </div>
 
@@ -44,20 +44,20 @@
                         id="password"
                         name="password"
                         required
-                        class="w-full px-4 py-2 bg-rose-pine-base border border-rose-pine-overlay rounded-lg focus:outline-none focus:border-rose-pine-iris text-rose-pine-text"
+                        class="w-full px-4 py-2 bg-rose-pine-base border border-rose-pine-overlay rounded-lg focus:outline-none focus:border-rose-pine-gold text-rose-pine-text"
                     >
                 </div>
 
                 <div class="mb-6">
                     <label class="flex items-center">
-                        <input type="checkbox" name="remember" class="rounded border-rose-pine-overlay text-rose-pine-iris focus:ring-rose-pine-iris">
+                        <input type="checkbox" name="remember" class="rounded border-rose-pine-overlay text-rose-pine-gold focus:ring-rose-pine-gold">
                         <span class="ml-2 text-rose-pine-subtle">Remember me</span>
                     </label>
                 </div>
 
                 <button
                     type="submit"
-                    class="w-full bg-rose-pine-iris hover:bg-rose-pine-iris/80 text-rose-pine-base font-bold py-3 rounded-lg transition-colors"
+                    class="w-full bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-rose-pine-base font-bold py-3 rounded-lg transition-colors"
                 >
                     Login
                 </button>

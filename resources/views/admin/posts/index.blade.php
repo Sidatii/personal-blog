@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-rose-pine-text">Posts</h1>
         <a href="{{ route('admin.posts.create') }}"
-           class="px-4 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+           class="px-4 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
             Create New Post
         </a>
     </div>
@@ -27,11 +27,11 @@
                        name="search"
                        placeholder="Search posts..."
                        value="{{ request('search') }}"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <div class="min-w-[150px]">
                 <select name="category"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -42,14 +42,14 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="status"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Status</option>
                     <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                 </select>
             </div>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
                 Filter
             </button>
             @if(request()->hasAny(['search', 'category', 'status']))
@@ -84,7 +84,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-rose-pine-text">
                         @if($post->category)
-                        <span class="px-2 py-1 bg-rose-pine-iris bg-opacity-20 text-rose-pine-iris rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
                             {{ $post->category->name }}
                         </span>
                         @else
@@ -107,7 +107,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a href="{{ route('admin.posts.edit', $post) }}"
-                           class="text-rose-pine-iris hover:text-rose-pine-foam mr-3">Edit</a>
+                           class="text-rose-pine-gold hover:text-rose-pine-foam mr-3">Edit</a>
                         <form action="{{ route('admin.posts.destroy', $post) }}"
                               method="POST"
                               class="inline"

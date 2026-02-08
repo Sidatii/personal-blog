@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-rose-pine-text">Projects</h1>
         <a href="{{ route('admin.projects.create') }}"
-           class="px-4 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+           class="px-4 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
             Create New Project
         </a>
     </div>
@@ -24,7 +24,7 @@
         <form method="GET" action="{{ route('admin.projects.index') }}" class="flex flex-wrap gap-4">
             <div class="min-w-[150px]">
                 <select name="status"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Status</option>
                     <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -33,7 +33,7 @@
                 </select>
             </div>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
                 Filter
             </button>
             @if(request('status'))
@@ -77,19 +77,19 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($project->status === 'active')
-                        <span class="px-2 py-1 bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam rounded text-xs">
+                        <span class="px-3 py-1 bg-rose-pine-foam text-rose-pine-base rounded-full text-xs font-semibold">
                             Active
                         </span>
                         @elseif($project->status === 'completed')
-                        <span class="px-2 py-1 bg-rose-pine-iris bg-opacity-20 text-rose-pine-iris rounded text-xs">
+                        <span class="px-3 py-1 bg-rose-pine-love text-rose-pine-base rounded-full text-xs font-semibold">
                             Completed
                         </span>
                         @elseif($project->status === 'in-progress')
-                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
+                        <span class="px-3 py-1 bg-rose-pine-gold text-rose-pine-base rounded-full text-xs font-semibold">
                             In Progress
                         </span>
                         @else
-                        <span class="px-2 py-1 bg-rose-pine-subtle bg-opacity-20 text-rose-pine-subtle rounded text-xs">
+                        <span class="px-3 py-1 bg-rose-pine-muted text-rose-pine-base rounded-full text-xs font-semibold">
                             Archived
                         </span>
                         @endif
@@ -103,7 +103,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a href="{{ route('admin.projects.edit', $project) }}"
-                           class="text-rose-pine-iris hover:text-rose-pine-foam mr-3">Edit</a>
+                           class="text-rose-pine-gold hover:text-rose-pine-foam mr-3">Edit</a>
                         <form action="{{ route('admin.projects.destroy', $project) }}"
                               method="POST"
                               class="inline"

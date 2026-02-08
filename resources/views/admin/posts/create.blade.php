@@ -23,7 +23,7 @@
                    id="title"
                    value="{{ old('title') }}"
                    required
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris @error('title') border-rose-pine-love @enderror">
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('title') border-rose-pine-love @enderror">
             @error('title')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -39,7 +39,7 @@
                    id="slug"
                    value="{{ old('slug') }}"
                    required
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris @error('slug') border-rose-pine-love @enderror">
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('slug') border-rose-pine-love @enderror">
             @error('slug')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -53,7 +53,7 @@
             <textarea name="excerpt"
                       id="excerpt"
                       rows="3"
-                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris @error('excerpt') border-rose-pine-love @enderror">{{ old('excerpt') }}</textarea>
+                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('excerpt') border-rose-pine-love @enderror">{{ old('excerpt') }}</textarea>
             @error('excerpt')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -69,7 +69,7 @@
                       id="content"
                       rows="20"
                       required
-                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris font-mono text-sm @error('content') border-rose-pine-love @enderror">{{ old('content') }}</textarea>
+                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold font-mono text-sm @error('content') border-rose-pine-love @enderror">{{ old('content') }}</textarea>
             @error('content')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -85,7 +85,7 @@
                 </label>
                 <select name="category_id"
                         id="category_id"
-                        class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris @error('category_id') border-rose-pine-love @enderror">
+                        class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('category_id') border-rose-pine-love @enderror">
                     <option value="">-- Select Category --</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -107,7 +107,7 @@
                        name="published_at"
                        id="published_at"
                        value="{{ old('published_at') }}"
-                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-iris @error('published_at') border-rose-pine-love @enderror">
+                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('published_at') border-rose-pine-love @enderror">
                 @error('published_at')
                 <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
                 @enderror
@@ -127,7 +127,7 @@
                            name="tags[]"
                            value="{{ $tag->id }}"
                            {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}
-                           class="rounded border-rose-pine-highlight-med text-rose-pine-iris focus:ring-rose-pine-iris focus:ring-offset-rose-pine-surface">
+                           class="rounded border-rose-pine-highlight-med text-rose-pine-gold focus:ring-rose-pine-gold focus:ring-offset-rose-pine-surface">
                     <span class="text-sm text-rose-pine-text">{{ $tag->name }}</span>
                 </label>
                 @endforeach
@@ -145,7 +145,7 @@
                        id="is_featured"
                        value="1"
                        {{ old('is_featured') ? 'checked' : '' }}
-                       class="rounded border-rose-pine-highlight-med text-rose-pine-iris focus:ring-rose-pine-iris focus:ring-offset-rose-pine-surface">
+                       class="rounded border-rose-pine-highlight-med text-rose-pine-gold focus:ring-rose-pine-gold focus:ring-offset-rose-pine-surface">
                 <span class="text-sm font-medium text-rose-pine-text">Mark as Featured Post</span>
             </label>
         </div>
@@ -153,11 +153,11 @@
         <!-- Actions -->
         <div class="flex items-center justify-end space-x-4 pt-6 border-t border-rose-pine-highlight-med">
             <a href="{{ route('admin.posts.index') }}"
-               class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-iris transition">
+               class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-gold transition">
                 Cancel
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-iris text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
                 Create Post
             </button>
         </div>
