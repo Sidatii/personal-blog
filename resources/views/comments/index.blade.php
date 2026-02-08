@@ -2,13 +2,9 @@
 
 <section id="comments-section" class="mt-12 border-t border-rose-pine-highlight pt-8">
     <header class="mb-6">
-        <h2 class="text-2xl font-bold text-rose-pine-text mb-2">
-            Comments
-            @if($comments->count() > 0)
-                <span class="text-lg font-normal text-rose-pine-muted">
-                    ({{ $comments->count() }})
-                </span>
-            @endif
+        <h2 class="text-2xl font-bold text-rose-pine-text">
+            <span class="mr-2">💬</span>
+            {{ $comments->count() }} {{ $comments->count() === 1 ? 'Comment' : 'Comments' }}
         </h2>
 
         @if($comments->count() > 0)

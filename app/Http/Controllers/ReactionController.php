@@ -76,8 +76,10 @@ class ReactionController extends Controller
         // Map of allowed reactable types to their full class names
         $modelMap = [
             'post' => 'App\Models\Post',
+            'Post' => 'App\Models\Post',
             'App\Models\Post' => 'App\Models\Post',
             'comment' => 'App\Models\Comment',
+            'Comment' => 'App\Models\Comment',
             'App\Models\Comment' => 'App\Models\Comment',
         ];
 

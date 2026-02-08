@@ -1,28 +1,28 @@
 @props(['comment' => null, 'depth' => 0])
 
 <div
-    class="comment-item border-l-2 {{ $depth > 0 ? 'border-rose-pine-highlight' : 'border-transparent' }} {{ $depth > 0 ? 'pl-6' : '' }} mb-4"
-    @if($depth > 0) style="margin-left: {{ $depth * 2 }}rem;" @endif
+    class="comment-item border-l-2 {{ $depth > 0 ? 'border-rose-pine-highlight' : 'border-transparent' }} {{ $depth > 0 ? 'pl-4' : '' }} mb-3"
+    @if($depth > 0) style="margin-left: {{ $depth * 1.5 }}rem;" @endif
     data-comment-id="{{ $comment->id }}"
 >
-    <div class="bg-rose-pine-surface rounded-lg p-4 shadow-sm border border-rose-pine-highlight">
+    <div class="bg-rose-pine-surface rounded-lg p-3 shadow-sm border border-rose-pine-highlight">
         {{-- Author information --}}
-        <div class="flex items-start space-x-3 mb-3">
+        <div class="flex items-start space-x-2 mb-2">
             {{-- Avatar placeholder --}}
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-rose-pine-overlay flex items-center justify-center">
-                <span class="text-rose-pine-subtle font-medium">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-rose-pine-overlay flex items-center justify-center">
+                <span class="text-rose-pine-subtle text-xs font-medium">
                     {{ strtoupper(substr($comment->author_name ?: 'A', 0, 1)) }}
                 </span>
             </div>
 
             <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-2">
-                    <p class="text-sm font-medium text-rose-pine-text truncate">
+                <div class="flex items-center space-x-1.5">
+                    <p class="text-sm font-semibold text-rose-pine-text truncate">
                         {{ $comment->author_name ?: 'Anonymous' }}
                     </p>
 
                     <span class="text-xs text-rose-pine-muted">
-                        {{ $comment->created_at->diffForHumans() }}
+                        • {{ $comment->created_at->diffForHumans() }}
                     </span>
 
                     @if($comment->status === 'pending')
@@ -35,33 +35,28 @@
         </div>
 
         {{-- Comment content --}}
-        <div class="prose prose-sm max-w-none prose-rose-pine">
-            <p class="text-rose-pine-text whitespace-pre-wrap">
+        <div class="ml-10">
+            <p class="text-sm text-rose-pine-text whitespace-pre-wrap leading-relaxed">
                 {{ $comment->content }}
             </p>
         </div>
 
         {{-- Comment actions and reply form wrapper --}}
-        <div x-data="{ showReplyForm: false }">
+        <div x-data="{ showReplyForm: false }" class="ml-10">
             {{-- Comment actions --}}
-            <div class="mt-3 flex items-center justify-between">
-                <div class="flex items-center space-x-4">
+            <div class="mt-2 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
                     {{-- Reply button --}}
                     <button
                         @click="showReplyForm = !showReplyForm"
-                        class="text-sm text-rose-pine-love hover:text-rose-pine-rose transition-colors duration-200 font-medium"
+                        class="text-xs text-rose-pine-love hover:text-rose-pine-rose transition-colors duration-200 font-medium"
                     >
                         <span x-show="!showReplyForm">Reply</span>
                         <span x-show="showReplyForm">Cancel</span>
                     </button>
-
-                    {{-- Reactions (if enabled) --}}
-                    @if($comment->reaction_counts && count($comment->reaction_counts) > 0)
-                        <x-reaction-bar :reactable="$comment" size="sm" />
-                    @endif
                 </div>
 
-                {{-- Moderation info for admins --}}
+                {{-- Moderation info for admins ONLY --}}
                 @if(auth()->guard('admin')->check())
                     <div class="text-xs text-rose-pine-muted">
                         <span class="font-mono">{{ $comment->ip_address }}</span>
