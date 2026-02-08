@@ -74,7 +74,10 @@
             <div class="prose prose-invert prose-rose-pine max-w-none">
                 {!! $content !!}
             </div>
-            
+
+            {{-- Reaction Bar --}}
+            <x-reaction-bar :reactable="$post" />
+
             {{-- Post Footer --}}
             <footer class="mt-12 pt-8 border-t border-rose-pine-overlay">
                 <div class="flex items-center justify-between">

@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('posts.index'));
@@ -30,6 +31,11 @@ Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name(
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
     ->name('comments.store')
     ->middleware('throttle:comments');
+
+// Reaction Routes
+Route::post('/reactions', [ReactionController::class, 'store'])
+    ->name('reactions.store')
+    ->middleware('throttle:reactions');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
@@ -79,7 +85,7 @@ Route::get('/sitemap.xml', function () {
         );
     }
 
-    return response($sitemap->toXml())
+    return response($sitemap->writeToFile($sitemapPath))
         ->header('Content-Type', 'application/xml');
 })->name('sitemap');
 
