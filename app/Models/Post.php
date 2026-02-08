@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Reactable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Feed\Feedable;
@@ -9,6 +10,7 @@ use Spatie\Feed\FeedItem;
 
 class Post extends Model implements Feedable
 {
+    use Reactable;
     use SoftDeletes;
 
     protected $fillable = [

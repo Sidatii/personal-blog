@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Reactable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class Comment extends Model
 {
+    use Reactable;
+
     protected $fillable = [
         'post_id',
         'parent_id',
