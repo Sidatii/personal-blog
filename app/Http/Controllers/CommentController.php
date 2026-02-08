@@ -30,6 +30,14 @@ class CommentController extends Controller
     {
         $comments = $this->commentRepository->getThreadForPost($post);
 
+        // Return HTML fragment for HTMX requests
+        if ($request->header('HX-Request')) {
+            return view('comments._thread', [
+                'comments' => $comments,
+                'depth' => 0,
+            ]);
+        }
+
         if ($request->wantsJson()) {
             return response()->json([
                 'data' => $comments,
@@ -50,7 +58,7 @@ class CommentController extends Controller
     /**
      * Store a new comment.
      */
-    public function store(StoreCommentRequest $request, Post $post): JsonResponse|RedirectResponse
+    public function store(StoreCommentRequest $request, Post $post): JsonResponse|RedirectResponse|View|\Illuminate\Http\Response
     {
         // Honeypot validation is handled automatically by StoreCommentRequest
         // If we get here, the honeypot validation passed
@@ -70,6 +78,16 @@ class CommentController extends Controller
         ]);
 
         $comment = $this->commentRepository->create($commentData, $post, $parent);
+
+        // Return HTML fragment for HTMX requests
+        if ($request->header('HX-Request')) {
+            return response()
+                ->view('comments._comment', [
+                    'comment' => $comment,
+                    'depth' => $validated['parent_id'] ? 1 : 0,
+                ])
+                ->header('HX-Trigger', 'comment-posted');
+        }
 
         if ($request->wantsJson()) {
             return response()->json([
