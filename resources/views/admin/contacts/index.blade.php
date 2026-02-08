@@ -113,7 +113,7 @@
     <!-- Pagination -->
     @if($contacts->hasPages())
     <div class="mt-6">
-        {{ $contacts->links() }}
+        {{ $contacts->appends(request()->query())->links() }}
     </div>
     @endif
 </div>

@@ -128,7 +128,7 @@
     <!-- Pagination -->
     @if($projects->hasPages())
     <div class="mt-6">
-        {{ $projects->links() }}
+        {{ $projects->appends(request()->query())->links() }}
     </div>
     @endif
 </div>

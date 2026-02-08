@@ -156,7 +156,7 @@
     <!-- Pagination -->
     @if($activities->hasPages())
     <div class="mt-6">
-        {{ $activities->links() }}
+        {{ $activities->appends(request()->query())->links() }}
     </div>
     @endif
 </div>
