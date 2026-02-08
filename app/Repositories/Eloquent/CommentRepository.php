@@ -70,9 +70,13 @@ SQL;
             'limit' => $perPage,
         ]);
 
-        // Hydrate raw results into Comment models to apply casts
-        return collect($results)->map(function ($result) {
-            return $this->comment->newInstance((array) $result, true);
+        // Hydrate results into Comment models using newFromBuilder
+        // This properly applies casts including datetime for created_at
+        return collect($results)->map(function ($row) {
+            $comment = $this->comment->newFromBuilder($row);
+            // Preserve CTE fields (depth, path) as attributes
+            $comment->depth = $row->depth ?? 0;
+            return $comment;
         });
     }
 
