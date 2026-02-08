@@ -1,13 +1,21 @@
 @props(['post' => null, 'parentId' => null])
 
-<form 
-    action="{{ route('comments.store', $post) }}" 
+<form
+    action="{{ route('comments.store', $post) }}"
     method="POST"
     hx-post="{{ route('comments.store', $post) }}"
     hx-target="#comments-list"
     hx-swap="afterbegin"
     hx-indicator="#comment-submit-spinner"
     class="space-y-4"
+    x-data="{
+        clearForm() {
+            this.$el.querySelector('#content').value = '';
+            this.$el.querySelector('#author_name').value = '';
+            this.$el.querySelector('#author_email').value = '';
+        }
+    }"
+    @comment-posted.window="clearForm()"
 >
     @csrf
     

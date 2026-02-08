@@ -57,17 +57,35 @@
         @include('comments._form', ['post' => $post])
     </div>
 
-    {{-- Success message area for HTMX responses --}}
+    {{-- Toast notification for successful comment submission --}}
     <div
-        id="comment-success-message"
-        class="hidden mb-4 p-4 bg-rose-pine-foam/20 border border-rose-pine-foam/30 rounded-lg"
-        x-data="{ show: false }"
+        id="comment-toast"
+        x-data="{
+            show: false,
+            message: 'Comment submitted successfully!',
+            showToast(msg) {
+                this.message = msg || this.message;
+                this.show = true;
+                setTimeout(() => this.show = false, 4000);
+            }
+        }"
+        @comment-posted.window="showToast('Comment submitted successfully!')"
         x-show="show"
-        x-init="document.addEventListener('comment-posted', () => { show = true; setTimeout(() => show = false, 5000); })"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-y-2"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform translate-y-2"
+        class="fixed bottom-6 right-6 z-50 max-w-sm"
+        style="display: none;"
     >
-        <p class="text-rose-pine-foam font-medium">
-            Your comment has been {{ $post->comments()->where('status', 'approved')->exists() ? 'posted' : 'submitted for moderation' }}!
-        </p>
+        <div class="flex items-center gap-3 px-4 py-3 bg-rose-pine-overlay border-2 border-rose-pine-foam rounded-lg shadow-xl">
+            <svg class="w-5 h-5 text-rose-pine-foam flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <p class="text-sm font-medium text-rose-pine-text" x-text="message"></p>
+        </div>
     </div>
 
     {{-- Comments list --}}
