@@ -46,6 +46,8 @@ Route::post('/reactions', [ReactionController::class, 'store'])
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/confirm/{token}', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
 Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+Route::view('/newsletter/confirmed', 'newsletter.confirmed')->name('newsletter.confirmation');
+Route::view('/newsletter/check-email', 'newsletter.confirmation')->name('newsletter.check-email');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
