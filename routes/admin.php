@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\LogoutController;
 use App\Http\Controllers\Admin\ContactController;
@@ -47,4 +48,7 @@ Route::middleware('admin')->group(function () {
         Route::post('/{contact}/mark-as-read', [ContactController::class, 'markAsRead'])->name('mark-as-read');
         Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
     });
+
+    // Activity log
+    Route::get('/activity', [ActivityController::class, 'index'])->name('admin.activity.index');
 });
