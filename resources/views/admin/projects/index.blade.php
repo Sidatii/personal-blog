@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-rose-pine-text">Projects</h1>
         <a href="{{ route('admin.projects.create') }}"
-           class="px-4 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+           class="px-4 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition font-semibold">
             Create New Project
         </a>
     </div>
@@ -33,12 +33,12 @@
                 </select>
             </div>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Filter
             </button>
             @if(request('status'))
             <a href="{{ route('admin.projects.index') }}"
-               class="px-6 py-2 bg-rose-pine-highlight-med text-rose-pine-text rounded-lg hover:bg-opacity-80 transition">
+               class="px-6 py-2 bg-rose-pine-subtle text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Clear
             </a>
             @endif

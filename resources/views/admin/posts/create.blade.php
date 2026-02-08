@@ -157,7 +157,7 @@
                 Cancel
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Create Post
             </button>
         </div>

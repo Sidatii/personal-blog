@@ -61,12 +61,12 @@
                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Filter
             </button>
             @if(request()->hasAny(['action', 'model_type', 'admin_id', 'date_from', 'date_to']))
             <a href="{{ route('admin.activity.index') }}"
-               class="px-6 py-2 bg-rose-pine-highlight-med text-rose-pine-text rounded-lg hover:bg-opacity-80 transition">
+               class="px-6 py-2 bg-rose-pine-subtle text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Clear
             </a>
             @endif
@@ -98,27 +98,35 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($activity->action === 'created')
-                        <span class="px-2 py-1 bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-foam text-rose-pine-base rounded text-xs font-semibold">
                             Created
                         </span>
                         @elseif($activity->action === 'updated')
-                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-gold text-rose-pine-base rounded text-xs font-semibold">
                             Updated
                         </span>
                         @elseif($activity->action === 'deleted')
-                        <span class="px-2 py-1 bg-rose-pine-love bg-opacity-20 text-rose-pine-love rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-love text-rose-pine-base rounded text-xs font-semibold">
                             Deleted
                         </span>
                         @elseif($activity->action === 'login')
-                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-iris text-rose-pine-base rounded text-xs font-semibold">
                             Login
                         </span>
                         @elseif($activity->action === 'logout')
-                        <span class="px-2 py-1 bg-rose-pine-subtle bg-opacity-20 text-rose-pine-subtle rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-subtle text-rose-pine-base rounded text-xs font-semibold">
                             Logout
                         </span>
+                        @elseif($activity->action === 'approve')
+                        <span class="px-2 py-1 bg-rose-pine-foam text-rose-pine-base rounded text-xs font-semibold">
+                            Approve
+                        </span>
+                        @elseif($activity->action === 'spam')
+                        <span class="px-2 py-1 bg-rose-pine-love text-rose-pine-base rounded text-xs font-semibold">
+                            Spam
+                        </span>
                         @else
-                        <span class="px-2 py-1 bg-rose-pine-highlight-med text-rose-pine-text rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-overlay text-rose-pine-text rounded text-xs font-semibold">
                             {{ ucfirst($activity->action) }}
                         </span>
                         @endif
@@ -154,10 +162,14 @@
     </div>
 
     <!-- Pagination -->
-    @if($activities->hasPages())
     <div class="mt-6">
-        {{ $activities->appends(request()->query())->links() }}
+        @if($activities->hasPages())
+            {{ $activities->appends(request()->query())->links() }}
+        @else
+            <p class="text-sm text-rose-pine-subtle">
+                Showing {{ $activities->count() }} of {{ $activities->total() }} results
+            </p>
+        @endif
     </div>
-    @endif
 </div>
 @endsection

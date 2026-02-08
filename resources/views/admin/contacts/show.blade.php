@@ -24,7 +24,7 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit"
-                        class="px-4 py-2 bg-rose-pine-love text-white rounded-lg hover:bg-opacity-80 transition">
+                        class="px-4 py-2 bg-rose-pine-love text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                     Delete
                 </button>
             </form>
@@ -122,7 +122,7 @@
         </a>
 
         <a href="mailto:{{ $contact->email }}?subject=Re: {{ urlencode($contact->subject) }}"
-           class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+           class="px-6 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
             Reply via Email
         </a>
     </div>

@@ -19,17 +19,17 @@
     <div class="mb-6 bg-rose-pine-surface rounded-lg p-4">
         <div class="flex flex-wrap gap-4">
             <a href="{{ route('admin.contacts.index') }}"
-               class="px-4 py-2 rounded-lg transition {{ !request('filter') ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ !request('filter') ? 'bg-rose-pine-gold text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 All
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::count() }})</span>
             </a>
             <a href="{{ route('admin.contacts.index', ['filter' => 'unread']) }}"
-               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'unread' ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'unread' ? 'bg-rose-pine-gold text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Unread
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::unread()->count() }})</span>
             </a>
             <a href="{{ route('admin.contacts.index', ['filter' => 'read']) }}"
-               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'read' ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ request('filter') === 'read' ? 'bg-rose-pine-gold text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Read
                 <span class="ml-1 text-sm opacity-75">({{ App\Models\ContactSubmission::where('is_read', true)->count() }})</span>
             </a>
@@ -69,11 +69,11 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($contact->is_read)
-                        <span class="px-2 py-1 bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-foam text-rose-pine-base rounded text-xs font-semibold">
                             Read
                         </span>
                         @else
-                        <span class="px-2 py-1 bg-rose-pine-love bg-opacity-20 text-rose-pine-love rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-love text-rose-pine-base rounded text-xs font-semibold">
                             Unread
                         </span>
                         @endif

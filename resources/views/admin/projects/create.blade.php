@@ -102,7 +102,7 @@
                        class="flex-1 px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                 <button type="button"
                         @click="addTag()"
-                        class="px-4 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+                        class="px-4 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                     Add
                 </button>
             </div>
@@ -219,7 +219,7 @@
                 Cancel
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
+                    class="px-6 py-2 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                 Create Project
             </button>
         </div>

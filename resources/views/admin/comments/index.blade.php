@@ -24,22 +24,22 @@
     <div class="mb-6 bg-rose-pine-surface rounded-lg p-4">
         <div class="flex flex-wrap gap-3">
             <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}"
-               class="px-4 py-2 rounded-lg transition {{ $status === 'pending' ? 'bg-rose-pine-gold text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ $status === 'pending' ? 'bg-rose-pine-gold text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Pending
                 <span class="ml-1 text-sm opacity-75">({{ $counts['pending'] }})</span>
             </a>
             <a href="{{ route('admin.comments.index', ['status' => 'approved']) }}"
-               class="px-4 py-2 rounded-lg transition {{ $status === 'approved' ? 'bg-rose-pine-foam text-gray-900' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ $status === 'approved' ? 'bg-rose-pine-foam text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Approved
                 <span class="ml-1 text-sm opacity-75">({{ $counts['approved'] }})</span>
             </a>
             <a href="{{ route('admin.comments.index', ['status' => 'spam']) }}"
-               class="px-4 py-2 rounded-lg transition {{ $status === 'spam' ? 'bg-rose-pine-love text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ $status === 'spam' ? 'bg-rose-pine-love text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Spam
                 <span class="ml-1 text-sm opacity-75">({{ $counts['spam'] }})</span>
             </a>
             <a href="{{ route('admin.comments.index', ['status' => 'rejected']) }}"
-               class="px-4 py-2 rounded-lg transition {{ $status === 'rejected' ? 'bg-rose-pine-muted text-white' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
+               class="px-4 py-2 rounded-lg transition {{ $status === 'rejected' ? 'bg-rose-pine-muted text-rose-pine-base' : 'bg-rose-pine-base text-rose-pine-text hover:bg-rose-pine-overlay' }}">
                 Rejected
                 <span class="ml-1 text-sm opacity-75">({{ $counts['rejected'] }})</span>
             </a>
