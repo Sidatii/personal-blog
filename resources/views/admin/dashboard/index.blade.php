@@ -11,7 +11,7 @@
         <div class="bg-gradient-to-br from-rose-pine-foam/90 to-rose-pine-foam rounded-lg p-6 hover:shadow-lg transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-800 text-sm font-semibold uppercase tracking-wide">Total Projects</p>
+                    <p class="text-rose-pine-base text-sm font-semibold uppercase tracking-wide">Total Projects</p>
                     <p class="text-4xl font-bold text-rose-pine-base mt-2">{{ $stats['total_projects'] }}</p>
                 </div>
                 <div class="w-14 h-14 bg-black/10 rounded-lg flex items-center justify-center">
@@ -29,7 +29,7 @@
         <div class="bg-gradient-to-br from-rose-pine-gold/90 to-rose-pine-gold rounded-lg p-6 hover:shadow-lg transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-800 text-sm font-semibold uppercase tracking-wide">Blog Posts</p>
+                    <p class="text-rose-pine-base text-sm font-semibold uppercase tracking-wide">Blog Posts</p>
                     <p class="text-4xl font-bold text-rose-pine-base mt-2">{{ $stats['total_posts'] }}</p>
                 </div>
                 <div class="w-14 h-14 bg-black/10 rounded-lg flex items-center justify-center">
@@ -38,14 +38,14 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-gray-800 text-xs mt-4 font-semibold">Git-based publishing</p>
+            <p class="text-rose-pine-base text-xs mt-4 font-semibold">Git-based publishing</p>
         </div>
 
         <!-- Unread Contacts -->
         <div class="bg-gradient-to-br from-rose-pine-love/90 to-rose-pine-love rounded-lg p-6 hover:shadow-lg transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-800 text-sm font-semibold uppercase tracking-wide">Unread Contacts</p>
+                    <p class="text-rose-pine-base text-sm font-semibold uppercase tracking-wide">Unread Contacts</p>
                     <p class="text-4xl font-bold text-rose-pine-base mt-2">{{ $stats['unread_contacts'] }}</p>
                 </div>
                 <div class="w-14 h-14 bg-black/10 rounded-lg flex items-center justify-center">
@@ -150,11 +150,11 @@
                                     <span class="text-rose-pine-text font-medium">
                                         {{ $comment->author_name ?: 'Anonymous' }}
                                     </span>
-                                    <span class="text-xs px-2 py-0.5 rounded
-                                        @if($comment->status === 'pending') bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold
-                                        @elseif($comment->status === 'approved') bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam
-                                        @elseif($comment->status === 'spam') bg-rose-pine-love bg-opacity-20 text-rose-pine-love
-                                        @else bg-rose-pine-muted bg-opacity-20 text-rose-pine-muted
+                                    <span class="text-xs px-2 py-0.5 rounded font-semibold
+                                        @if($comment->status === 'pending') bg-rose-pine-gold text-rose-pine-base
+                                        @elseif($comment->status === 'approved') bg-rose-pine-foam text-rose-pine-base
+                                        @elseif($comment->status === 'spam') bg-rose-pine-love text-rose-pine-base
+                                        @else bg-rose-pine-muted text-rose-pine-base
                                         @endif">
                                         {{ ucfirst($comment->status) }}
                                     </span>

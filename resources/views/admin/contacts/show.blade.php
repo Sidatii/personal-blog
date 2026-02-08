@@ -14,7 +14,7 @@
             <form action="{{ route('admin.contacts.mark-as-read', $contact) }}" method="POST">
                 @csrf
                 <button type="submit"
-                        class="px-4 py-2 {{ $contact->is_read ? 'bg-rose-pine-gold' : 'bg-rose-pine-foam' }} text-white rounded-lg hover:bg-opacity-80 transition">
+                        class="px-4 py-2 {{ $contact->is_read ? 'bg-rose-pine-gold' : 'bg-rose-pine-foam' }} text-rose-pine-base rounded-lg hover:bg-opacity-80 transition">
                     {{ $contact->is_read ? 'Mark as Unread' : 'Mark as Read' }}
                 </button>
             </form>
@@ -75,11 +75,11 @@
             <div>
                 <label class="block text-sm font-medium text-rose-pine-subtle mb-1">Status</label>
                 @if($contact->is_read)
-                <span class="inline-flex px-3 py-1 bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam rounded text-sm">
+                <span class="inline-flex px-3 py-1 bg-rose-pine-foam text-rose-pine-base font-semibold rounded text-sm">
                     ✓ Read
                 </span>
                 @else
-                <span class="inline-flex px-3 py-1 bg-rose-pine-love bg-opacity-20 text-rose-pine-love rounded text-sm">
+                <span class="inline-flex px-3 py-1 bg-rose-pine-love text-rose-pine-base font-semibold rounded text-sm">
                     ● Unread
                 </span>
                 @endif

@@ -35,19 +35,19 @@
         <!-- Status Badge -->
         <div>
             @if($comment->status === 'pending')
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold border border-rose-pine-gold border-opacity-30">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-gold text-rose-pine-base font-semibold ">
                     Pending
                 </span>
             @elseif($comment->status === 'approved')
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam border border-rose-pine-foam border-opacity-30">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-foam text-rose-pine-base font-semibold ">
                     Approved
                 </span>
             @elseif($comment->status === 'spam')
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-love bg-opacity-20 text-rose-pine-love border border-rose-pine-love border-opacity-30">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-love text-rose-pine-base font-semibold ">
                     Spam
                 </span>
             @elseif($comment->status === 'rejected')
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-muted bg-opacity-20 text-rose-pine-muted border border-rose-pine-muted border-opacity-30">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-pine-muted text-rose-pine-base font-semibold ">
                     Rejected
                 </span>
             @endif

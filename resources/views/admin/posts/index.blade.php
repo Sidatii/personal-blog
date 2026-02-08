@@ -84,7 +84,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-rose-pine-text">
                         @if($post->category)
-                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-gold text-rose-pine-base font-semibold rounded text-xs">
                             {{ $post->category->name }}
                         </span>
                         @else
@@ -93,11 +93,11 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($post->published_at)
-                        <span class="px-2 py-1 bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-foam text-rose-pine-base font-semibold rounded text-xs">
                             Published
                         </span>
                         @else
-                        <span class="px-2 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded text-xs">
+                        <span class="px-2 py-1 bg-rose-pine-gold text-rose-pine-base font-semibold rounded text-xs">
                             Draft
                         </span>
                         @endif

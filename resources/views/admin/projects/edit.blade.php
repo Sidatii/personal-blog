@@ -109,7 +109,7 @@
             </div>
             <div class="flex flex-wrap gap-2 min-h-[40px] p-3 bg-rose-pine-surface border border-rose-pine-base/30 rounded-lg">
                 <template x-for="(tag, index) in tags" :key="index">
-                    <div class="flex items-center gap-1 px-3 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded-full text-sm">
+                    <div class="flex items-center gap-1 px-3 py-1 bg-rose-pine-gold text-rose-pine-base font-semibold rounded-full text-sm">
                         <span x-text="tag"></span>
                         <button type="button"
                                 @click="removeTag(index)"
