@@ -187,11 +187,20 @@ Phase 7: Search and Discovery - In Progress
 - APP_URL=http://localhost:8000
 - APP_KEY=[generated]
 
-**Deployment:**
-- DEPLOY_REPOSITORY (for Deployer)
-- DEPLOY_HOST (for Deployer)
-- DEPLOY_USER (for Deployer)
-- DEPLOY_PATH (for Deployer)
+**Mail (local - uses Mailpit):**
+- MAIL_MAILER=smtp
+- MAIL_HOST=127.0.0.1
+- MAIL_PORT=1025
+- MAIL_USERNAME=null
+- MAIL_PASSWORD=null
+- MAIL_ENCRYPTION=null
+- MAIL_FROM_ADDRESS="hello@example.com"
+
+**To run Mailpit for local email testing:**
+```bash
+docker compose -f docker-compose.mailpit.yml up -d
+# Access mail UI at http://localhost:1080
+```
 
 **Analytics:**
 - UMAMI_HOST (self-hosted analytics URL)
