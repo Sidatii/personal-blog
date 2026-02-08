@@ -25,7 +25,7 @@
     {{-- Back to Home Button --}}
     <a
         href="{{ route('posts.index') }}"
-        class="inline-block mt-8 bg-rose-pine-iris text-rose-pine-base px-6 py-3 rounded-lg font-medium hover:bg-rose-pine-iris/90 transition"
+        class="inline-block mt-8 bg-rose-pine-gold text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-rose-pine-gold/90 transition"
     >
         Back to Blog
     </a>

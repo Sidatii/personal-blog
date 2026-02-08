@@ -16,35 +16,35 @@
                 {{-- All Filter --}}
                 <a href="{{ route('projects.index') }}" 
                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ is_null($currentStatus) ? 'bg-rose-pine-iris text-rose-pine-base' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+                   {{ is_null($currentStatus) ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
                     All
                 </a>
                 
                 {{-- Active Filter --}}
                 <a href="{{ route('projects.index', ['status' => 'active']) }}" 
                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'active' ? 'bg-rose-pine-iris text-rose-pine-base' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+                   {{ $currentStatus === 'active' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
                     Active
                 </a>
                 
                 {{-- Completed Filter --}}
                 <a href="{{ route('projects.index', ['status' => 'completed']) }}" 
                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'completed' ? 'bg-rose-pine-iris text-rose-pine-base' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+                   {{ $currentStatus === 'completed' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
                     Completed
                 </a>
                 
                 {{-- In Progress Filter --}}
                 <a href="{{ route('projects.index', ['status' => 'in-progress']) }}" 
                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'in-progress' ? 'bg-rose-pine-iris text-rose-pine-base' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+                   {{ $currentStatus === 'in-progress' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
                     In Progress
                 </a>
                 
                 {{-- Archived Filter --}}
                 <a href="{{ route('projects.index', ['status' => 'archived']) }}" 
                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'archived' ? 'bg-rose-pine-iris text-rose-pine-base' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+                   {{ $currentStatus === 'archived' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
                     Archived
                 </a>
             </div>
@@ -63,7 +63,7 @@
                 <p class="text-rose-pine-muted text-lg">No projects to display.</p>
                 @if($currentStatus)
                     <p class="text-rose-pine-subtle text-sm mt-2">
-                        Try <a href="{{ route('projects.index') }}" class="text-rose-pine-iris hover:underline">viewing all projects</a>.
+                        Try <a href="{{ route('projects.index') }}" class="text-rose-pine-gold hover:underline">viewing all projects</a>.
                     </p>
                 @endif
             </div>

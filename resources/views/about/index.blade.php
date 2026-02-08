@@ -29,7 +29,7 @@
                 <h1 class="text-3xl font-bold text-rose-pine-text mb-2">
                     {{ $portfolio['name'] }}
                 </h1>
-                <p class="text-xl text-rose-pine-iris mb-4">
+                <p class="text-xl text-rose-pine-gold mb-4">
                     {{ $portfolio['title'] }}
                 </p>
                 <p class="text-rose-pine-subtle leading-relaxed">

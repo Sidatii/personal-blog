@@ -3,7 +3,7 @@
 @props(['project'])
 
 <a href="{{ route('projects.show', $project->slug) }}" 
-   class="block bg-rose-pine-surface border border-rose-pine-overlay rounded-lg overflow-hidden hover:ring-1 hover:ring-rose-pine-iris/50 transition break-inside-avoid">
+   class="block bg-rose-pine-surface border border-rose-pine-overlay rounded-lg overflow-hidden hover:ring-1 hover:ring-rose-pine-gold/50 transition break-inside-avoid">
     
     {{-- Thumbnail --}}
     @if($project->thumbnail)
@@ -32,7 +32,7 @@
         @php
             $statusColors = [
                 'active' => 'bg-rose-pine-foam/20 text-rose-pine-foam',
-                'completed' => 'bg-rose-pine-iris/20 text-rose-pine-iris',
+                'completed' => 'bg-rose-pine-gold/20 text-rose-pine-gold',
                 'in-progress' => 'bg-rose-pine-gold/20 text-rose-pine-gold',
                 'archived' => 'bg-rose-pine-muted/20 text-rose-pine-muted',
             ];

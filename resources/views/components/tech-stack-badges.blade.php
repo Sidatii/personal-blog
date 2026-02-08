@@ -11,7 +11,7 @@
                             // Determine badge colors based on category
                             $colorClass = match($categoryName) {
                                 'Languages' => 'bg-rose-pine-foam/15 text-rose-pine-foam border-rose-pine-foam/30',
-                                'Frameworks & Libraries' => 'bg-rose-pine-iris/15 text-rose-pine-iris border-rose-pine-iris/30',
+                                'Frameworks & Libraries' => 'bg-rose-pine-gold/15 text-rose-pine-gold border-rose-pine-gold/30',
                                 'Tools & Platforms' => 'bg-rose-pine-gold/15 text-rose-pine-gold border-rose-pine-gold/30',
                                 'Specializations' => 'bg-rose-pine-love/15 text-rose-pine-love border-rose-pine-love/30',
                                 default => 'bg-rose-pine-pine/15 text-rose-pine-pine border-rose-pine-pine/30',

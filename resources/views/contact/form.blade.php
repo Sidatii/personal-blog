@@ -43,7 +43,7 @@
                 name="name"
                 value="{{ old('name') }}"
                 required
-                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-iris/50 focus:border-rose-pine-iris"
+                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-gold/50 focus:border-rose-pine-gold"
                 placeholder="Your name"
             >
             @error('name')
@@ -62,7 +62,7 @@
                 name="email"
                 value="{{ old('email') }}"
                 required
-                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-iris/50 focus:border-rose-pine-iris"
+                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-gold/50 focus:border-rose-pine-gold"
                 placeholder="your.email@example.com"
             >
             @error('email')
@@ -80,7 +80,7 @@
                 id="subject"
                 name="subject"
                 value="{{ old('subject') }}"
-                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-iris/50 focus:border-rose-pine-iris"
+                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-gold/50 focus:border-rose-pine-gold"
                 placeholder="What's this about?"
             >
             @error('subject')
@@ -99,7 +99,7 @@
                 rows="6"
                 required
                 minlength="10"
-                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-iris/50 focus:border-rose-pine-iris resize-y"
+                class="w-full px-4 py-2 rounded-lg bg-rose-pine-surface border border-rose-pine-overlay text-rose-pine-text placeholder-rose-pine-muted focus:outline-none focus:ring-2 focus:ring-rose-pine-gold/50 focus:border-rose-pine-gold resize-y"
                 placeholder="Tell me about your project, question, or just say hello..."
             >{{ old('message') }}</textarea>
             @error('message')
@@ -111,7 +111,7 @@
         <button
             type="submit"
             :disabled="submitting"
-            class="w-full bg-rose-pine-iris text-rose-pine-base font-medium py-3 px-6 rounded-lg hover:bg-rose-pine-iris/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            class="w-full bg-rose-pine-gold text-gray-900 font-semibold py-3 px-6 rounded-lg hover:bg-rose-pine-gold/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
             <span x-show="!submitting">Send Message</span>
             <span x-show="submitting" class="flex items-center">
