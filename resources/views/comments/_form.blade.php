@@ -42,7 +42,7 @@
             required
             rows="4"
             placeholder="Share your thoughts..."
-            class="w-full px-4 py-3 border border-rose-pine-200 dark:border-rose-pine-700 rounded-lg focus:ring-2 focus:ring-rose-pine-500 focus:border-transparent bg-white dark:bg-rose-pine-900 text-rose-pine-900 dark:text-rose-pine-100 placeholder-rose-pine-400 dark:placeholder-rose-pine-600 resize-none"
+            class="w-full px-4 py-3 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted resize-none"
         ></textarea>
     </div>
 
@@ -55,7 +55,7 @@
                 name="author_name"
                 placeholder="Name (optional)"
                 maxlength="255"
-                class="w-full px-4 py-2 border border-rose-pine-200 dark:border-rose-pine-700 rounded-lg focus:ring-2 focus:ring-rose-pine-500 focus:border-transparent bg-white dark:bg-rose-pine-900 text-rose-pine-900 dark:text-rose-pine-100 placeholder-rose-pine-400 dark:placeholder-rose-pine-600"
+                class="w-full px-4 py-2 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted"
             >
         </div>
 
@@ -67,7 +67,7 @@
                 name="author_email"
                 placeholder="Email (optional, not published)"
                 maxlength="255"
-                class="w-full px-4 py-2 border border-rose-pine-200 dark:border-rose-pine-700 rounded-lg focus:ring-2 focus:ring-rose-pine-500 focus:border-transparent bg-white dark:bg-rose-pine-900 text-rose-pine-900 dark:text-rose-pine-100 placeholder-rose-pine-400 dark:placeholder-rose-pine-600"
+                class="w-full px-4 py-2 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted"
             >
         </div>
     </div>
@@ -75,7 +75,7 @@
     <div class="flex items-center justify-between">
         <button
             type="submit"
-            class="px-6 py-2 bg-rose-pine-500 hover:bg-rose-pine-600 text-white rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-rose text-rose-pine-base dark:text-rose-pine-surface rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-love focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             hx-disabled-elt="this"
         >
             <span class="flex items-center space-x-2">
@@ -87,7 +87,7 @@
         </button>
 
         <div id="comment-submit-spinner" class="htmx-indicator hidden">
-            <div class="flex items-center space-x-2 text-rose-pine-500">
+            <div class="flex items-center space-x-2 text-rose-pine-love">
                 <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -107,7 +107,7 @@
         </div>
     @endif
 
-    <p class="text-xs text-rose-pine-500 dark:text-rose-pine-400">
+    <p class="text-xs text-rose-pine-muted">
         Comments are moderated before appearing publicly.
     </p>
 </form>

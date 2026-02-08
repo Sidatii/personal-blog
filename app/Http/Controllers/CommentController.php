@@ -84,7 +84,7 @@ class CommentController extends Controller
             return response()
                 ->view('comments._comment', [
                     'comment' => $comment,
-                    'depth' => $validated['parent_id'] ? 1 : 0,
+                    'depth' => !empty($validated['parent_id']) ? 1 : 0,
                 ])
                 ->header('HX-Trigger', 'comment-posted');
         }
