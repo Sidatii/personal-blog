@@ -5,8 +5,8 @@
     <div class="max-w-md w-full text-center">
         {{-- Icon --}}
         <div class="mb-6 flex justify-center">
-            <div class="rounded-full bg-rose-pine-muted bg-opacity-20 p-4">
-                <svg class="w-16 h-16 text-rose-pine-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="rounded-full bg-rose-pine-love bg-opacity-20 p-4">
+                <svg class="w-16 h-16 text-rose-pine-love" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </div>
