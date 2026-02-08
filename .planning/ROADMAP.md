@@ -119,11 +119,11 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Database schema and models for projects and contact submissions (Wave 1)
-- [ ] 04-02-PLAN.md — Projects showcase with masonry grid and detail pages (Wave 2)
-- [ ] 04-03-PLAN.md — About page with tech stack badges and tooltips (Wave 1)
-- [ ] 04-04-PLAN.md — Contact form with validation, email notification, and thank-you page (Wave 2)
-- [ ] 04-05-PLAN.md — Navigation update, seed data, and visual verification (Wave 3)
+- [x] 04-01-PLAN.md — Database schema and models for projects and contact submissions (Wave 1)
+- [x] 04-02-PLAN.md — Projects showcase with masonry grid and detail pages (Wave 2)
+- [x] 04-03-PLAN.md — About page with tech stack badges and tooltips (Wave 1)
+- [x] 04-04-PLAN.md — Contact form with validation, email notification, and thank-you page (Wave 2)
+- [x] 04-05-PLAN.md — Navigation update, seed data, and visual verification (Wave 3)
 
 ---
 
@@ -143,26 +143,36 @@ Plans:
 **Status:** ✓ Planned
 
 **Plans:**
-- [ ] 05-01-PLAN.md — Authentication: Admin model, login/logout, middleware (Wave 1)
-- [ ] 05-02-PLAN.md — Dashboard: Admin layout, sidebar navigation, stats overview (Wave 1)
-- [ ] 05-03-PLAN.md — Content Management: Posts, categories, tags CRUD (Wave 2)
-- [ ] 05-04-PLAN.md — Portfolio Management: Projects, contact submissions (Wave 3)
-- [ ] 05-05-PLAN.md — Activity Logging: Audit trail and verification (Wave 3)
+- [x] 05-01-PLAN.md — Authentication: Admin model, login/logout, middleware (Wave 1)
+- [x] 05-02-PLAN.md — Dashboard: Admin layout, sidebar navigation, stats overview (Wave 1)
+- [x] 05-03-PLAN.md — Portfolio Management: Projects, contact submissions (Wave 3)
+- [x] 05-04-PLAN.md — Activity Logging: Audit trail and verification (Wave 3)
 
 ---
 
 ### Phase 6: Reader Engagement
-**Goal:** Comments, reactions, analytics
+**Goal:** Self-hosted comments system with moderation, post reactions, and privacy-first analytics
 
 **Depends on:** Phase 3
 
 **Delivers:**
-- Comments system (Giscus or self-hosted)
-- Reactions/likes
-- Privacy-first analytics
-- Reading time estimates
+- Self-hosted threaded comments with PostgreSQL recursive CTEs
+- Comment moderation workflow (pending/approved/spam/rejected)
+- GitHub-style comment reactions (👍 👎 😄 ❤️ 🎉)
+- LinkedIn-style post reactions (👍 ❤️ 🎉 🚀) with toggle functionality
+- Privacy-first Umami analytics (self-hosted)
+- Spam protection (honeypot + rate limiting)
+- Real-time comment updates with HTMX
+- Admin moderation interface
 
-**Status:** [Pending]
+**Status:** ✓ Planned
+
+**Plans:**
+- [ ] 06-01-PLAN.md — Comments Core: Database, models, repository, public API (Wave 1)
+- [ ] 06-02-PLAN.md — Reactions System: Polymorphic reactions, controller, Alpine.js component (Wave 2)
+- [ ] 06-03-PLAN.md — Admin Moderation: Comment queue, approval workflow, dashboard integration (Wave 2)
+- [ ] 06-04-PLAN.md — Analytics Integration: Umami Docker setup, tracking script, configuration (Wave 3)
+- [ ] 06-05-PLAN.md — Spam Protection & Polish: Honeypot, HTMX, threaded comments UI (Wave 3)
 
 ---
 
