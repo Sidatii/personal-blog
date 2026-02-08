@@ -18,39 +18,6 @@
                 </a>
             </li>
 
-            <!-- Posts -->
-            <li>
-                <a href="{{ route('admin.posts.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.posts.*') ? 'bg-rose-pine-highlight-med text-rose-pine-foam' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span class="font-medium">Posts</span>
-                </a>
-            </li>
-
-            <!-- Categories -->
-            <li>
-                <a href="{{ route('admin.categories.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-rose-pine-highlight-med text-rose-pine-foam' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    <span class="font-medium">Categories</span>
-                </a>
-            </li>
-
-            <!-- Tags -->
-            <li>
-                <a href="{{ route('admin.tags.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.tags.*') ? 'bg-rose-pine-highlight-med text-rose-pine-foam' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    <span class="font-medium">Tags</span>
-                </a>
-            </li>
-
             <!-- Projects -->
             <li>
                 <a href="{{ route('admin.projects.index') }}"
