@@ -78,6 +78,11 @@
             {{-- Reaction Bar --}}
             <x-reaction-bar :reactable="$post" />
 
+            {{-- Comments Section --}}
+            @if(isset($comments))
+                @include('comments.index', compact('post', 'comments'))
+            @endif
+
             {{-- Post Footer --}}
             <footer class="mt-12 pt-8 border-t border-rose-pine-overlay">
                 <div class="flex items-center justify-between">

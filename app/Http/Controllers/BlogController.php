@@ -3,12 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Repositories\Contracts\CommentRepositoryInterface;
 use App\Services\Content\MarkdownParser;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BlogController extends Controller
 {
+    protected CommentRepositoryInterface $commentRepository;
+
+    /**
+     * Constructor - inject comment repository.
+     */
+    public function __construct(CommentRepositoryInterface $commentRepository)
+    {
+        $this->commentRepository = $commentRepository;
+    }
+
     /**
      * Display a listing of published posts.
      */
@@ -74,6 +85,9 @@ class BlogController extends Controller
         // Get featured image or use default
         $image = null; // Will fall back to default OG image
 
+        // Load comments for this post
+        $comments = $this->commentRepository->getThreadForPost($post);
+
         // SEO data for individual post
         $seo = [
             'title' => $post->title,
@@ -86,7 +100,7 @@ class BlogController extends Controller
             'author' => $authorName,
         ];
 
-        return view('posts.show', compact('post', 'seo', 'content', 'headings', 'readingTime'));
+        return view('posts.show', compact('post', 'seo', 'content', 'headings', 'readingTime', 'comments'));
     }
 
     /**
