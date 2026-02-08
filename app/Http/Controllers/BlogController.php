@@ -51,30 +51,40 @@ class BlogController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Read and parse markdown file from storage
-        $content = '';
-        $headings = [];
-        $readingTime = 1;
+        // Read and parse markdown file from storage with caching
+        $cacheKey = "post.{$post->id}.parsed.{$post->content_hash}";
 
-        $fullPath = storage_path('content/posts/'.$post->filepath);
+        $cached = cache()->remember($cacheKey, now()->addDays(30), function () use ($post) {
+            $content = '';
+            $headings = [];
+            $readingTime = 1;
 
-        if (file_exists($fullPath)) {
-            $markdownContent = file_get_contents($fullPath);
+            $fullPath = storage_path('content/posts/'.$post->filepath);
 
-            // Parse markdown with MarkdownParser (includes ShikiHighlighter for code blocks)
-            $parser = new MarkdownParser;
-            $parsed = $parser->parse($markdownContent);
+            if (file_exists($fullPath)) {
+                $markdownContent = file_get_contents($fullPath);
 
-            $content = $parsed['body'];
-            $headings = array_map(function ($heading) {
-                return (object) $heading;
-            }, $parser->getHeadings());
+                // Parse markdown with MarkdownParser (includes ShikiHighlighter for code blocks)
+                $parser = new MarkdownParser;
+                $parsed = $parser->parse($markdownContent);
 
-            // Calculate reading time: words / 200, rounded up
-            $plainText = strip_tags($markdownContent);
-            $wordCount = str_word_count($plainText);
-            $readingTime = max(1, (int) ceil($wordCount / 200));
-        }
+                $content = $parsed['body'];
+                $headings = array_map(function ($heading) {
+                    return (object) $heading;
+                }, $parser->getHeadings());
+
+                // Calculate reading time: words / 200, rounded up
+                $plainText = strip_tags($markdownContent);
+                $wordCount = str_word_count($plainText);
+                $readingTime = max(1, (int) ceil($wordCount / 200));
+            }
+
+            return compact('content', 'headings', 'readingTime');
+        });
+
+        $content = $cached['content'];
+        $headings = $cached['headings'];
+        $readingTime = $cached['readingTime'];
 
         // Get author name (you may need to adjust based on your user system)
         $authorName = config('seo.author.name') ?? 'Anonymous';
