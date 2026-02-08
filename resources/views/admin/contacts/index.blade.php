@@ -39,7 +39,7 @@
     <!-- Contacts Table -->
     <div class="bg-rose-pine-surface rounded-lg overflow-hidden">
         <table class="w-full">
-            <thead class="bg-rose-pine-overlay border-b border-rose-pine-highlight-med">
+            <thead class="bg-rose-pine-overlay border-b border-rose-pine-base/30">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Name</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Email</th>

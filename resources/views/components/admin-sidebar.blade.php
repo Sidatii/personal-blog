@@ -1,7 +1,20 @@
 <div class="flex flex-col h-full">
-    <!-- Logo/Branding -->
-    <div class="flex items-center justify-center h-16 border-b border-rose-pine-highlight-low">
-        <h1 class="text-xl font-bold text-rose-pine-foam">Admin Panel</h1>
+    <!-- Logo/Branding + User Info -->
+    <div class="p-4 border-b border-rose-pine-base/30">
+        <h1 class="text-xl font-bold text-rose-pine-foam mb-3">Admin Panel</h1>
+
+        <!-- User Info -->
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-rose-pine-base/40">
+            <div class="w-10 h-10 rounded-full bg-rose-pine-foam flex items-center justify-center flex-shrink-0">
+                <span class="text-sm font-bold text-gray-900">
+                    {{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'A', 0, 1)) }}
+                </span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-rose-pine-text truncate">{{ Auth::guard('admin')->user()->name ?? 'Admin' }}</p>
+                <p class="text-xs text-rose-pine-muted truncate">{{ Auth::guard('admin')->user()->email ?? '' }}</p>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation Links -->
@@ -54,11 +67,11 @@
     </nav>
 
     <!-- Logout button -->
-    <div class="p-3 border-t border-rose-pine-highlight-low">
+    <div class="p-3 border-t border-rose-pine-base/30">
         <form method="POST" action="{{ route('admin.logout') }}">
             @csrf
             <button type="submit"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-rose-pine-love hover:bg-rose-pine-highlight-low transition-colors duration-200">
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-rose-pine-love hover:bg-rose-pine-base/40 transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>

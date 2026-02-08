@@ -24,7 +24,7 @@
                    id="title"
                    value="{{ old('title', $project->title) }}"
                    required
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('title') border-rose-pine-love @enderror">
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('title') border-rose-pine-love @enderror">
             @error('title')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -40,7 +40,7 @@
                    id="slug"
                    value="{{ old('slug', $project->slug) }}"
                    required
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('slug') border-rose-pine-love @enderror">
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('slug') border-rose-pine-love @enderror">
             @error('slug')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -56,7 +56,7 @@
                       rows="2"
                       required
                       maxlength="500"
-                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('short_description') border-rose-pine-love @enderror">{{ old('short_description', $project->short_description) }}</textarea>
+                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('short_description') border-rose-pine-love @enderror">{{ old('short_description', $project->short_description) }}</textarea>
             @error('short_description')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -71,7 +71,7 @@
             <textarea name="description"
                       id="description"
                       rows="8"
-                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('description') border-rose-pine-love @enderror">{{ old('description', $project->description) }}</textarea>
+                      class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('description') border-rose-pine-love @enderror">{{ old('description', $project->description) }}</textarea>
             @error('description')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -100,14 +100,14 @@
                        x-model="newTag"
                        @keydown.enter.prevent="addTag()"
                        placeholder="Add technology (e.g., Laravel, Vue.js)"
-                       class="flex-1 px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                       class="flex-1 px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                 <button type="button"
                         @click="addTag()"
                         class="px-4 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
                     Add
                 </button>
             </div>
-            <div class="flex flex-wrap gap-2 min-h-[40px] p-3 bg-rose-pine-surface border border-rose-pine-highlight-med rounded-lg">
+            <div class="flex flex-wrap gap-2 min-h-[40px] p-3 bg-rose-pine-surface border border-rose-pine-base/30 rounded-lg">
                 <template x-for="(tag, index) in tags" :key="index">
                     <div class="flex items-center gap-1 px-3 py-1 bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold rounded-full text-sm">
                         <span x-text="tag"></span>
@@ -136,7 +136,7 @@
                 <select name="status"
                         id="status"
                         required
-                        class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('status') border-rose-pine-love @enderror">
+                        class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('status') border-rose-pine-love @enderror">
                     <option value="active" {{ old('status', $project->status) == 'active' ? 'selected' : '' }}>Active</option>
                     <option value="completed" {{ old('status', $project->status) == 'completed' ? 'selected' : '' }}>Completed</option>
                     <option value="in-progress" {{ old('status', $project->status) == 'in-progress' ? 'selected' : '' }}>In Progress</option>
@@ -155,7 +155,7 @@
                            id="is_featured"
                            value="1"
                            {{ old('is_featured', $project->is_featured) ? 'checked' : '' }}
-                           class="rounded border-rose-pine-highlight-med text-rose-pine-gold focus:ring-rose-pine-gold focus:ring-offset-rose-pine-surface">
+                           class="rounded border-rose-pine-base/30 text-rose-pine-gold focus:ring-rose-pine-gold focus:ring-offset-rose-pine-surface">
                     <span class="text-sm font-medium text-rose-pine-text">Mark as Featured Project</span>
                 </label>
             </div>
@@ -173,7 +173,7 @@
                        id="live_url"
                        value="{{ old('live_url', $project->live_url) }}"
                        placeholder="https://example.com"
-                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('live_url') border-rose-pine-love @enderror">
+                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('live_url') border-rose-pine-love @enderror">
                 @error('live_url')
                 <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
                 @enderror
@@ -189,7 +189,7 @@
                        id="github_url"
                        value="{{ old('github_url', $project->github_url) }}"
                        placeholder="https://github.com/username/repo"
-                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('github_url') border-rose-pine-love @enderror">
+                       class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('github_url') border-rose-pine-love @enderror">
                 @error('github_url')
                 <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
                 @enderror
@@ -206,7 +206,7 @@
                    id="thumbnail"
                    value="{{ old('thumbnail', $project->thumbnail) }}"
                    placeholder="/images/projects/project-thumbnail.jpg"
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold @error('thumbnail') border-rose-pine-love @enderror">
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('thumbnail') border-rose-pine-love @enderror">
             @error('thumbnail')
             <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
             @enderror
@@ -214,7 +214,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-rose-pine-highlight-med">
+        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-rose-pine-base/30">
             <a href="{{ route('admin.projects.index') }}"
                class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-gold transition">
                 Cancel

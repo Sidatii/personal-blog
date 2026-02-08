@@ -27,11 +27,11 @@
                        name="search"
                        placeholder="Search posts..."
                        value="{{ request('search') }}"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <div class="min-w-[150px]">
                 <select name="category"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -42,7 +42,7 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="status"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Status</option>
                     <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -64,7 +64,7 @@
     <!-- Posts Table -->
     <div class="bg-rose-pine-surface rounded-lg overflow-hidden">
         <table class="w-full">
-            <thead class="bg-rose-pine-overlay border-b border-rose-pine-highlight-med">
+            <thead class="bg-rose-pine-overlay border-b border-rose-pine-base/30">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">ID</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Title</th>

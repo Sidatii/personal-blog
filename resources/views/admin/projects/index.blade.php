@@ -24,7 +24,7 @@
         <form method="GET" action="{{ route('admin.projects.index') }}" class="flex flex-wrap gap-4">
             <div class="min-w-[150px]">
                 <select name="status"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Status</option>
                     <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -48,7 +48,7 @@
     <!-- Projects Table -->
     <div class="bg-rose-pine-surface rounded-lg overflow-hidden">
         <table class="w-full">
-            <thead class="bg-rose-pine-overlay border-b border-rose-pine-highlight-med">
+            <thead class="bg-rose-pine-overlay border-b border-rose-pine-base/30">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Thumbnail</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Title</th>

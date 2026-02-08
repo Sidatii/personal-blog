@@ -63,12 +63,12 @@
     <!-- Recent Activity Section -->
     <div class="grid grid-cols-1 gap-6">
         <!-- Recent Contact Submissions -->
-        <div class="bg-rose-pine-surface border border-rose-pine-highlight-low rounded-lg p-6">
+        <div class="bg-rose-pine-surface border border-rose-pine-base/20 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-rose-pine-text mb-4">Recent Contact Submissions</h3>
             @if($recent_contacts->count() > 0)
                 <div class="space-y-3">
                     @foreach($recent_contacts as $contact)
-                        <div class="flex items-start justify-between py-3 border-b border-rose-pine-highlight-low last:border-0">
+                        <div class="flex items-start justify-between py-3 border-b border-rose-pine-base/20 last:border-0">
                             <div class="flex-1">
                                 <a href="{{ route('admin.contacts.show', $contact) }}" class="text-rose-pine-text hover:text-rose-pine-foam transition-colors">
                                     {{ $contact->name }}

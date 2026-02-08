@@ -115,7 +115,7 @@
     </div>
 
     <!-- Actions -->
-    <div class="flex items-center justify-between pt-6 border-t border-rose-pine-highlight-med">
+    <div class="flex items-center justify-between pt-6 border-t border-rose-pine-base/30">
         <a href="{{ route('admin.contacts.index') }}"
            class="px-6 py-2 text-rose-pine-text hover:text-rose-pine-gold transition">
             ← Back to Contacts

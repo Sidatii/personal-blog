@@ -15,7 +15,7 @@
         <form method="GET" action="{{ route('admin.activity.index') }}" class="flex flex-wrap gap-4">
             <div class="min-w-[150px]">
                 <select name="action"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Actions</option>
                     <option value="created" {{ request('action') == 'created' ? 'selected' : '' }}>Created</option>
                     <option value="updated" {{ request('action') == 'updated' ? 'selected' : '' }}>Updated</option>
@@ -26,7 +26,7 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="model_type"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Models</option>
                     <option value="App\Models\Post" {{ request('model_type') == 'App\Models\Post' ? 'selected' : '' }}>Posts</option>
                     <option value="App\Models\Category" {{ request('model_type') == 'App\Models\Category' ? 'selected' : '' }}>Categories</option>
@@ -37,7 +37,7 @@
             </div>
             <div class="min-w-[150px]">
                 <select name="admin_id"
-                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                        class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
                     <option value="">All Admins</option>
                     @foreach($admins as $admin)
                     <option value="{{ $admin->id }}" {{ request('admin_id') == $admin->id ? 'selected' : '' }}>
@@ -51,14 +51,14 @@
                        name="date_from"
                        value="{{ request('date_from') }}"
                        placeholder="From date"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <div class="min-w-[150px]">
                 <input type="date"
                        name="date_to"
                        value="{{ request('date_to') }}"
                        placeholder="To date"
-                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-highlight-med rounded-lg focus:outline-none focus:border-rose-pine-gold">
+                       class="w-full px-4 py-2 bg-rose-pine-base text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold">
             </div>
             <button type="submit"
                     class="px-6 py-2 bg-rose-pine-gold text-white rounded-lg hover:bg-opacity-80 transition">
@@ -76,7 +76,7 @@
     <!-- Activity Table -->
     <div class="bg-rose-pine-surface rounded-lg overflow-hidden">
         <table class="w-full">
-            <thead class="bg-rose-pine-overlay border-b border-rose-pine-highlight-med">
+            <thead class="bg-rose-pine-overlay border-b border-rose-pine-base/30">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Date</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-rose-pine-subtle uppercase tracking-wider">Admin</th>
