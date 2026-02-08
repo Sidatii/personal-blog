@@ -5,12 +5,14 @@ namespace App\Models;
 use App\Models\Traits\Reactable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 
 class Post extends Model implements Feedable
 {
     use Reactable;
+    use Searchable;
     use SoftDeletes;
 
     protected $fillable = [
@@ -113,5 +115,26 @@ class Post extends Model implements Feedable
     {
         // Return a truncated version or placeholder
         return 'Read more...';
+    }
+
+    /**
+     * Get the indexable data array for Scout.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'excerpt' => $this->excerpt,
+            'content' => $this->content,
+        ];
+    }
+
+    /**
+     * Get the index name for the model.
+     */
+    public function searchableAs(): string
+    {
+        return 'posts_index';
     }
 }
