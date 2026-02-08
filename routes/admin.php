@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\LogoutController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -35,6 +36,14 @@ Route::middleware('admin')->group(function () {
         Route::get('/{contact}', [ContactController::class, 'show'])->name('show');
         Route::post('/{contact}/mark-as-read', [ContactController::class, 'markAsRead'])->name('mark-as-read');
         Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
+    });
+
+    // Comment moderation
+    Route::prefix('comments')->name('admin.comments.')->group(function () {
+        Route::get('/', [CommentController::class, 'index'])->name('index');
+        Route::post('/{comment}/approve', [CommentController::class, 'approve'])->name('approve');
+        Route::post('/{comment}/spam', [CommentController::class, 'spam'])->name('spam');
+        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
 
     // Activity log

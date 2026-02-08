@@ -58,10 +58,28 @@
                 View contacts →
             </a>
         </div>
+
+        <!-- Pending Comments -->
+        <div class="bg-gradient-to-br from-rose-pine-iris/90 to-rose-pine-iris rounded-lg p-6 hover:shadow-lg transition-all duration-200 {{ $stats['pending_comments'] > 0 ? 'ring-2 ring-rose-pine-gold' : '' }}">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-white text-sm font-semibold uppercase tracking-wide">Pending Comments</p>
+                    <p class="text-4xl font-bold text-white mt-2">{{ $stats['pending_comments'] }}</p>
+                </div>
+                <div class="w-14 h-14 bg-black/10 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}" class="text-white text-sm mt-4 inline-block hover:underline font-semibold">
+                Moderate comments →
+            </a>
+        </div>
     </div>
 
     <!-- Recent Activity Section -->
-    <div class="grid grid-cols-1 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Recent Contact Submissions -->
         <div class="bg-rose-pine-surface border border-rose-pine-base/20 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-rose-pine-text mb-4">Recent Contact Submissions</h3>
@@ -89,6 +107,45 @@
                 </a>
             @else
                 <p class="text-rose-pine-subtle">No contact submissions yet.</p>
+            @endif
+        </div>
+
+        <!-- Recent Comments -->
+        <div class="bg-rose-pine-surface border border-rose-pine-base/20 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-rose-pine-text mb-4">Recent Comments</h3>
+            @if($recent_comments->count() > 0)
+                <div class="space-y-3">
+                    @foreach($recent_comments as $comment)
+                        <div class="flex items-start justify-between py-3 border-b border-rose-pine-base/20 last:border-0">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-rose-pine-text font-medium">
+                                        {{ $comment->author_name ?: 'Anonymous' }}
+                                    </span>
+                                    <span class="text-xs px-2 py-0.5 rounded
+                                        @if($comment->status === 'pending') bg-rose-pine-gold bg-opacity-20 text-rose-pine-gold
+                                        @elseif($comment->status === 'approved') bg-rose-pine-foam bg-opacity-20 text-rose-pine-foam
+                                        @elseif($comment->status === 'spam') bg-rose-pine-love bg-opacity-20 text-rose-pine-love
+                                        @else bg-rose-pine-muted bg-opacity-20 text-rose-pine-muted
+                                        @endif">
+                                        {{ ucfirst($comment->status) }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-rose-pine-subtle mt-1">
+                                    on {{ $comment->post->title ?? 'Unknown Post' }}
+                                </p>
+                                <p class="text-sm text-rose-pine-subtle">
+                                    {{ $comment->created_at->diffForHumans() }}
+                                </p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}" class="text-rose-pine-foam text-sm mt-4 inline-block hover:underline">
+                    View all comments →
+                </a>
+            @else
+                <p class="text-rose-pine-subtle">No comments yet.</p>
             @endif
         </div>
     </div>
