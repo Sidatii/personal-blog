@@ -41,37 +41,37 @@
             </p>
         </div>
 
-        {{-- Comment actions --}}
-        <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                {{-- Reply button --}}
-                <button
-                    x-data="{ showReplyForm: false }"
-                    @click="showReplyForm = !showReplyForm"
-                    class="text-sm text-rose-pine-love hover:text-rose-pine-rose transition-colors duration-200 font-medium"
-                >
-                    <span x-show="!showReplyForm">Reply</span>
-                    <span x-show="showReplyForm">Cancel</span>
-                </button>
+        {{-- Comment actions and reply form wrapper --}}
+        <div x-data="{ showReplyForm: false }">
+            {{-- Comment actions --}}
+            <div class="mt-3 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    {{-- Reply button --}}
+                    <button
+                        @click="showReplyForm = !showReplyForm"
+                        class="text-sm text-rose-pine-love hover:text-rose-pine-rose transition-colors duration-200 font-medium"
+                    >
+                        <span x-show="!showReplyForm">Reply</span>
+                        <span x-show="showReplyForm">Cancel</span>
+                    </button>
 
-                {{-- Reactions (if enabled) --}}
-                @if($comment->reaction_counts && count($comment->reaction_counts) > 0)
-                    <x-reaction-bar :reactable="$comment" size="sm" />
+                    {{-- Reactions (if enabled) --}}
+                    @if($comment->reaction_counts && count($comment->reaction_counts) > 0)
+                        <x-reaction-bar :reactable="$comment" size="sm" />
+                    @endif
+                </div>
+
+                {{-- Moderation info for admins --}}
+                @if(auth()->guard('admin')->check())
+                    <div class="text-xs text-rose-pine-muted">
+                        <span class="font-mono">{{ $comment->ip_address }}</span>
+                    </div>
                 @endif
             </div>
 
-            {{-- Moderation info for admins --}}
-            @if(auth()->guard('admin')->check())
-                <div class="text-xs text-rose-pine-muted">
-                    <span class="font-mono">{{ $comment->ip_address }}</span>
-                </div>
-            @endif
-        </div>
-
-        {{-- Reply form (shown when Reply is clicked) --}}
-        <div
-            x-data="{ showReplyForm: false }"
-            x-show="showReplyForm"
+            {{-- Reply form (shown when Reply is clicked) --}}
+            <div
+                x-show="showReplyForm"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 transform translate-y-2"
             x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -84,8 +84,10 @@
             <div class="text-sm font-medium text-rose-pine-subtle mb-2">
                 Replying to {{ $comment->author_name ?: 'Anonymous' }}
             </div>
-            
-            @include('comments._form', ['post' => $comment->post, 'parentId' => $comment->id])
+
+
+                @include('comments._form', ['post' => $comment->post, 'parentId' => $comment->id])
+            </div>
         </div>
     </div>
 </div>
