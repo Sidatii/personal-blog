@@ -37,8 +37,8 @@ class CommentRepository implements CommentRepositoryInterface
         $sql = <<<'SQL'
 WITH RECURSIVE
 root_comments AS (
-    -- Get paginated root comments
-    SELECT id
+    -- Get paginated root comments (newest first)
+    SELECT id, ROW_NUMBER() OVER (ORDER BY created_at DESC) as root_order
     FROM comments
     WHERE post_id = :post_id
         AND parent_id IS NULL
@@ -51,7 +51,8 @@ comment_tree AS (
     SELECT
         c.*,
         0 as depth,
-        ARRAY[c.id] as path
+        ARRAY[c.id] as path,
+        rc.root_order
     FROM comments c
     INNER JOIN root_comments rc ON c.id = rc.id
     WHERE c.post_id = :post_id
@@ -63,7 +64,8 @@ comment_tree AS (
     SELECT
         c.*,
         ct.depth + 1,
-        ct.path || c.id
+        ct.path || c.id,
+        ct.root_order
     FROM comments c
     INNER JOIN comment_tree ct ON c.parent_id = ct.id
     WHERE c.post_id = :post_id
@@ -71,7 +73,7 @@ comment_tree AS (
         AND ct.depth < :max_depth
 )
 SELECT * FROM comment_tree
-ORDER BY path, created_at ASC
+ORDER BY root_order, path
 SQL;
 
         $results = DB::select($sql, [

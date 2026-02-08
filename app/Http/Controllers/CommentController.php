@@ -33,18 +33,10 @@ class CommentController extends Controller
 
         $comments = $this->commentRepository->getThreadForPost($post, $perPage, $offset);
 
-        // Return HTML fragment for HTMX/AJAX requests
-        if ($request->header('HX-Request') || $request->wantsJson()) {
-            return view('comments._thread', [
-                'comments' => $comments,
-                'depth' => 0,
-            ]);
-        }
-
-        // Return full view
-        return view('components.comments.thread', [
+        // Return HTML fragment for AJAX requests
+        return view('comments._thread', [
             'comments' => $comments,
-            'post' => $post,
+            'depth' => 0,
         ]);
     }
 
