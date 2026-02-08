@@ -42,7 +42,7 @@
             required
             rows="4"
             placeholder="Share your thoughts..."
-            class="w-full px-4 py-3 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted resize-none"
+            class="w-full px-4 py-3 border border-rose-pine-highlight rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface text-rose-pine-text placeholder-rose-pine-subtle resize-none"
         ></textarea>
     </div>
 
@@ -55,7 +55,7 @@
                 name="author_name"
                 placeholder="Name (optional)"
                 maxlength="255"
-                class="w-full px-4 py-2 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted"
+                class="w-full px-4 py-2 border border-rose-pine-highlight rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface text-rose-pine-text placeholder-rose-pine-subtle"
             >
         </div>
 
@@ -67,7 +67,7 @@
                 name="author_email"
                 placeholder="Email (optional, not published)"
                 maxlength="255"
-                class="w-full px-4 py-2 border border-rose-pine-highlight dark:border-rose-pine-overlay rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface dark:bg-rose-pine-base text-rose-pine-text placeholder-rose-pine-muted"
+                class="w-full px-4 py-2 border border-rose-pine-highlight rounded-lg focus:ring-2 focus:ring-rose-pine-love focus:border-transparent bg-rose-pine-surface text-rose-pine-text placeholder-rose-pine-subtle"
             >
         </div>
     </div>
@@ -75,7 +75,7 @@
     <div class="flex items-center justify-between">
         <button
             type="submit"
-            class="px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-rose text-rose-pine-base dark:text-rose-pine-surface rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-love focus:ring-offset-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-rose text-rose-pine-base rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-love focus:ring-offset-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             hx-disabled-elt="this"
         >
             <span class="flex items-center space-x-2">
