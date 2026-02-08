@@ -54,6 +54,9 @@ class MarkdownParser
         // Post-process to highlight code blocks
         $html = $this->highlightCodeBlocks($html);
 
+        // Post-process to add ID attributes to headings for TOC anchor links
+        $html = $this->addHeadingIds($html);
+
         return [
             'body' => $html,
             'matter' => $document->matter(),
@@ -179,6 +182,61 @@ class MarkdownParser
         }
 
         return $slug;
+    }
+
+    /**
+     * Add ID attributes to HTML heading elements for TOC anchor links.
+     *
+     * @param string $html The HTML content with headings
+     * @return string The HTML with id attributes added to headings
+     */
+    protected function addHeadingIds(string $html): string
+    {
+        // Avoid processing if no headings present
+        if (!preg_match('/<h[1-6]/', $html)) {
+            return $html;
+        }
+
+        $doc = new \DOMDocument();
+
+        // Suppress warnings for malformed HTML, use UTF-8 encoding
+        libxml_use_internal_errors(true);
+        $doc->loadHTML(
+            '<?xml encoding="UTF-8">' . $html,
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($doc);
+
+        // Find all heading elements (h1-h6)
+        $headings = $xpath->query('//h1 | //h2 | //h3 | //h4 | //h5 | //h6');
+
+        $usedIds = []; // Track used IDs to handle duplicates
+
+        foreach ($headings as $heading) {
+            $text = trim($heading->textContent);
+            $id = $this->generateSlug($text);
+
+            // Handle duplicate IDs by appending counter
+            $finalId = $id;
+            $counter = 1;
+            while (in_array($finalId, $usedIds)) {
+                $finalId = $id . '-' . $counter;
+                $counter++;
+            }
+
+            $usedIds[] = $finalId;
+            $heading->setAttribute('id', $finalId);
+        }
+
+        // Remove XML declaration and return clean HTML
+        $html = $doc->saveHTML();
+
+        // Strip the XML encoding tag (it gets converted to HTML comment by DOMDocument)
+        $html = str_replace('<!--?xml encoding="UTF-8"-->', '', $html);
+
+        return $html;
     }
 
     /**

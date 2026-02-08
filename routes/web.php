@@ -4,11 +4,16 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('posts.index'));
+Route::get('/', fn () => redirect()->route('posts.index'))->name('home');
+
+// Search Route
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // About Page Route
 Route::get('/about', [AboutController::class, 'index'])->name('about');
@@ -36,6 +41,11 @@ Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
 Route::post('/reactions', [ReactionController::class, 'store'])
     ->name('reactions.store')
     ->middleware('throttle:reactions');
+
+// Newsletter Routes
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/confirm/{token}', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
