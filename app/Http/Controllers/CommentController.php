@@ -52,18 +52,8 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request, Post $post): JsonResponse|RedirectResponse
     {
-        // Honeypot check - if honeypot field is filled, silently reject
-        if ($request->filled('website')) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'message' => 'Comment submitted successfully.',
-                ], 201);
-            }
-
-            return redirect()
-                ->route('posts.show', $post)
-                ->with('success', 'Comment submitted successfully.');
-        }
+        // Honeypot validation is handled automatically by StoreCommentRequest
+        // If we get here, the honeypot validation passed
 
         $validated = $request->validated();
 

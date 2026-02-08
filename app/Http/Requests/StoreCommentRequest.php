@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Honeypot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -51,11 +52,16 @@ class StoreCommentRequest extends FormRequest
                     $query->where('post_id', $this->route('post')->id);
                 }),
             ],
-            // Honeypot field for spam detection
+            // Honeypot field for spam detection (should be empty)
             'website' => [
                 'nullable',
                 'string',
                 'max:255',
+            ],
+            // Actual honeypot field - bots often fill this
+            'trap_field' => [
+                'nullable',
+                new Honeypot,
             ],
         ];
     }
@@ -73,6 +79,7 @@ class StoreCommentRequest extends FormRequest
             'author_email.email' => 'Please enter a valid email address.',
             'author_website.url' => 'Please enter a valid URL.',
             'parent_id.exists' => 'The reply target is invalid or does not exist.',
+            'trap_field' => 'Spam detected.',
         ];
     }
 
@@ -88,10 +95,11 @@ class StoreCommentRequest extends FormRequest
             ]);
         }
 
-        // Check honeypot - if filled, likely spam
-        if ($this->filled('website')) {
-            // Silently fail by redirecting back without storing
-            // This is handled in the controller
+        // Trim whitespace from content
+        if ($this->has('content')) {
+            $this->merge([
+                'content' => trim($this->input('content')),
+            ]);
         }
     }
 }
