@@ -1,12 +1,12 @@
 ---
 phase: "06-reader-engagement"
-plan: "03"
+plan: "04"
 type: "execute"
-wave: "2"
+wave: "3"
 status: "in_progress"
 last_activity: "2026-02-08"
-progress: "▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 12%"
-completed_plans: "22/22"
+progress: "▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 16%"
+completed_plans: "23/23"
 ---
 
 # Personal Blog Project - State
@@ -14,8 +14,8 @@ completed_plans: "22/22"
 ## Current Position
 
 **Phase:** 06-reader-engagement (6 of 7)
-**Status:** Plan 02 complete
-**Last completed:** 06-02 Reactions system (polymorphic emoji reactions)
+**Status:** Plan 04 complete
+**Last completed:** 06-04 Umami analytics integration (privacy-first analytics)
 
 ### Progress Overview
 
@@ -58,6 +58,7 @@ Phase 6: Reader Engagement - In Progress
 - [x] Plan 01: Comments infrastructure ✓
 - [x] Plan 02: Reactions system ✓
 - [x] Plan 03: Comment moderation admin UI ✓
+- [x] Plan 04: Umami analytics integration ✓
 
 ## Decisions Made
 
@@ -107,6 +108,9 @@ Phase 6: Reader Engagement - In Progress
 | 06-03 | Activity logging for all moderation actions | Full audit trail with admin ID, IP, user agent for compliance |
 | 06-03 | IP and user agent display in comment cards | Essential metadata for spam pattern detection |
 | 06-03 | Status filter tabs match contact UI pattern | Consistent admin interface reduces cognitive load |
+| 06-04 | Self-hosted Umami analytics | Privacy-first analytics with full data ownership vs Google Analytics |
+| 06-04 | Production-only script loading | Avoid tracking local development, respect privacy |
+| 06-04 | Isolated PostgreSQL for analytics | Separate analytics database from main application data |
 
 ## Blockers & Concerns
 
@@ -135,6 +139,8 @@ Phase 6: Reader Engagement - In Progress
 **Infrastructure:**
 - SQLite (dev/testing)
 - PostgreSQL (production)
+- Docker & Docker Compose
+- Umami Analytics (self-hosted)
 - PHPUnit 11.5.51
 - Deployer 7.5.12
 
@@ -169,27 +175,33 @@ Phase 6: Reader Engagement - In Progress
 - DEPLOY_USER (for Deployer)
 - DEPLOY_PATH (for Deployer)
 
+**Analytics:**
+- UMAMI_HOST (self-hosted analytics URL)
+- UMAMI_WEBSITE_ID (UUID from Umami dashboard)
+- UMAMI_ENABLED (global tracking toggle)
+- UMAMI_TRACKER_SCRIPT (optional script name obfuscation)
+
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed plan 06-02 (Reactions system)
+**Stopped at:** Completed plan 06-04 (Umami analytics integration)
 **Resume file:** None
 
 ### What Was Just Completed
-- Admin CommentController with index, approve, spam, destroy actions
-- Comment moderation queue view with status filter tabs (Pending, Approved, Spam, Rejected)
-- Comment card partial with author, email, post title, IP, user agent metadata
-- Dashboard integration with pending comments stat card and recent comments section
-- Sidebar navigation with comments link and dynamic pending count badge
-- Activity logging for all moderation actions with admin context
-- Admin routes registered and protected by auth middleware
+- Docker Compose configuration for Umami + PostgreSQL services
+- Laravel service configuration with environment variables
+- Privacy-first tracking component with production-only loading
+- Integration of tracking script into base layout
+- Admin dashboard analytics status card with dashboard link
+- Comprehensive documentation for environment setup
 
 ### What Comes Next
 Phase 6 Reader Engagement progressing:
 - Plan 01 complete: Comments infrastructure ✓
 - Plan 02 complete: Reactions system ✓
 - Plan 03 complete: Comment moderation admin UI ✓
-- Plan 04 ready: Frontend comment components and display
+- Plan 04 complete: Umami analytics integration ✓
+- Plan 05 ready: Frontend comment components and display
 
 ## Notes
 
@@ -247,6 +259,8 @@ Phase 6 Reader Engagement progressing:
 - `app/Http/Controllers/Admin/CommentController.php` - Admin comment moderation controller
 - `resources/views/admin/comments/index.blade.php` - Comment moderation queue view
 - `resources/views/admin/comments/_comment-card.blade.php` - Comment card partial
+- `docker-compose.umami.yml` - Umami + PostgreSQL Docker configuration
+- `resources/views/components/umami-tracking.blade.php` - Privacy-first analytics tracking component
 
 ### Git History
 - f3948c4: feat(05-04): create Contact submission controller and views
@@ -293,6 +307,9 @@ Phase 6 Reader Engagement progressing:
 - 7c38712: docs(02): create phase plan
 - 8ab7d8d: docs(02): research phase domain
 - 65b50d1: feat(01-03): Add content indexer service and sync command
+- cce04db: feat(06-04): create Umami Docker Compose configuration
+- 9b58b96: feat(06-04): create Umami tracking component and Laravel configuration
+- 4bf2cd0: feat(06-04): integrate Umami tracking into base layout and admin dashboard
 
 ### Database Status
 - personal_blog database
