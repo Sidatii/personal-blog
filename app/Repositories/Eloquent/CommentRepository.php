@@ -70,7 +70,10 @@ SQL;
             'limit' => $perPage,
         ]);
 
-        return collect($results);
+        // Hydrate raw results into Comment models to apply casts
+        return collect($results)->map(function ($result) {
+            return $this->comment->newInstance((array) $result, true);
+        });
     }
 
     /**
