@@ -1,12 +1,12 @@
 ---
 phase: "05-admin-panel-and-auth"
-plan: "02"
+plan: "04"
 type: "execute"
 wave: "1"
 status: "in_progress"
 last_activity: "2026-02-08"
-progress: "▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 7%"
-completed_plans: "19/19"
+progress: "▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 8%"
+completed_plans: "20/20"
 ---
 
 # Personal Blog Project - State
@@ -14,8 +14,8 @@ completed_plans: "19/19"
 ## Current Position
 
 **Phase:** 05-admin-panel-and-auth (5 of 7)
-**Status:** Plan 02 complete
-**Last completed:** 05-02 Admin layout with dashboard and statistics
+**Status:** Plan 04 complete
+**Last completed:** 05-04 Project and contact management
 
 ### Progress Overview
 
@@ -51,6 +51,8 @@ Phase 4: Portfolio Features - 100% complete ✓
 Phase 5: Admin Panel and Auth - In Progress
 - [x] Plan 01: Admin authentication ✓
 - [x] Plan 02: Admin layout and dashboard ✓
+- [x] Plan 03: Post CRUD (skipped - git-based architecture) ✓
+- [x] Plan 04: Project and contact management ✓
 
 ## Decisions Made
 
@@ -88,6 +90,10 @@ Phase 5: Admin Panel and Auth - In Progress
 | 05-02 | Mobile-collapsible sidebar with Alpine.js | Responsive design essential, Alpine.js already in stack from frontend |
 | 05-02 | Stats cards with direct database queries | Real-time stats, simple implementation, no caching needed at this scale |
 | 05-02 | Route placeholders for CRUD sections | Navigation complete, actual routes created in plan 05-03 |
+| 05-04 | Auto-mark contacts as read on view | Better UX - viewing a message implies reading it, reduces extra clicks |
+| 05-04 | Alpine.js tag input for tech stack | Consistent with existing frontend tech, interactive without additional dependencies |
+| 05-04 | No edit for contact submissions | Contact submissions are user-generated data, should remain immutable for authenticity |
+| 05-04 | Tech stack as simple array input | No need for separate tech_stack table - project scoped, displayed as badges |
 
 ## Blockers & Concerns
 
@@ -153,25 +159,28 @@ Phase 5: Admin Panel and Auth - In Progress
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed plan 05-02 (Admin layout with dashboard and statistics)
+**Stopped at:** Completed plan 05-04 (Project and contact management)
 **Resume file:** None
 
 ### What Was Just Completed
-- Admin layout with fixed sidebar and header components
-- Dashboard controller gathering statistics from database
-- Stats cards showing posts, categories, tags, projects, contacts
-- Recent activity section with last 5 posts and contacts
-- Rose Pine dark theme throughout admin panel
-- Mobile-responsive design with Alpine.js sidebar toggle
-- Navigation scaffolding for all CRUD sections
+- ProjectController with full CRUD (index, create, store, edit, update, destroy)
+- ContactController for viewing and managing contact submissions
+- Tech stack tag input with Alpine.js for dynamic add/remove
+- Status filtering for projects (active/completed/in-progress/archived)
+- Read/unread filtering for contacts with count badges
+- Auto-mark contacts as read when viewing
+- Form validation via StoreProjectRequest and UpdateProjectRequest
+- Email reply integration with pre-filled subject
+- Technical metadata display (IP address, user agent)
 
 ### What Comes Next
 Phase 5 Admin Panel and Auth progressing:
 - Plan 01 complete: Admin authentication foundation ✓
 - Plan 02 complete: Admin layout and dashboard ✓
-- Plan 03 ready: CRUD controllers for content management
-- Plan 04 ready: Media library integration
-- Plan 05 ready: Settings and configuration
+- Plan 03 skipped: Post CRUD (git-based architecture)
+- Plan 04 complete: Project and contact management ✓
+- Plan 05 ready: Media library integration
+- Plan 06 ready: Settings and configuration
 
 ## Notes
 
@@ -191,7 +200,11 @@ Phase 5 Admin Panel and Auth progressing:
 - `app/Http/Controllers/Admin/Auth/LoginController.php` - Admin login controller
 - `app/Http/Controllers/Admin/Auth/LogoutController.php` - Admin logout controller
 - `app/Http/Controllers/Admin/DashboardController.php` - Admin dashboard with statistics
+- `app/Http/Controllers/Admin/ProjectController.php` - Admin project CRUD controller
+- `app/Http/Controllers/Admin/ContactController.php` - Admin contact submission controller
 - `app/Http/Middleware/AdminAuth.php` - Admin authentication middleware
+- `app/Http/Requests/StoreProjectRequest.php` - Project creation validation
+- `app/Http/Requests/UpdateProjectRequest.php` - Project update validation
 - `app/Http/Requests/ContactFormRequest.php` - Form validation rules
 - `app/Mail/ContactFormSubmitted.php` - Email mailable with ShouldQueue
 - `app/Services/Content/MarkdownParser.php` - Markdown parser with ShikiHighlighter
@@ -215,10 +228,17 @@ Phase 5 Admin Panel and Auth progressing:
 - `resources/views/components/admin-sidebar.blade.php` - Navigation sidebar with route highlighting
 - `resources/views/components/admin-header.blade.php` - Top header with user menu and theme toggle
 - `resources/views/admin/dashboard/index.blade.php` - Dashboard with stats and recent activity
+- `resources/views/admin/projects/index.blade.php` - Project list with status filter
+- `resources/views/admin/projects/create.blade.php` - Project creation form with tech stack tags
+- `resources/views/admin/projects/edit.blade.php` - Project edit form
+- `resources/views/admin/contacts/index.blade.php` - Contact submissions list with filters
+- `resources/views/admin/contacts/show.blade.php` - Contact detail with technical metadata
 - `routes/admin.php` - Admin route definitions
 - `storage/content/posts/getting-started-laravel.md` - Test post with headings and code blocks
 
 ### Git History
+- f3948c4: feat(05-04): create Contact submission controller and views
+- 804022c: feat(05-04): create Project CRUD controller and views
 - 41081a9: feat(05-02): create dashboard controller and view with stats
 - 6f2fdb7: feat(05-02): create admin layout with sidebar and header components
 - fad4348: fix(05-02): configure admin guard and register admin routes
