@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD:-umami}@umami-db:5432/umami
+      DATABASE_TYPE: postgresql
+      HASH_SALT: ${UMAMI_HASH_SALT}
+      TRACKER_SCRIPT_NAME: ${UMAMI_TRACKER_SCRIPT:-script.js}
+    depends_on:
+      umami-db:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - umami-network
+
+  umami-db:
+    image: postgres:16-alpine
+    container_name: umami-db
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:-umami}
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - umami-network
+
+volumes:
+  umami-db-data:
+    driver: local
+
+networks:
+  umami-network:
+    driver: bridge
+
+# Environment variables needed (.env file or .env.umami):
+# UMAMI_DB_PASSWORD: Secure password for Umami database (default: umami)
+# UMAMI_HASH_SALT: Random salt for password hashing (generate with: openssl rand -hex 32)
+# UMAMI_TRACKER_SCRIPT: Optional custom script name for obfuscation (default: script.js)
+
+# Default access (change immediately after first login):
+# URL: http://localhost:3000
+# Username: admin
+# Password: umami
+
+# Commands:
+# Start: docker-compose -f docker-compose.umami.yml up -d
+# Stop: docker-compose -f docker-compose.umami.yml down
+# Logs: docker-compose -f docker-compose.umami.yml logs -f
+# Validate: docker-compose -f docker-compose.umami.yml config
