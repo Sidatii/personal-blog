@@ -72,6 +72,17 @@
                     <span class="font-medium">Contacts</span>
                 </a>
             </li>
+
+            <!-- Activity Log -->
+            <li>
+                <a href="{{ route('admin.activity.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.activity.*') ? 'bg-rose-pine-highlight-med text-rose-pine-foam' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-6 8h6m-3-8v8m-9-4h18M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                    </svg>
+                    <span class="font-medium">Activity Log</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
