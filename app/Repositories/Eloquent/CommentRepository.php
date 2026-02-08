@@ -101,8 +101,8 @@ SQL;
         // Parse content to HTML
         $contentHtml = $this->markdownParser->convertToHtml($data['content']);
 
-        // Determine status based on config
-        $status = config('comments.auto_approve', false) ? 'approved' : 'pending';
+        // Determine status based on setting
+        $status = \App\Models\Setting::get('comments.auto_approve', false) ? 'approved' : 'pending';
 
         $commentData = [
             'post_id' => $post->id,

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 // Guest routes (not authenticated)
@@ -48,4 +49,8 @@ Route::middleware('admin')->group(function () {
 
     // Activity log
     Route::get('/activity', [ActivityController::class, 'index'])->name('admin.activity.index');
+
+    // Settings
+    Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
 });
