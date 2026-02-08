@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,12 @@ Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projec
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/contact/thank-you', [ContactController::class, 'thankYou'])->name('contact.thank-you');
+
+// Comment Routes
+Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
+    ->name('comments.store')
+    ->middleware('throttle:comments');
 
 // Feed Routes (RSS/Atom)
 Route::feeds();
