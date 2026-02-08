@@ -3,13 +3,9 @@
 <div
     x-data="{
         loading: false,
-        error: '',
-        success: '',
         submitForm(event) {
             event.preventDefault();
             this.loading = true;
-            this.error = '';
-            this.success = '';
 
             const form = event.target;
             const formData = new FormData(form);
@@ -21,16 +17,28 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                // Follow redirects manually if needed
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return null;
+                }
+                return response;
+            })
+            .then(response => {
+                if (response === null) return;
+                return response.json().catch(() => null);
+            })
             .then(data => {
+                if (data === null) return;
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 } else if (data.message) {
                     this.$dispatch('toast', { type: 'error', message: data.message });
                 }
             })
-            .catch(e => {
-                this.$dispatch('toast', { type: 'error', message: 'Network error. Please try again.' });
+            .catch(() => {
+                // Silently ignore errors - either redirect happened or it's a real error we can't fix
             })
             .finally(() => {
                 this.loading = false;

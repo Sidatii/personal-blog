@@ -23,7 +23,7 @@ class NewsletterController extends Controller
         // Check if email already confirmed
         $existing = NewsletterSubscriber::where('email', $validated['email'])->first();
         if ($existing && $existing->confirmed_at) {
-            if ($request->wantsJson()) {
+            if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
                 return response()->json([
                     'message' => 'This email is already subscribed to the newsletter.',
                 ], 422);
@@ -34,7 +34,7 @@ class NewsletterController extends Controller
 
         // Check if email is pending confirmation
         if ($existing && ! $existing->confirmed_at) {
-            if ($request->wantsJson()) {
+            if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
                 return response()->json([
                     'message' => 'This email is already pending confirmation. Please check your inbox.',
                 ], 422);
@@ -52,7 +52,7 @@ class NewsletterController extends Controller
 
         Mail::to($subscriber->email)->queue(new NewsletterConfirmation($subscriber));
 
-        if ($request->wantsJson()) {
+        if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
                 'redirect' => route('newsletter.confirmation'),
             ]);
