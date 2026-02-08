@@ -51,7 +51,7 @@
             </thead>
             <tbody class="divide-y divide-rose-pine-highlight-low">
                 @forelse($contacts as $contact)
-                <tr class="hover:bg-rose-pine-overlay transition {{ !$contact->is_read ? 'bg-rose-pine-love bg-opacity-5' : '' }}">
+                <tr class="hover:bg-rose-pine-overlay transition">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-rose-pine-text">
                         <div class="font-medium">{{ $contact->name }}</div>
                     </td>
