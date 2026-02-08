@@ -35,7 +35,8 @@ class CommentRepository implements CommentRepositoryInterface
         $maxDepth = config('comments.max_depth', 5);
 
         $sql = <<<'SQL'
-WITH root_comments AS (
+WITH RECURSIVE
+root_comments AS (
     -- Get paginated root comments
     SELECT id
     FROM comments
@@ -45,7 +46,7 @@ WITH root_comments AS (
     ORDER BY created_at DESC
     LIMIT :limit OFFSET :offset
 ),
-RECURSIVE comment_tree AS (
+comment_tree AS (
     -- Base case: selected root comments
     SELECT
         c.*,
