@@ -22,6 +22,19 @@ class WebhookController extends Controller
      */
     public function handle(Request $request): JsonResponse
     {
+        // Rate limiting: max 1 sync per minute to prevent hammering
+        $rateLimitKey = 'webhook:rate_limit';
+        if (Cache::has($rateLimitKey)) {
+            Log::warning('Webhook rate limit hit - too many requests', [
+                'ip' => $request->ip(),
+                'delivery_id' => $request->header('X-GitHub-Delivery'),
+            ]);
+
+            return response()->json([
+                'status' => 'rate_limited',
+                'message' => 'Too many sync requests - please wait',
+            ], 429);
+        }
         // Step 1 - Validate signature
         if (! $this->validator->verify($request)) {
             Log::warning('Webhook signature verification failed', [
@@ -78,7 +91,8 @@ class WebhookController extends Controller
             ], 200);
         }
 
-        // Step 5 - Mark as processed and dispatch sync job
+        // Step 5 - Rate limit and mark as processed
+        Cache::put($rateLimitKey, true, now()->addMinute());
         Cache::put("webhook:processed:{$deliveryId}", true, now()->addDay());
 
         // Dispatch the content sync job

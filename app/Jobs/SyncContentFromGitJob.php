@@ -73,43 +73,56 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     }
 
     /**
-     * Determine the time at which the job should timeout.
+     * The number of times the job may be attempted.
      */
-    public function retryUntil(): \DateTime
-    {
-        return now()->addMinutes(30);
-    }
+    public $tries = 3;
+
+    /**
+     * The number of seconds to wait before retrying the job.
+     */
+    public $backoff = [10, 30, 60]; // 10s, 30s, 60s between retries
 
     /**
      * Execute the job.
      */
     public function handle(GitSyncService $gitSync, ContentIndexer $indexer): void
     {
-        Log::info('Content sync started', ['delivery_id' => $this->deliveryId]);
+        $attemptNumber = $this->attempts();
+        Log::info('Content sync started', [
+            'delivery_id' => $this->deliveryId,
+            'attempt' => $attemptNumber,
+            'max_tries' => $this->tries,
+        ]);
 
-        // Register shutdown handler to catch fatal errors
-        $deliveryId = $this->deliveryId;
-        register_shutdown_function(function () use ($deliveryId) {
-            $error = error_get_last();
-            if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-                Log::emergency('Content sync: FATAL ERROR', [
-                    'delivery_id' => $deliveryId,
-                    'error' => $error['message'],
-                    'file' => $error['file'],
-                    'line' => $error['line'],
-                ]);
-            }
-        });
+        // If this is a retry, add delay to prevent hammering
+        if ($attemptNumber > 1) {
+            Log::warning('Content sync: Retry attempt', [
+                'delivery_id' => $this->deliveryId,
+                'attempt' => $attemptNumber,
+            ]);
+        }
 
         try {
             $this->doHandle($gitSync, $indexer);
-            Log::info('Content sync: doHandle completed successfully', ['delivery_id' => $this->deliveryId]);
-        } catch (\Throwable $e) {
-            Log::error('Content sync: Uncaught exception in handle', [
+            Log::info('Content sync: completed successfully', [
                 'delivery_id' => $this->deliveryId,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'attempt' => $attemptNumber,
             ]);
+        } catch (\Throwable $e) {
+            Log::error('Content sync: failed', [
+                'delivery_id' => $this->deliveryId,
+                'attempt' => $attemptNumber,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Don't retry on certain errors
+            if (str_contains($e->getMessage(), 'timed out')) {
+                Log::error('Content sync: Lock timeout - not retrying', ['delivery_id' => $this->deliveryId]);
+                $this->fail($e);
+
+                return;
+            }
+
             throw $e;
         }
     }

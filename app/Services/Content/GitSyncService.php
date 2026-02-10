@@ -36,6 +36,19 @@ class GitSyncService
             }
         }
 
+        // Check for stale lock (older than job timeout of 300 seconds + buffer)
+        if (file_exists($lockFile)) {
+            $lockAge = time() - filemtime($lockFile);
+            $staleThreshold = 600; // 10 minutes
+            if ($lockAge > $staleThreshold) {
+                Log::warning('GitSync: Stale lock file detected, removing', [
+                    'lock_file' => $lockFile,
+                    'age_seconds' => $lockAge,
+                ]);
+                @unlink($lockFile);
+            }
+        }
+
         // Open lock file (create if not exists, don't truncate)
         $this->lockHandle = fopen($lockFile, 'c');
 
@@ -50,21 +63,33 @@ class GitSyncService
 
         Log::debug('GitSync: Lock file opened');
 
-        // Attempt non-blocking exclusive lock
-        $wouldBlock = false;
-        Log::debug('GitSync: Attempting flock');
-        if (! flock($this->lockHandle, LOCK_EX | LOCK_NB, $wouldBlock)) {
-            fclose($this->lockHandle);
-            $this->lockHandle = null;
+        // Attempt to acquire lock with timeout (wait up to 60 seconds)
+        $lockTimeout = 60;
+        $lockAcquired = false;
+        $startTime = time();
 
-            if ($wouldBlock) {
-                throw new RuntimeException('Another sync operation is in progress');
+        Log::debug('GitSync: Attempting to acquire lock with timeout', ['timeout' => $lockTimeout]);
+
+        while (! $lockAcquired) {
+            $wouldBlock = false;
+            $lockAcquired = flock($this->lockHandle, LOCK_EX | LOCK_NB, $wouldBlock);
+
+            if (! $lockAcquired) {
+                if ((time() - $startTime) >= $lockTimeout) {
+                    // Timeout reached
+                    fclose($this->lockHandle);
+                    $this->lockHandle = null;
+                    Log::error('GitSync: Lock acquisition timed out', ['timeout' => $lockTimeout]);
+                    throw new RuntimeException('Lock acquisition timed out after '.$lockTimeout.' seconds - another sync may be stuck');
+                }
+
+                // Wait 1 second before retry
+                Log::debug('GitSync: Lock busy, waiting...');
+                sleep(1);
             }
-
-            throw new RuntimeException('Failed to acquire git sync lock');
         }
 
-        Log::debug('GitSync: Lock acquired');
+        Log::debug('GitSync: Lock acquired', ['wait_time' => time() - $startTime]);
 
         try {
             $repoPath = config('git-sync.repo_storage_path');
