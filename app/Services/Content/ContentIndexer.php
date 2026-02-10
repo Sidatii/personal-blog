@@ -3,32 +3,20 @@
 namespace App\Services\Content;
 
 use App\Models\Post;
-use App\Repositories\Contracts\PostRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Repositories\Contracts\PostRepositoryInterface;
 use App\Repositories\Eloquent\TagRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ContentIndexer
 {
-    /**
-     * @var PostRepositoryInterface
-     */
     protected PostRepositoryInterface $posts;
 
-    /**
-     * @var CategoryRepositoryInterface
-     */
     protected CategoryRepositoryInterface $categories;
 
-    /**
-     * @var TagRepository
-     */
     protected TagRepository $tags;
 
-    /**
-     * @var MarkdownParser
-     */
     protected MarkdownParser $parser;
 
     /**
@@ -52,25 +40,36 @@ class ContentIndexer
     public function indexFile(string $filepath): Post
     {
         // Read file content
-        $content = file_get_contents($filepath);
-        
+        $content = @file_get_contents($filepath);
+
+        if ($content === false) {
+            $error = error_get_last();
+            \Illuminate\Support\Facades\Log::error('ContentIndexer: Failed to read file in indexFile', [
+                'filepath' => $filepath,
+                'error' => $error['message'] ?? 'Unknown error',
+                'file_exists' => file_exists($filepath),
+                'is_readable' => is_readable($filepath),
+            ]);
+            throw new \RuntimeException('Failed to read file: '.$filepath);
+        }
+
         // Calculate hash
         $hash = md5($content);
-        
+
         // Parse markdown
         $result = $this->parser->parse($content);
         $matter = $result['matter'];
         $body = $result['body'];
-        
+
         // Resolve category
         $categoryName = $matter['category'] ?? 'Uncategorized';
         $categorySlug = Str::slug($categoryName);
         $category = $this->categories->findOrCreate($categoryName, $categorySlug);
-        
+
         // Resolve tags
         $tagIds = [];
         $tags = $matter['tags'] ?? [];
-        if (!empty($tags)) {
+        if (! empty($tags)) {
             // Ensure tags is an array (YAML may return string for single value)
             if (is_string($tags)) {
                 $tags = [$tags];
@@ -81,7 +80,7 @@ class ContentIndexer
                 $tagIds[] = $tag->id;
             }
         }
-        
+
         // Upsert post
         $postData = [
             'title' => $matter['title'] ?? 'Untitled',
@@ -94,15 +93,15 @@ class ContentIndexer
             'is_featured' => $matter['is_featured'] ?? false,
             'is_published' => true,
         ];
-        
+
         $post = $this->posts->updateOrCreateFromIndex([
             'filepath' => $filepath,
             ...$postData,
         ]);
-        
+
         // Sync tags
         $this->tags->syncToPost($post, $tagIds);
-        
+
         return $post;
     }
 
@@ -112,14 +111,14 @@ class ContentIndexer
     public function indexAll(): int
     {
         $contentPath = base_path('content/posts/');
-        $files = glob($contentPath . '*.md');
-        
+        $files = glob($contentPath.'*.md');
+
         $count = 0;
         foreach ($files as $filepath) {
             $this->indexFile($filepath);
             $count++;
         }
-        
+
         return $count;
     }
 
@@ -129,21 +128,54 @@ class ContentIndexer
     public function detectChanges(): Collection
     {
         $contentPath = base_path('content/posts/');
-        $files = glob($contentPath . '*.md');
+
+        // Check if directory exists
+        if (! is_dir($contentPath)) {
+            \Illuminate\Support\Facades\Log::error('ContentIndexer: Content directory does not exist', [
+                'path' => $contentPath,
+            ]);
+            throw new \RuntimeException('Content directory does not exist: '.$contentPath);
+        }
+
+        $files = glob($contentPath.'*.md');
+
+        if ($files === false) {
+            \Illuminate\Support\Facades\Log::error('ContentIndexer: glob() failed', [
+                'path' => $contentPath,
+            ]);
+            throw new \RuntimeException('Failed to list content files in: '.$contentPath);
+        }
+
+        \Illuminate\Support\Facades\Log::debug('ContentIndexer: Found files', [
+            'path' => $contentPath,
+            'count' => count($files),
+            'files' => $files,
+        ]);
+
         $changed = collect();
-        
+
         foreach ($files as $filepath) {
-            $content = file_get_contents($filepath);
+            $content = @file_get_contents($filepath);
+
+            if ($content === false) {
+                $error = error_get_last();
+                \Illuminate\Support\Facades\Log::error('ContentIndexer: Failed to read file', [
+                    'filepath' => $filepath,
+                    'error' => $error['message'] ?? 'Unknown error',
+                ]);
+                throw new \RuntimeException('Failed to read file: '.$filepath);
+            }
+
             $hash = md5($content);
-            
+
             // Find posts with different hash or no hash
             $post = $this->posts->findByFilepath($filepath);
-            
-            if (!$post || $post->content_hash !== $hash) {
+
+            if (! $post || $post->content_hash !== $hash) {
                 $changed->push($filepath);
             }
         }
-        
+
         return $changed;
     }
 
@@ -154,7 +186,7 @@ class ContentIndexer
     {
         // Delete all posts
         Post::truncate();
-        
+
         // Reindex all
         return $this->indexAll();
     }

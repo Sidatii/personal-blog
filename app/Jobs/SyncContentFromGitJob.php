@@ -96,24 +96,45 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         }
 
         // Get the content path from the git repository
+        Log::debug('Content sync: Getting content path', ['delivery_id' => $this->deliveryId]);
         $gitContentPath = $gitSync->getContentPath();
+        Log::debug('Content sync: Got content path', ['path' => $gitContentPath, 'delivery_id' => $this->deliveryId]);
 
         // Create/update symlink from base_path('content/posts') to git content path
         $symlinkPath = base_path('content/posts');
+        Log::debug('Content sync: Symlink path', ['symlink_path' => $symlinkPath, 'delivery_id' => $this->deliveryId]);
 
         // Remove existing symlink if present
         if (is_link($symlinkPath)) {
-            unlink($symlinkPath);
+            Log::debug('Content sync: Removing existing symlink', ['delivery_id' => $this->deliveryId]);
+            $unlinkResult = unlink($symlinkPath);
+            Log::debug('Content sync: Symlink removed', ['result' => $unlinkResult, 'delivery_id' => $this->deliveryId]);
         }
 
         // Ensure parent directory exists
         $parentDir = dirname($symlinkPath);
+        Log::debug('Content sync: Checking parent dir', ['parent_dir' => $parentDir, 'exists' => is_dir($parentDir), 'delivery_id' => $this->deliveryId]);
         if (! is_dir($parentDir)) {
-            mkdir($parentDir, 0755, true);
+            Log::debug('Content sync: Creating parent dir', ['delivery_id' => $this->deliveryId]);
+            $mkdirResult = mkdir($parentDir, 0755, true);
+            Log::debug('Content sync: Parent dir created', ['result' => $mkdirResult, 'delivery_id' => $this->deliveryId]);
         }
 
         // Create symlink
-        symlink($gitContentPath, $symlinkPath);
+        Log::debug('Content sync: Creating symlink', ['target' => $gitContentPath, 'link' => $symlinkPath, 'delivery_id' => $this->deliveryId]);
+        $symlinkResult = @symlink($gitContentPath, $symlinkPath);
+        if (! $symlinkResult) {
+            $error = error_get_last();
+            Log::error('Content sync: Symlink failed', [
+                'error' => $error['message'] ?? 'Unknown error',
+                'target' => $gitContentPath,
+                'link' => $symlinkPath,
+                'target_exists' => is_dir($gitContentPath),
+                'link_parent_writable' => is_writable($parentDir),
+                'delivery_id' => $this->deliveryId,
+            ]);
+            throw new \RuntimeException('Failed to create symlink: '.($error['message'] ?? 'Unknown error'));
+        }
 
         Log::info('Content symlink created', [
             'delivery_id' => $this->deliveryId,
@@ -122,14 +143,35 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         ]);
 
         // Detect changed files
-        $changedFiles = $indexer->detectChanges();
+        Log::debug('Content sync: Detecting changes', ['delivery_id' => $this->deliveryId]);
+        try {
+            $changedFiles = $indexer->detectChanges();
+            Log::debug('Content sync: Changes detected', ['count' => $changedFiles->count(), 'delivery_id' => $this->deliveryId]);
+        } catch (\Throwable $e) {
+            Log::error('Content sync: detectChanges failed', [
+                'delivery_id' => $this->deliveryId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
 
         if ($changedFiles->isNotEmpty()) {
             // Index each changed file
             $count = 0;
             foreach ($changedFiles as $filepath) {
-                $indexer->indexFile($filepath);
-                $count++;
+                Log::debug('Content sync: Indexing file', ['filepath' => $filepath, 'delivery_id' => $this->deliveryId]);
+                try {
+                    $indexer->indexFile($filepath);
+                    $count++;
+                } catch (\Throwable $e) {
+                    Log::error('Content sync: indexFile failed', [
+                        'filepath' => $filepath,
+                        'delivery_id' => $this->deliveryId,
+                        'error' => $e->getMessage(),
+                    ]);
+                    throw $e;
+                }
             }
 
             Log::info('Content sync completed - changed files indexed', [
@@ -138,7 +180,17 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             ]);
         } else {
             // No changed files, run full index as fallback (handles first sync after clone)
-            $count = $indexer->indexAll();
+            Log::debug('Content sync: Running full index', ['delivery_id' => $this->deliveryId]);
+            try {
+                $count = $indexer->indexAll();
+            } catch (\Throwable $e) {
+                Log::error('Content sync: indexAll failed', [
+                    'delivery_id' => $this->deliveryId,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                throw $e;
+            }
 
             Log::info('Content sync completed - full index', [
                 'delivery_id' => $this->deliveryId,

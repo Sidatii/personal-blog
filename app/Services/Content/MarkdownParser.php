@@ -42,25 +42,33 @@ class MarkdownParser
      */
     public function parse(string $markdown): array
     {
-        // Extract frontmatter using spatie/yaml-front-matter
-        $document = YamlFrontMatter::parse($markdown);
+        try {
+            // Extract frontmatter using spatie/yaml-front-matter
+            $document = YamlFrontMatter::parse($markdown);
 
-        // Extract headings before HTML conversion
-        $this->headings = $this->extractHeadings($document->body());
+            // Extract headings before HTML conversion
+            $this->headings = $this->extractHeadings($document->body());
 
-        // Convert markdown body to HTML with security configuration
-        $html = $this->converter->convert($document->body())->getContent();
+            // Convert markdown body to HTML with security configuration
+            $html = $this->converter->convert($document->body())->getContent();
 
-        // Post-process to highlight code blocks
-        $html = $this->highlightCodeBlocks($html);
+            // Post-process to highlight code blocks
+            $html = $this->highlightCodeBlocks($html);
 
-        // Post-process to add ID attributes to headings for TOC anchor links
-        $html = $this->addHeadingIds($html);
+            // Post-process to add ID attributes to headings for TOC anchor links
+            $html = $this->addHeadingIds($html);
 
-        return [
-            'body' => $html,
-            'matter' => $document->matter(),
-        ];
+            return [
+                'body' => $html,
+                'matter' => $document->matter(),
+            ];
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('MarkdownParser: Parse failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -187,22 +195,22 @@ class MarkdownParser
     /**
      * Add ID attributes to HTML heading elements for TOC anchor links.
      *
-     * @param string $html The HTML content with headings
+     * @param  string  $html  The HTML content with headings
      * @return string The HTML with id attributes added to headings
      */
     protected function addHeadingIds(string $html): string
     {
         // Avoid processing if no headings present
-        if (!preg_match('/<h[1-6]/', $html)) {
+        if (! preg_match('/<h[1-6]/', $html)) {
             return $html;
         }
 
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument;
 
         // Suppress warnings for malformed HTML, use UTF-8 encoding
         libxml_use_internal_errors(true);
         $doc->loadHTML(
-            '<?xml encoding="UTF-8">' . $html,
+            '<?xml encoding="UTF-8">'.$html,
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
         libxml_clear_errors();
@@ -222,7 +230,7 @@ class MarkdownParser
             $finalId = $id;
             $counter = 1;
             while (in_array($finalId, $usedIds)) {
-                $finalId = $id . '-' . $counter;
+                $finalId = $id.'-'.$counter;
                 $counter++;
             }
 
@@ -269,6 +277,11 @@ class MarkdownParser
                     'highlighted' => $highlighted,
                 ])->render();
             } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('MarkdownParser: Code highlighting failed', [
+                    'language' => $language,
+                    'error' => $e->getMessage(),
+                ]);
+
                 // If highlighting fails, return original but add shiki class for styling
                 return '<div class="shiki"><pre><code class="language-'.$language.'">'.$matches[2].'</code></pre></div>';
             }
