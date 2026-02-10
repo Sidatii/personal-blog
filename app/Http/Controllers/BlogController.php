@@ -59,7 +59,7 @@ class BlogController extends Controller
             $headings = [];
             $readingTime = 1;
 
-            $fullPath = storage_path('content/posts/'.$post->filepath);
+            $fullPath = base_path('content/posts/'.$post->filepath);
 
             if (file_exists($fullPath)) {
                 $markdownContent = file_get_contents($fullPath);
@@ -120,7 +120,7 @@ class BlogController extends Controller
     protected function generateExcerpt(string $filepath): string
     {
         // Check if file exists in content directory
-        $fullPath = storage_path('content/posts/'.$filepath);
+        $fullPath = base_path('content/posts/'.$filepath);
 
         if (! file_exists($fullPath)) {
             return 'Read this article to learn more.';
