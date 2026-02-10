@@ -135,47 +135,106 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         $gitContentPath = $gitSync->getContentPath();
         Log::debug('Content sync: Got content path', ['path' => $gitContentPath, 'delivery_id' => $this->deliveryId]);
 
+        // Verify the content path exists in the repository
+        if (! is_dir($gitContentPath)) {
+            // Log the actual structure to help debug
+            $repoPath = config('git-sync.repo_storage_path');
+            $actualContents = is_dir($repoPath) ? scandir($repoPath) : ['DIRECTORY_NOT_FOUND'];
+            Log::error('Content sync: Content path does not exist in repository', [
+                'expected_path' => $gitContentPath,
+                'repo_path' => $repoPath,
+                'repo_contents' => $actualContents,
+                'delivery_id' => $this->deliveryId,
+            ]);
+            throw new \RuntimeException('Content path does not exist in repository: '.$gitContentPath.'. Check your GIT_SYNC_CONTENT_PATH setting.');
+        }
+
+        Log::debug('Content sync: Content path verified', ['path' => $gitContentPath, 'delivery_id' => $this->deliveryId]);
+
         // Create/update symlink from base_path('content/posts') to git content path
         $symlinkPath = base_path('content/posts');
         Log::debug('Content sync: Symlink path', ['symlink_path' => $symlinkPath, 'delivery_id' => $this->deliveryId]);
 
-        // Remove existing symlink if present
-        if (is_link($symlinkPath)) {
-            Log::debug('Content sync: Removing existing symlink', ['delivery_id' => $this->deliveryId]);
-            $unlinkResult = unlink($symlinkPath);
-            Log::debug('Content sync: Symlink removed', ['result' => $unlinkResult, 'delivery_id' => $this->deliveryId]);
-        }
-
-        // Ensure parent directory exists
-        $parentDir = dirname($symlinkPath);
-        Log::debug('Content sync: Checking parent dir', ['parent_dir' => $parentDir, 'exists' => is_dir($parentDir), 'delivery_id' => $this->deliveryId]);
-        if (! is_dir($parentDir)) {
-            Log::debug('Content sync: Creating parent dir', ['delivery_id' => $this->deliveryId]);
-            $mkdirResult = mkdir($parentDir, 0755, true);
-            Log::debug('Content sync: Parent dir created', ['result' => $mkdirResult, 'delivery_id' => $this->deliveryId]);
-        }
-
-        // Create symlink
-        Log::debug('Content sync: Creating symlink', ['target' => $gitContentPath, 'link' => $symlinkPath, 'delivery_id' => $this->deliveryId]);
-        $symlinkResult = @symlink($gitContentPath, $symlinkPath);
-        if (! $symlinkResult) {
-            $error = error_get_last();
-            Log::error('Content sync: Symlink failed', [
-                'error' => $error['message'] ?? 'Unknown error',
+        // Get absolute target path
+        $absoluteTarget = realpath($gitContentPath);
+        if (! $absoluteTarget) {
+            Log::error('Content sync: Cannot resolve target path', [
                 'target' => $gitContentPath,
-                'link' => $symlinkPath,
-                'target_exists' => is_dir($gitContentPath),
-                'link_parent_writable' => is_writable($parentDir),
                 'delivery_id' => $this->deliveryId,
             ]);
-            throw new \RuntimeException('Failed to create symlink: '.($error['message'] ?? 'Unknown error'));
+            throw new \RuntimeException('Cannot resolve target path: '.$gitContentPath);
         }
 
-        Log::info('Content symlink created', [
-            'delivery_id' => $this->deliveryId,
-            'target' => $gitContentPath,
-            'link' => $symlinkPath,
-        ]);
+        // Check if symlink already exists and points to correct target
+        clearstatcache(true, $symlinkPath);
+        if (is_link($symlinkPath)) {
+            $currentTarget = @readlink($symlinkPath);
+            if ($currentTarget === $absoluteTarget) {
+                Log::info('Content sync: Symlink already correct, skipping', [
+                    'symlink' => $symlinkPath,
+                    'target' => $absoluteTarget,
+                    'delivery_id' => $this->deliveryId,
+                ]);
+            } else {
+                Log::debug('Content sync: Symlink points to wrong target, removing', [
+                    'symlink' => $symlinkPath,
+                    'current_target' => $currentTarget,
+                    'expected_target' => $absoluteTarget,
+                    'delivery_id' => $this->deliveryId,
+                ]);
+                @unlink($symlinkPath);
+            }
+        } elseif (file_exists($symlinkPath)) {
+            // It's a file or directory (not a symlink), remove it
+            Log::debug('Content sync: Removing existing file/directory at symlink path', [
+                'path' => $symlinkPath,
+                'is_dir' => is_dir($symlinkPath),
+                'is_file' => is_file($symlinkPath),
+                'delivery_id' => $this->deliveryId,
+            ]);
+
+            if (is_dir($symlinkPath)) {
+                @rmdir($symlinkPath);
+            } else {
+                @unlink($symlinkPath);
+            }
+        }
+
+        // Create symlink if it doesn't exist
+        if (! is_link($symlinkPath)) {
+            // Ensure parent directory exists
+            $parentDir = dirname($symlinkPath);
+            if (! is_dir($parentDir)) {
+                Log::debug('Content sync: Creating parent dir', ['parent_dir' => $parentDir, 'delivery_id' => $this->deliveryId]);
+                mkdir($parentDir, 0755, true);
+            }
+
+            Log::debug('Content sync: Creating symlink', [
+                'target' => $absoluteTarget,
+                'link' => $symlinkPath,
+                'delivery_id' => $this->deliveryId,
+            ]);
+
+            $symlinkResult = @symlink($absoluteTarget, $symlinkPath);
+
+            if (! $symlinkResult) {
+                $error = error_get_last();
+                Log::error('Content sync: Symlink failed', [
+                    'error' => $error['message'] ?? 'Unknown error',
+                    'target' => $absoluteTarget,
+                    'link' => $symlinkPath,
+                    'link_parent_writable' => is_writable($parentDir),
+                    'delivery_id' => $this->deliveryId,
+                ]);
+                throw new \RuntimeException('Failed to create symlink: '.($error['message'] ?? 'Unknown error'));
+            }
+
+            Log::info('Content symlink created', [
+                'delivery_id' => $this->deliveryId,
+                'target' => $absoluteTarget,
+                'link' => $symlinkPath,
+            ]);
+        }
 
         // Detect changed files
         Log::debug('Content sync: Detecting changes', ['delivery_id' => $this->deliveryId]);
