@@ -58,12 +58,18 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
      */
     public function middleware(): array
     {
+        // Temporarily disabled for debugging
+        Log::debug('Content sync: middleware called');
+
+        return [];
+        /*
         return [
             (new ThrottlesExceptions(
                 config('git-sync.job_max_exceptions', 3),
                 config('git-sync.job_backoff_minutes', 5) * 60
             ))->backoff(config('git-sync.job_backoff_minutes', 5)),
         ];
+        */
     }
 
     /**
@@ -81,6 +87,35 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     {
         Log::info('Content sync started', ['delivery_id' => $this->deliveryId]);
 
+        // Register shutdown handler to catch fatal errors
+        $deliveryId = $this->deliveryId;
+        register_shutdown_function(function () use ($deliveryId) {
+            $error = error_get_last();
+            if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+                Log::emergency('Content sync: FATAL ERROR', [
+                    'delivery_id' => $deliveryId,
+                    'error' => $error['message'],
+                    'file' => $error['file'],
+                    'line' => $error['line'],
+                ]);
+            }
+        });
+
+        try {
+            $this->doHandle($gitSync, $indexer);
+            Log::info('Content sync: doHandle completed successfully', ['delivery_id' => $this->deliveryId]);
+        } catch (\Throwable $e) {
+            Log::error('Content sync: Uncaught exception in handle', [
+                'delivery_id' => $this->deliveryId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
+    }
+
+    private function doHandle(GitSyncService $gitSync, ContentIndexer $indexer): void
+    {
         try {
             // Pull latest from git repository
             Log::debug('Content sync: Calling pullLatest', ['delivery_id' => $this->deliveryId]);

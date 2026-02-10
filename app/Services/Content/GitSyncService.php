@@ -82,12 +82,23 @@ class GitSyncService
             Log::debug('GitSync: Git operation completed');
         } finally {
             // Always release lock and close handle
+            Log::debug('GitSync: Entering finally block');
             if ($this->lockHandle) {
-                flock($this->lockHandle, LOCK_UN);
-                fclose($this->lockHandle);
+                Log::debug('GitSync: Releasing lock');
+                $unlockResult = @flock($this->lockHandle, LOCK_UN);
+                Log::debug('GitSync: Lock released', ['result' => $unlockResult]);
+
+                Log::debug('GitSync: Closing handle');
+                $closeResult = @fclose($this->lockHandle);
+                Log::debug('GitSync: Handle closed', ['result' => $closeResult]);
                 $this->lockHandle = null;
+            } else {
+                Log::debug('GitSync: No lock handle to release');
             }
+            Log::debug('GitSync: Finally block complete');
         }
+
+        Log::debug('GitSync: pullLatest method complete');
     }
 
     /**
@@ -173,9 +184,11 @@ class GitSyncService
             );
         }
 
+        $output = $resetProcess->getOutput();
         Log::info('Repository updated', [
             'branch' => $branch,
-            'output' => $resetProcess->getOutput(),
+            'output_length' => strlen($output),
+            'output' => substr($output, 0, 1000), // Limit output size
         ]);
     }
 
@@ -184,9 +197,22 @@ class GitSyncService
      */
     public function getContentPath(): string
     {
+        Log::debug('GitSync: getContentPath called');
         $repoPath = config('git-sync.repo_storage_path');
         $contentPath = config('git-sync.content_path');
 
-        return $repoPath.'/'.$contentPath;
+        Log::debug('GitSync: getContentPath config values', [
+            'repo_path' => $repoPath,
+            'content_path' => $contentPath,
+        ]);
+
+        if (empty($repoPath)) {
+            throw new RuntimeException('git-sync.repo_storage_path config is empty');
+        }
+
+        $fullPath = $repoPath.'/'.$contentPath;
+        Log::debug('GitSync: getContentPath returning', ['path' => $fullPath]);
+
+        return $fullPath;
     }
 }
