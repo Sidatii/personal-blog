@@ -86,7 +86,7 @@ class ContentIndexer
             'title' => $matter['title'] ?? 'Untitled',
             'slug' => Str::slug($matter['title'] ?? 'untitled'),
             'excerpt' => $matter['excerpt'] ?? '',
-            'body' => $body,
+            'content' => $body,
             'category_id' => $category->id,
             'content_hash' => $hash,
             'published_at' => $matter['published_at'] ?? null,
