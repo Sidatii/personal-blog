@@ -19,7 +19,6 @@ class Post extends Model implements Feedable
         'slug',
         'title',
         'excerpt',
-        'content',
         'filepath',
         'content_hash',
         'category_id',

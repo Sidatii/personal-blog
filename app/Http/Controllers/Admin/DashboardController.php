@@ -44,10 +44,9 @@ class DashboardController extends Controller
             'total_comments' => Comment::count(),
         ];
 
-        $recent_posts = Post::latest()->take(5)->get();
         $recent_contacts = ContactSubmission::latest()->take(5)->get();
         $recent_comments = Comment::with('post')->latest()->take(5)->get();
 
-        return view('admin.dashboard.index', compact('stats', 'recent_posts', 'recent_contacts', 'recent_comments'));
+        return view('admin.dashboard.index', compact('stats', 'recent_contacts', 'recent_comments'));
     }
 }

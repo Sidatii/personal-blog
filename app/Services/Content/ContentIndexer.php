@@ -81,12 +81,27 @@ class ContentIndexer
             }
         }
 
-        // Upsert post - store only the filename (not full path) for consistent lookup
+        // Upsert post - store metadata ONLY, content stays in markdown files
+        $filename = basename($filepath);
+        $slug = Str::slug($matter['title'] ?? 'untitled');
+
+        // Check for existing post by filepath or slug
+        $existingPost = $this->posts->findByFilepath($filename);
+
+        if (! $existingPost) {
+            // Check if slug already exists (from a different file)
+            $slugCollision = Post::where('slug', $slug)->where('filepath', '!=', $filename)->first();
+            if ($slugCollision) {
+                // Append random string to make slug unique
+                $slug = $slug.'-'.substr($hash, 0, 8);
+            }
+        }
+
         $postData = [
             'title' => $matter['title'] ?? 'Untitled',
-            'slug' => Str::slug($matter['title'] ?? 'untitled'),
+            'slug' => $slug,
             'excerpt' => $matter['excerpt'] ?? '',
-            'content' => $body,
+            // 'content' => NOT STORED - read from file on demand
             'category_id' => $category->id,
             'content_hash' => $hash,
             'published_at' => $matter['published_at'] ?? null,
@@ -95,7 +110,7 @@ class ContentIndexer
         ];
 
         $post = $this->posts->updateOrCreateFromIndex([
-            'filepath' => basename($filepath),
+            'filepath' => $filename,
             ...$postData,
         ]);
 
@@ -189,5 +204,32 @@ class ContentIndexer
 
         // Reindex all
         return $this->indexAll();
+    }
+
+    /**
+     * Delete posts that no longer exist in the filesystem.
+     */
+    public function deleteMissing(): int
+    {
+        $contentPath = base_path('content/posts/');
+        $files = glob($contentPath.'*.md');
+        $filenames = collect($files)->map(fn ($path) => basename($path))->toArray();
+
+        // Find posts in DB that don't exist in filesystem
+        $deletedCount = 0;
+        $allPosts = Post::all();
+
+        foreach ($allPosts as $post) {
+            if (! in_array($post->filepath, $filenames)) {
+                $post->delete();
+                $deletedCount++;
+                \Illuminate\Support\Facades\Log::info('ContentIndexer: Deleted missing post', [
+                    'filepath' => $post->filepath,
+                    'title' => $post->title,
+                ]);
+            }
+        }
+
+        return $deletedCount;
     }
 }

@@ -258,6 +258,24 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                 'files_processed' => $count,
             ]);
         }
+
+        // Delete posts that no longer exist in git
+        Log::debug('Content sync: Checking for deleted posts', ['delivery_id' => $this->deliveryId]);
+        try {
+            $deletedCount = $indexer->deleteMissing();
+            if ($deletedCount > 0) {
+                Log::info('Content sync: Deleted missing posts', [
+                    'delivery_id' => $this->deliveryId,
+                    'deleted_count' => $deletedCount,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Content sync: deleteMissing failed', [
+                'delivery_id' => $this->deliveryId,
+                'error' => $e->getMessage(),
+            ]);
+            // Don't throw - this is cleanup, not critical
+        }
     }
 
     /**
