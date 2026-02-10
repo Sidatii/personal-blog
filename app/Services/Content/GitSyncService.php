@@ -3,8 +3,8 @@
 namespace App\Services\Content;
 
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\Process\Process;
 use RuntimeException;
+use Symfony\Component\Process\Process;
 
 class GitSyncService
 {
@@ -20,23 +20,40 @@ class GitSyncService
      * Pull latest changes from git repository.
      * Uses flock() for exclusive locking to prevent concurrent operations.
      *
-     * @return void
      * @throws RuntimeException
      */
     public function pullLatest(): void
     {
         $lockFile = config('git-sync.lock_file');
+        Log::debug('GitSync: Attempting to acquire lock', ['lock_file' => $lockFile]);
+
+        // Ensure parent directory exists for lock file
+        $lockDir = dirname($lockFile);
+        if (! is_dir($lockDir)) {
+            Log::debug('GitSync: Creating lock directory', ['directory' => $lockDir]);
+            if (! mkdir($lockDir, 0755, true)) {
+                throw new RuntimeException('Failed to create lock directory: '.$lockDir);
+            }
+        }
 
         // Open lock file (create if not exists, don't truncate)
         $this->lockHandle = fopen($lockFile, 'c');
 
         if ($this->lockHandle === false) {
-            throw new RuntimeException('Failed to open git sync lock file');
+            $error = error_get_last();
+            Log::error('GitSync: Failed to open lock file', [
+                'lock_file' => $lockFile,
+                'error' => $error['message'] ?? 'Unknown error',
+            ]);
+            throw new RuntimeException('Failed to open git sync lock file: '.$lockFile);
         }
+
+        Log::debug('GitSync: Lock file opened');
 
         // Attempt non-blocking exclusive lock
         $wouldBlock = false;
-        if (!flock($this->lockHandle, LOCK_EX | LOCK_NB, $wouldBlock)) {
+        Log::debug('GitSync: Attempting flock');
+        if (! flock($this->lockHandle, LOCK_EX | LOCK_NB, $wouldBlock)) {
             fclose($this->lockHandle);
             $this->lockHandle = null;
 
@@ -47,15 +64,22 @@ class GitSyncService
             throw new RuntimeException('Failed to acquire git sync lock');
         }
 
+        Log::debug('GitSync: Lock acquired');
+
         try {
             $repoPath = config('git-sync.repo_storage_path');
+            Log::debug('GitSync: Checking repository', ['repo_path' => $repoPath]);
 
             // Check if repository already exists
-            if (!is_dir($repoPath . '/.git')) {
+            if (! is_dir($repoPath.'/.git')) {
+                Log::debug('GitSync: Repository not found, cloning');
                 $this->cloneRepository();
             } else {
+                Log::debug('GitSync: Repository exists, pulling');
                 $this->pullRepository();
             }
+
+            Log::debug('GitSync: Git operation completed');
         } finally {
             // Always release lock and close handle
             if ($this->lockHandle) {
@@ -69,7 +93,6 @@ class GitSyncService
     /**
      * Clone repository on first run.
      *
-     * @return void
      * @throws RuntimeException
      */
     private function cloneRepository(): void
@@ -84,7 +107,7 @@ class GitSyncService
 
         // Ensure parent directory exists
         $parentDir = dirname($path);
-        if (!is_dir($parentDir)) {
+        if (! is_dir($parentDir)) {
             mkdir($parentDir, 0755, true);
         }
 
@@ -102,9 +125,9 @@ class GitSyncService
         $process->setTimeout(300); // 5 minutes timeout
         $process->run();
 
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw new RuntimeException(
-                'Git clone failed: ' . $process->getErrorOutput()
+                'Git clone failed: '.$process->getErrorOutput()
             );
         }
 
@@ -118,7 +141,6 @@ class GitSyncService
     /**
      * Pull updates from repository.
      *
-     * @return void
      * @throws RuntimeException
      */
     private function pullRepository(): void
@@ -131,9 +153,9 @@ class GitSyncService
         $fetchProcess->setTimeout(300);
         $fetchProcess->run();
 
-        if (!$fetchProcess->isSuccessful()) {
+        if (! $fetchProcess->isSuccessful()) {
             throw new RuntimeException(
-                'Git fetch failed: ' . $fetchProcess->getErrorOutput()
+                'Git fetch failed: '.$fetchProcess->getErrorOutput()
             );
         }
 
@@ -145,9 +167,9 @@ class GitSyncService
         $resetProcess->setTimeout(60);
         $resetProcess->run();
 
-        if (!$resetProcess->isSuccessful()) {
+        if (! $resetProcess->isSuccessful()) {
             throw new RuntimeException(
-                'Git reset failed: ' . $resetProcess->getErrorOutput()
+                'Git reset failed: '.$resetProcess->getErrorOutput()
             );
         }
 
@@ -159,14 +181,12 @@ class GitSyncService
 
     /**
      * Get the full path to content files within the repository.
-     *
-     * @return string
      */
     public function getContentPath(): string
     {
         $repoPath = config('git-sync.repo_storage_path');
         $contentPath = config('git-sync.content_path');
 
-        return $repoPath . '/' . $contentPath;
+        return $repoPath.'/'.$contentPath;
     }
 }

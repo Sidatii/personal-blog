@@ -81,8 +81,19 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     {
         Log::info('Content sync started', ['delivery_id' => $this->deliveryId]);
 
-        // Pull latest from git repository
-        $gitSync->pullLatest();
+        try {
+            // Pull latest from git repository
+            Log::debug('Content sync: Calling pullLatest', ['delivery_id' => $this->deliveryId]);
+            $gitSync->pullLatest();
+            Log::debug('Content sync: pullLatest completed', ['delivery_id' => $this->deliveryId]);
+        } catch (\Throwable $e) {
+            Log::error('Content sync: pullLatest failed', [
+                'delivery_id' => $this->deliveryId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
 
         // Get the content path from the git repository
         $gitContentPath = $gitSync->getContentPath();
