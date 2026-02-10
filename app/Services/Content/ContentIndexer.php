@@ -81,7 +81,7 @@ class ContentIndexer
             }
         }
 
-        // Upsert post
+        // Upsert post - store only the filename (not full path) for consistent lookup
         $postData = [
             'title' => $matter['title'] ?? 'Untitled',
             'slug' => Str::slug($matter['title'] ?? 'untitled'),
@@ -95,7 +95,7 @@ class ContentIndexer
         ];
 
         $post = $this->posts->updateOrCreateFromIndex([
-            'filepath' => $filepath,
+            'filepath' => basename($filepath),
             ...$postData,
         ]);
 
@@ -168,8 +168,8 @@ class ContentIndexer
 
             $hash = md5($content);
 
-            // Find posts with different hash or no hash
-            $post = $this->posts->findByFilepath($filepath);
+            // Find posts with different hash or no hash (compare using basename)
+            $post = $this->posts->findByFilepath(basename($filepath));
 
             if (! $post || $post->content_hash !== $hash) {
                 $changed->push($filepath);
