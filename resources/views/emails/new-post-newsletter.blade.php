@@ -15,7 +15,7 @@
                     <tr>
                         <td align="center" style="padding-bottom: 32px;">
                             <a href="{{ url('/') }}" style="text-decoration: none;">
-                                <img src="{{ url('/oob-white.svg') }}" alt="{{ config('app.name') }}" width="200" height="89" style="display: block; margin: 0 auto; max-width: 100%;">
+                                <img src="{{ url('/oob-white.png') }}" alt="{{ config('app.name') }}" width="480" style="display: block; margin: 0 auto; max-width: 100%;">
                             </a>
                         </td>
                     </tr>
