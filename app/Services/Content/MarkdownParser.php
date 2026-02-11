@@ -52,12 +52,11 @@ class MarkdownParser
             // Convert markdown body to HTML with security configuration
             $html = $this->converter->convert($document->body())->getContent();
 
-            // Post-process to add ID attributes to headings FIRST (before code blocks)
-            // This avoids DOMDocument HTML-encoding Alpine.js attributes in code-block component
-            $html = $this->addHeadingIds($html);
-
-            // Post-process to highlight code blocks LAST
+            // Post-process to highlight code blocks
             $html = $this->highlightCodeBlocks($html);
+
+            // Post-process to add ID attributes to headings for TOC anchor links
+            $html = $this->addHeadingIds($html);
 
             return [
                 'body' => $html,
