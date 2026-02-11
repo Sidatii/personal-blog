@@ -105,29 +105,29 @@
 <style>
     /* Custom prose styles for Rose Pine theme */
     .prose-rose-pine {
-        --tw-prose-body: var(--rp-text);
-        --tw-prose-headings: var(--rp-text);
-        --tw-prose-lead: var(--rp-subtle);
-        --tw-prose-links: var(--rp-iris);
-        --tw-prose-bold: var(--rp-text);
-        --tw-prose-counters: var(--rp-muted);
-        --tw-prose-bullets: var(--rp-muted);
-        --tw-prose-hr: var(--rp-highlight-med);
-        --tw-prose-quotes: var(--rp-subtle);
-        --tw-prose-quote-borders: var(--rp-highlight-med);
-        --tw-prose-captions: var(--rp-muted);
-        --tw-prose-code: var(--rp-text);
-        --tw-prose-pre-code: var(--rp-text);
-        --tw-prose-pre-bg: var(--rp-overlay);
-        --tw-prose-th-borders: var(--rp-highlight-med);
-        --tw-prose-td-borders: var(--rp-highlight-low);
+        --tw-prose-body: var(--rose-pine-text);
+        --tw-prose-headings: var(--rose-pine-text);
+        --tw-prose-lead: var(--rose-pine-subtle);
+        --tw-prose-links: var(--rose-pine-iris);
+        --tw-prose-bold: var(--rose-pine-text);
+        --tw-prose-counters: var(--rose-pine-muted);
+        --tw-prose-bullets: var(--rose-pine-muted);
+        --tw-prose-hr: var(--rose-pine-highlight);
+        --tw-prose-quotes: var(--rose-pine-subtle);
+        --tw-prose-quote-borders: var(--rose-pine-highlight);
+        --tw-prose-captions: var(--rose-pine-muted);
+        --tw-prose-code: var(--rose-pine-text);
+        --tw-prose-pre-code: var(--rose-pine-text);
+        --tw-prose-pre-bg: var(--rose-pine-overlay);
+        --tw-prose-th-borders: var(--rose-pine-highlight);
+        --tw-prose-td-borders: var(--rose-pine-highlight);
     }
 
     /* Distinct header typography for visual hierarchy */
     .prose h1 {
         font-size: 2rem;
         font-weight: 700;
-        color: var(--rp-text);
+        color: var(--rose-pine-text);
         margin-top: 2em;
         margin-bottom: 1em;
         letter-spacing: -0.025em;
@@ -136,17 +136,17 @@
     .prose h2 {
         font-size: 1.5rem;
         font-weight: 600;
-        color: var(--rp-text);
+        color: var(--rose-pine-text);
         margin-top: 1.5em;
         margin-bottom: 0.75em;
-        border-bottom: 1px solid var(--rp-highlight-med);
+        border-bottom: 1px solid var(--rose-pine-highlight);
         padding-bottom: 0.25em;
     }
 
     .prose h3 {
         font-size: 1.25rem;
         font-weight: 600;
-        color: var(--rp-subtle);
+        color: var(--rose-pine-subtle);
         margin-top: 1.25em;
         margin-bottom: 0.5em;
     }
@@ -154,7 +154,7 @@
     .prose h4 {
         font-size: 1rem;
         font-weight: 500;
-        color: var(--rp-muted);
+        color: var(--rose-pine-muted);
         margin-top: 1em;
         margin-bottom: 0.25em;
     }
@@ -162,7 +162,7 @@
     .prose h5 {
         font-size: 0.875rem;
         font-weight: 500;
-        color: var(--rp-muted);
+        color: var(--rose-pine-muted);
         margin-top: 0.75em;
         margin-bottom: 0.25em;
     }
@@ -170,7 +170,7 @@
     .prose h6 {
         font-size: 0.75rem;
         font-weight: 500;
-        color: var(--rp-muted);
+        color: var(--rose-pine-muted);
         margin-top: 0.5em;
         margin-bottom: 0.25em;
         text-transform: uppercase;
@@ -208,7 +208,7 @@
         width: 2.5em;
         margin-right: 1em;
         text-align: right;
-        color: var(--rp-muted);
+        color: var(--rose-pine-muted);
         user-select: none;
         font-size: 0.85em;
         opacity: 0.6;
@@ -231,31 +231,31 @@
     }
 
     .prose thead {
-        background-color: var(--rp-surface);
+        background-color: var(--rose-pine-surface);
     }
 
     .prose th {
         padding: 0.625rem 1rem;
         text-align: left;
         font-weight: 600;
-        color: var(--rp-text);
-        border: 1px solid var(--rp-highlight-med);
+        color: var(--rose-pine-text);
+        border: 1px solid var(--rose-pine-highlight);
         white-space: nowrap;
     }
 
     .prose td {
         padding: 0.625rem 1rem;
-        color: var(--rp-subtle);
-        border: 1px solid var(--rp-highlight-low);
+        color: var(--rose-pine-subtle);
+        border: 1px solid var(--rose-pine-highlight);
         vertical-align: top;
     }
 
     .prose tbody tr:nth-child(even) {
-        background-color: var(--rp-overlay);
+        background-color: var(--rose-pine-overlay);
     }
 
     .prose tbody tr:hover {
-        background-color: var(--rp-highlight-low);
+        background-color: var(--rose-pine-highlight);
     }
 </style>
 @endpush
