@@ -4,9 +4,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 gap-4">
             {{-- Logo/Brand (left) --}}
-            <a href="/" class="flex-shrink-0 h-full flex items-center py-2">
-                <img src="/oob-white.png" alt="{{ config('app.name') }}" class="h-full w-auto dark:block hidden">
-                <img src="/oob-black.png" alt="{{ config('app.name') }}" class="h-full w-auto dark:hidden block">
+            <a href="/" class="flex-shrink-0">
+                <img src="/oob-white.svg" alt="{{ config('app.name') }}" class="h-10 w-auto dark:block hidden">
+                <img src="/oob-black.svg" alt="{{ config('app.name') }}" class="h-10 w-auto dark:hidden block">
             </a>
 
             {{-- Desktop Navigation (center) --}}
