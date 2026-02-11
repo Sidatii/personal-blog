@@ -110,7 +110,7 @@ class ContentIndexer
             'is_published' => true,
         ];
 
-        $isNewPost = $existingPost === null;
+        $wasUnpublished = $existingPost === null || $existingPost->published_at === null;
 
         $post = $this->posts->updateOrCreateFromIndex([
             'filepath' => $filename,
@@ -120,8 +120,9 @@ class ContentIndexer
         // Sync tags
         $this->tags->syncToPost($post, $tagIds);
 
-        // Dispatch newsletter for newly published posts
-        if ($isNewPost && $post->published_at !== null) {
+        // Dispatch newsletter when a post becomes published for the first time
+        // (new post with published_at, or existing draft that just got published)
+        if ($wasUnpublished && $post->published_at !== null) {
             PostPublished::dispatch($post);
         }
 
