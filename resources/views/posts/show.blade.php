@@ -218,5 +218,44 @@
         display: block;
         background: transparent !important;
     }
+
+    /* Table styles */
+    .prose table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5em;
+        margin-bottom: 1.5em;
+        font-size: 0.875rem;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .prose thead {
+        background-color: var(--rp-surface);
+    }
+
+    .prose th {
+        padding: 0.625rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--rp-text);
+        border: 1px solid var(--rp-highlight-med);
+        white-space: nowrap;
+    }
+
+    .prose td {
+        padding: 0.625rem 1rem;
+        color: var(--rp-subtle);
+        border: 1px solid var(--rp-highlight-low);
+        vertical-align: top;
+    }
+
+    .prose tbody tr:nth-child(even) {
+        background-color: var(--rp-overlay);
+    }
+
+    .prose tbody tr:hover {
+        background-color: var(--rp-highlight-low);
+    }
 </style>
 @endpush
