@@ -52,8 +52,15 @@ class MarkdownParser
             // Extract headings before HTML conversion
             $this->headings = $this->extractHeadings($document->body());
 
+            // Stash math blocks before CommonMark processes the body,
+            // preventing backslash escaping and _ → <em> mangling
+            [$body, $mathStash] = $this->stashMath($document->body());
+
             // Convert markdown body to HTML with security configuration
-            $html = $this->converter->convert($document->body())->getContent();
+            $html = $this->converter->convert($body)->getContent();
+
+            // Restore math blocks verbatim
+            $html = $this->restoreMath($html, $mathStash);
 
             // Post-process to highlight code blocks
             $html = $this->highlightCodeBlocks($html);
@@ -248,6 +255,49 @@ class MarkdownParser
         $html = str_replace('<!--?xml encoding="UTF-8"-->', '', $html);
 
         return $html;
+    }
+
+    /**
+     * Extract math expressions from markdown before CommonMark processes it,
+     * replacing them with opaque placeholders. Returns [$body, $stash].
+     * Handles $$...$$ (display) and $...$ (inline), preserving content verbatim.
+     */
+    protected function stashMath(string $markdown): array
+    {
+        $stash = [];
+        $counter = 0;
+
+        // Display math first ($$...$$) — must come before inline to avoid partial matches
+        $markdown = preg_replace_callback(
+            '/\$\$(.+?)\$\$/su',
+            function ($m) use (&$stash, &$counter) {
+                $key = 'MATHSTASH'.$counter++.'X';
+                $stash[$key] = '$$'.$m[1].'$$';
+                return $key;
+            },
+            $markdown
+        );
+
+        // Inline math ($...$) — single line only to avoid false positives
+        $markdown = preg_replace_callback(
+            '/\$([^\$\n]+?)\$/u',
+            function ($m) use (&$stash, &$counter) {
+                $key = 'MATHSTASH'.$counter++.'X';
+                $stash[$key] = '$'.$m[1].'$';
+                return $key;
+            },
+            $markdown
+        );
+
+        return [$markdown, $stash];
+    }
+
+    /**
+     * Restore stashed math expressions back into the HTML.
+     */
+    protected function restoreMath(string $html, array $stash): string
+    {
+        return str_replace(array_keys($stash), array_values($stash), $html);
     }
 
     /**
