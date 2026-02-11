@@ -5,8 +5,8 @@
         <div class="flex items-center justify-between h-16 gap-4">
             {{-- Logo/Brand (left) --}}
             <a href="/" class="flex-shrink-0">
-                <img src="/oob-white.png" alt="{{ config('app.name') }}" class="h-8 dark:block hidden">
-                <img src="/oob-black.png" alt="{{ config('app.name') }}" class="h-8 dark:hidden block">
+                <img src="/oob-white.png" alt="{{ config('app.name') }}" class="h-12 dark:block hidden">
+                <img src="/oob-black.png" alt="{{ config('app.name') }}" class="h-12 dark:hidden block">
             </a>
 
             {{-- Desktop Navigation (center) --}}
