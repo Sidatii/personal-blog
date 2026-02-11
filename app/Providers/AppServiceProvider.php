@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\PostPublished;
+use App\Listeners\SendNewsletterOnPostPublished;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,5 +38,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('reactions', function ($request) {
             return Limit::perMinute(10)->by($request->ip());
         });
+
+        // Newsletter dispatch on new post published
+        Event::listen(PostPublished::class, SendNewsletterOnPostPublished::class);
     }
 }

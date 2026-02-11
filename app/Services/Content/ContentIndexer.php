@@ -2,6 +2,7 @@
 
 namespace App\Services\Content;
 
+use App\Events\PostPublished;
 use App\Models\Post;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\PostRepositoryInterface;
@@ -109,6 +110,8 @@ class ContentIndexer
             'is_published' => true,
         ];
 
+        $isNewPost = $existingPost === null;
+
         $post = $this->posts->updateOrCreateFromIndex([
             'filepath' => $filename,
             ...$postData,
@@ -116,6 +119,11 @@ class ContentIndexer
 
         // Sync tags
         $this->tags->syncToPost($post, $tagIds);
+
+        // Dispatch newsletter for newly published posts
+        if ($isNewPost && $post->published_at !== null) {
+            PostPublished::dispatch($post);
+        }
 
         return $post;
     }
