@@ -16,31 +16,49 @@ class NewsletterController extends Controller
     public function subscribe(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email|unique:newsletter_subscribers,email',
+            'email' => 'required|email',
             'name' => 'nullable|string|max:255',
         ]);
 
-        // Check if email already confirmed
+        $isAjax = $request->header('X-Requested-With') === 'XMLHttpRequest';
         $existing = NewsletterSubscriber::where('email', $validated['email'])->first();
-        if ($existing && $existing->confirmed_at) {
-            if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
-                return response()->json([
-                    'message' => 'This email is already subscribed to the newsletter.',
-                ], 422);
+
+        if ($existing) {
+            // Active confirmed subscriber
+            if ($existing->isConfirmed()) {
+                if ($isAjax) {
+                    return response()->json([
+                        'type' => 'info',
+                        'message' => 'You are already subscribed to the newsletter!',
+                    ]);
+                }
+                return back()->with('info', 'You are already subscribed to the newsletter!');
             }
 
-            return back()->with('error', 'This email is already subscribed to the newsletter.');
-        }
+            // Previously unsubscribed — allow re-subscribe by resetting the record
+            if ($existing->unsubscribed_at) {
+                $existing->update([
+                    'unsubscribed_at' => null,
+                    'confirmed_at' => null,
+                    'confirmation_token' => Str::random(32),
+                    'name' => $validated['name'] ?? $existing->name,
+                ]);
+                Mail::to($existing->email)->queue(new NewsletterConfirmation($existing->fresh()));
 
-        // Check if email is pending confirmation
-        if ($existing && ! $existing->confirmed_at) {
-            if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
-                return response()->json([
-                    'message' => 'This email is already pending confirmation. Please check your inbox.',
-                ], 422);
+                if ($isAjax) {
+                    return response()->json(['redirect' => route('newsletter.confirmation')]);
+                }
+                return view('newsletter.confirmation');
             }
 
-            return back()->with('error', 'This email is already pending confirmation. Please check your inbox.');
+            // Pending confirmation
+            if ($isAjax) {
+                return response()->json([
+                    'type' => 'info',
+                    'message' => 'A confirmation email was already sent. Please check your inbox.',
+                ]);
+            }
+            return back()->with('info', 'A confirmation email was already sent. Please check your inbox.');
         }
 
         $subscriber = NewsletterSubscriber::create([
@@ -52,10 +70,8 @@ class NewsletterController extends Controller
 
         Mail::to($subscriber->email)->queue(new NewsletterConfirmation($subscriber));
 
-        if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
-            return response()->json([
-                'redirect' => route('newsletter.confirmation'),
-            ]);
+        if ($isAjax) {
+            return response()->json(['redirect' => route('newsletter.confirmation')]);
         }
 
         return view('newsletter.confirmation');

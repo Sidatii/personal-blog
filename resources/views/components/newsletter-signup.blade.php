@@ -34,7 +34,7 @@
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 } else if (data.message) {
-                    this.$dispatch('toast', { type: 'error', message: data.message });
+                    this.$dispatch('toast', { type: data.type ?? 'info', message: data.message });
                 }
             })
             .catch(() => {
