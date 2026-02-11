@@ -30,6 +30,9 @@ class MarkdownParser
             'html_input' => 'strip',           // CRITICAL: Strips ALL HTML from input
             'allow_unsafe_links' => false,     // CRITICAL: Blocks javascript:, data: URLs
             'max_nesting_level' => 100,        // Prevents catastrophic backtracking
+            'renderer' => [
+                'soft_break' => "<br>\n",      // Render single newlines as <br> tags
+            ],
         ];
 
         $this->converter = $converter ?? new GithubFlavoredMarkdownConverter($config);
