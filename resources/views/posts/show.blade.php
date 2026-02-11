@@ -102,6 +102,7 @@
 
 {{-- Add custom CSS for prose styling --}}
 @push('head')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5" crossorigin="anonymous">
 <style>
     /* Custom prose styles for Rose Pine theme */
     .prose-rose-pine {
@@ -257,5 +258,30 @@
     .prose tbody tr:hover {
         background-color: var(--rose-pine-highlight);
     }
+
+    /* KaTeX display math centering */
+    .prose .katex-display {
+        margin: 1.5em 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
 </style>
+@endpush
+
+@push('scripts')
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhHAXKaiwG0QB2BS5pDbdjEDHXiJ4AmBP0Sd9DBw3hTZqW2g" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        renderMathInElement(document.querySelector('.prose'), {
+            delimiters: [
+                { left: '$$',  right: '$$',  display: true  },
+                { left: '$',   right: '$',   display: false },
+                { left: '\\[', right: '\\]', display: true  },
+                { left: '\\(', right: '\\)', display: false },
+            ],
+            throwOnError: false,
+        });
+    });
+</script>
 @endpush
