@@ -4,8 +4,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 gap-4">
             {{-- Logo/Brand (left) --}}
-            <a href="/" class="text-xl font-bold text-rose-pine-text hover:text-rose-pine-rose transition-colors flex-shrink-0">
-                {{ config('app.name') }}
+            <a href="/" class="flex-shrink-0">
+                <img src="/oob-white.png" alt="{{ config('app.name') }}" class="h-8 dark:block hidden">
+                <img src="/oob-black.png" alt="{{ config('app.name') }}" class="h-8 dark:hidden block">
             </a>
 
             {{-- Desktop Navigation (center) --}}
