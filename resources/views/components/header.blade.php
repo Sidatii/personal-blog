@@ -17,6 +17,10 @@
                 <a href="/projects" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     Projects
                 </a>
+                <a href="{{ route('certifications.index') }}"
+                   class="{{ request()->routeIs('certifications.*') ? 'text-rose-pine-text' : 'text-rose-pine-subtle hover:text-rose-pine-text' }} transition-colors">
+                    Certifications
+                </a>
                 <a href="/about" class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                     About
                 </a>
@@ -99,6 +103,10 @@
             </a>
             <a href="/projects" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                 Projects
+            </a>
+            <a href="{{ route('certifications.index') }}"
+               class="block {{ request()->routeIs('certifications.*') ? 'text-rose-pine-text' : 'text-rose-pine-subtle hover:text-rose-pine-text' }} transition-colors">
+                Certifications
             </a>
             <a href="/about" class="block text-rose-pine-subtle hover:text-rose-pine-text transition-colors">
                 About
