@@ -276,6 +276,74 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             ]);
             // Don't throw - this is cleanup, not critical
         }
+
+        // Sync images from git to storage
+        Log::debug('Content sync: Syncing images', ['delivery_id' => $this->deliveryId]);
+        try {
+            $this->syncImages($gitContentPath);
+        } catch (\Throwable $e) {
+            Log::error('Content sync: Image sync failed', [
+                'delivery_id' => $this->deliveryId,
+                'error' => $e->getMessage(),
+            ]);
+            // Don't throw - images are supplementary
+        }
+    }
+
+    /**
+     * Sync images from git repository to public storage.
+     */
+    private function syncImages(string $gitContentPath): void
+    {
+        $sourceDir = dirname($gitContentPath).'/images';
+        $targetDir = storage_path('app/public/content/images');
+
+        if (! is_dir($sourceDir)) {
+            Log::debug('Content sync: No images directory in git', ['path' => $sourceDir]);
+
+            return;
+        }
+
+        // Ensure target directory exists
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+            Log::info('Content sync: Created images directory', ['path' => $targetDir]);
+        }
+
+        $syncedCount = 0;
+        $deletedCount = 0;
+
+        // Copy all images from git to storage
+        foreach (glob("$sourceDir/*") as $file) {
+            if (is_file($file)) {
+                $filename = basename($file);
+                $targetFile = "$targetDir/$filename";
+
+                // Only copy if file is new or changed
+                if (! file_exists($targetFile) || filemtime($file) > filemtime($targetFile)) {
+                    copy($file, $targetFile);
+                    $syncedCount++;
+                }
+            }
+        }
+
+        // Remove images from storage that don't exist in git
+        foreach (glob("$targetDir/*") as $file) {
+            $filename = basename($file);
+            if ($filename === '.gitkeep') {
+                continue;
+            }
+            if (! file_exists("$sourceDir/$filename")) {
+                unlink($file);
+                $deletedCount++;
+            }
+        }
+
+        Log::info('Content sync: Images synced', [
+            'delivery_id' => $this->deliveryId,
+            'synced' => $syncedCount,
+            'deleted' => $deletedCount,
+        ]);
     }
 
     /**

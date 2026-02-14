@@ -4,11 +4,11 @@ use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\LogoutController;
+use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
-use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
@@ -37,11 +37,11 @@ Route::middleware('admin')->group(function () {
 
     // Certification management
     Route::resource('certifications', CertificationController::class)->except(['show'])->names([
-        'index'   => 'admin.certifications.index',
-        'create'  => 'admin.certifications.create',
-        'store'   => 'admin.certifications.store',
-        'edit'    => 'admin.certifications.edit',
-        'update'  => 'admin.certifications.update',
+        'index' => 'admin.certifications.index',
+        'create' => 'admin.certifications.create',
+        'store' => 'admin.certifications.store',
+        'edit' => 'admin.certifications.edit',
+        'update' => 'admin.certifications.update',
         'destroy' => 'admin.certifications.destroy',
     ]);
 
@@ -76,10 +76,6 @@ Route::middleware('admin')->group(function () {
     Route::post('images', [ImageController::class, 'store'])->name('admin.images.store');
     Route::delete('images', [ImageController::class, 'destroy'])->name('admin.images.destroy');
 
-    // Blog post image management
-    Route::prefix('posts')->name('admin.posts.')->group(function () {
-        Route::get('/', [PostController::class, 'index'])->name('index');
-        Route::get('/{id}', [PostController::class, 'show'])->name('show');
-        Route::post('/{id}/images', [PostController::class, 'uploadImage'])->name('images.store');
-    });
+    // Blog posts (read-only view)
+    Route::get('posts', [PostController::class, 'index'])->name('admin.posts.index');
 });

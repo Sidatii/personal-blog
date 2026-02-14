@@ -14,9 +14,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-rose-pine-pine flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p class="text-sm text-rose-pine-subtle">
-            Posts are managed via git. Use the image manager to upload images for use in your markdown files.
-        </p>
+        <div class="text-sm text-rose-pine-subtle">
+            <p class="font-medium text-rose-pine-text mb-1">Git-Based Content Management</p>
+            <p>Posts are managed via git. Add images to <code class="bg-rose-pine-base px-1 rounded">content/images/</code> and reference them in your markdown files. Images sync automatically when you push to git.</p>
+        </div>
     </div>
 
     <!-- Posts Table -->
@@ -58,9 +59,9 @@
                         {{ $post->published_at?->format('M j, Y') ?? '—' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="{{ route('admin.posts.show', $post->id) }}"
-                           class="px-3 py-1.5 bg-rose-pine-gold text-rose-pine-base rounded-lg hover:bg-opacity-80 transition text-xs font-semibold">
-                            Manage Images
+                        <a href="{{ route('posts.show', $post->slug) }}" target="_blank"
+                           class="text-rose-pine-gold hover:text-rose-pine-gold/80 transition">
+                            View Post →
                         </a>
                     </td>
                 </tr>

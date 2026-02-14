@@ -68,6 +68,9 @@ class MarkdownParser
             // Post-process to add ID attributes to headings for TOC anchor links
             $html = $this->addHeadingIds($html);
 
+            // Post-process to resolve relative image paths
+            $html = $this->resolveImagePaths($html);
+
             return [
                 'body' => $html,
                 'matter' => $document->matter(),
@@ -273,6 +276,7 @@ class MarkdownParser
             function ($m) use (&$stash, &$counter) {
                 $key = 'MATHSTASH'.$counter++.'X';
                 $stash[$key] = '$$'.$m[1].'$$';
+
                 return $key;
             },
             $markdown
@@ -284,6 +288,7 @@ class MarkdownParser
             function ($m) use (&$stash, &$counter) {
                 $key = 'MATHSTASH'.$counter++.'X';
                 $stash[$key] = '$'.$m[1].'$';
+
                 return $key;
             },
             $markdown
@@ -298,6 +303,21 @@ class MarkdownParser
     protected function restoreMath(string $html, array $stash): string
     {
         return str_replace(array_keys($stash), array_values($stash), $html);
+    }
+
+    /**
+     * Resolve relative image paths in HTML content.
+     * Transforms src="images/..." to src="/storage/content/images/..."
+     */
+    protected function resolveImagePaths(string $html): string
+    {
+        // Pattern to match img tags with relative paths starting with images/
+        // Handles: images/file.png, ./images/file.png, /images/file.png
+        return preg_replace(
+            '/<img([^>]+?)src=["\'](?:\.?\/?)(images\/[^"\']+)["\']([^>]*)>/i',
+            '<img$1src="/storage/content/images/$2"$3>',
+            $html
+        );
     }
 
     /**

@@ -33,13 +33,14 @@ class SyncContentCommand extends Command
             $count = $indexer->rebuild();
         } else {
             $changed = $indexer->detectChanges();
-            
+
             // If no posts exist yet, index all files
             if (\App\Models\Post::count() === 0) {
                 $this->info('No posts found. Indexing all content...');
                 $count = $indexer->indexAll();
             } elseif ($changed->isEmpty()) {
                 $this->info('No changes detected.');
+
                 return Command::SUCCESS;
             } else {
                 $this->info("Found {$changed->count()} changed files...");
@@ -52,7 +53,41 @@ class SyncContentCommand extends Command
             }
         }
 
+        // Sync images
+        $this->syncImages();
+
         $this->info("Content sync complete. {$count} posts indexed.");
+
         return Command::SUCCESS;
+    }
+
+    /**
+     * Sync images from content/images to storage.
+     */
+    protected function syncImages(): void
+    {
+        $sourceDir = base_path('content/images');
+        $targetDir = storage_path('app/public/content/images');
+
+        if (! is_dir($sourceDir)) {
+            $this->warn('No content/images directory found.');
+
+            return;
+        }
+
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $synced = 0;
+        foreach (glob("$sourceDir/*") as $file) {
+            if (is_file($file)) {
+                $filename = basename($file);
+                copy($file, "$targetDir/$filename");
+                $synced++;
+            }
+        }
+
+        $this->info("Synced {$synced} images to public storage.");
     }
 }
