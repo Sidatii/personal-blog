@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
@@ -25,6 +26,9 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('posts.show');
 // Portfolio Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
+
+// Certifications Route
+Route::get('/certifications', [CertificationController::class, 'index'])->name('certifications.index');
 
 // Contact Routes
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
