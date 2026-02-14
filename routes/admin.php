@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\CertificationController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -69,4 +70,11 @@ Route::middleware('admin')->group(function () {
     // Image uploads
     Route::post('images', [ImageController::class, 'store'])->name('admin.images.store');
     Route::delete('images', [ImageController::class, 'destroy'])->name('admin.images.destroy');
+
+    // Blog post image management
+    Route::prefix('posts')->name('admin.posts.')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::get('/{id}', [PostController::class, 'show'])->name('show');
+        Route::post('/{id}/images', [PostController::class, 'uploadImage'])->name('images.store');
+    });
 });
