@@ -71,7 +71,7 @@
             @endif
             
             {{-- Post Content --}}
-            <div class="prose prose-invert prose-rose-pine max-w-none">
+            <div class="prose prose-invert prose-rose-pine max-w-none post-content">
                 {!! $content !!}
             </div>
 

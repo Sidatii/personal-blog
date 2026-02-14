@@ -61,6 +61,15 @@
   --color-rose-pine-highlight: var(--rose-pine-highlight);
 }
 
+/* Responsive images inside blog post content */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    display: block;
+}
+
 /* Custom dark variant for Rose Pine */
 @custom-variant dark (&:where(.dark, .dark *));
 
