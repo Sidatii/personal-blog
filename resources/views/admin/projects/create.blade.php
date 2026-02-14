@@ -196,20 +196,43 @@
         </div>
 
         <!-- Thumbnail -->
-        <div>
-            <label for="thumbnail" class="block text-sm font-medium text-rose-pine-text mb-2">
-                Thumbnail URL
-            </label>
-            <input type="text"
-                   name="thumbnail"
-                   id="thumbnail"
-                   value="{{ old('thumbnail') }}"
-                   placeholder="/images/projects/project-thumbnail.jpg"
-                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold @error('thumbnail') border-rose-pine-love @enderror">
-            @error('thumbnail')
-            <p class="mt-1 text-sm text-rose-pine-love">{{ $message }}</p>
-            @enderror
-            <p class="mt-1 text-sm text-rose-pine-subtle">Path to project thumbnail image.</p>
+        <x-admin-image-upload name="thumbnail" directory="uploads/projects" label="Thumbnail Image" />
+
+        <!-- Screenshots -->
+        <div
+            x-data="{
+                screenshots: [],
+                async upload(event) {
+                    const files = Array.from(event.target.files);
+                    for (const file of files) {
+                        const form = new FormData();
+                        form.append('file', file);
+                        form.append('directory', 'uploads/projects');
+                        form.append('_token', document.querySelector('meta[name=csrf-token]').content);
+                        const res = await fetch('{{ route('admin.images.store') }}', { method: 'POST', body: form });
+                        const data = await res.json();
+                        if (res.ok) this.screenshots.push({ path: data.path, url: data.url });
+                    }
+                    event.target.value = '';
+                },
+                remove(index) { this.screenshots.splice(index, 1); }
+            }"
+            class="space-y-2"
+        >
+            <label class="block text-sm font-medium text-rose-pine-text">Screenshots</label>
+            <input type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml" multiple @change="upload($event)"
+                   class="w-full px-4 py-2 bg-rose-pine-surface text-rose-pine-text border border-rose-pine-base/30 rounded-lg focus:outline-none focus:border-rose-pine-gold text-sm cursor-pointer">
+            <div class="flex flex-wrap gap-2 mt-2">
+                <template x-for="(s, i) in screenshots" :key="i">
+                    <div class="relative">
+                        <img :src="s.url" class="h-20 w-28 object-cover rounded border border-rose-pine-muted">
+                        <button type="button" @click="remove(i)"
+                                class="absolute top-0 right-0 bg-rose-pine-love text-white text-xs rounded-full w-5 h-5 flex items-center justify-center leading-none">&#x2715;</button>
+                        <input type="hidden" name="screenshots[]" :value="s.path">
+                    </div>
+                </template>
+            </div>
+            <p class="text-sm text-rose-pine-subtle">Select multiple images to upload as project screenshots.</p>
         </div>
 
         <!-- Actions -->
