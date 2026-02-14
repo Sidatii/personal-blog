@@ -295,12 +295,6 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
      */
     private function syncImages(string $gitContentPath): void
     {
-        // Try multiple possible source locations
-        $possibleSourceDirs = [
-            dirname($gitContentPath).'/images',                    // Git repo content/images/
-            base_path('content/images'),                           // Local content/images/
-        ];
-
         $targetDir = storage_path('app/public/content/images');
         $syncedCount = 0;
         $deletedCount = 0;
@@ -312,24 +306,59 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             Log::info('Content sync: Created images directory', ['path' => $targetDir]);
         }
 
+        // Find the git repo root from the content path
+        $repoRoot = $this->findGitRepoRoot($gitContentPath);
+
+        // Try multiple possible source locations
+        $possibleSourceDirs = [
+            $repoRoot.'/content/images',                          // Git repo content/images/ (repo root)
+            dirname($gitContentPath).'/images',                     // Relative to posts dir
+            base_path('content/images'),                            // Local content/images/ fallback
+        ];
+
+        Log::info('Content sync: Looking for images', [
+            'delivery_id' => $this->deliveryId,
+            'git_content_path' => $gitContentPath,
+            'repo_root' => $repoRoot,
+            'source_dirs' => $possibleSourceDirs,
+        ]);
+
         // Find all images from all possible source directories
         foreach ($possibleSourceDirs as $sourceDir) {
-            Log::debug('Content sync: Checking images source', ['path' => $sourceDir, 'exists' => is_dir($sourceDir)]);
+            $exists = is_dir($sourceDir);
+            Log::debug('Content sync: Checking images source', [
+                'path' => $sourceDir,
+                'exists' => $exists,
+            ]);
 
-            if (is_dir($sourceDir)) {
-                foreach (glob("$sourceDir/*") as $file) {
+            if ($exists) {
+                $files = glob("$sourceDir/*");
+                Log::debug('Content sync: Found files in source', [
+                    'path' => $sourceDir,
+                    'count' => count($files),
+                ]);
+
+                foreach ($files as $file) {
                     if (is_file($file) && basename($file) !== '.gitkeep') {
                         $filename = basename($file);
                         // Use most recent version if file exists in multiple sources
                         if (! isset($sourceFiles[$filename]) || filemtime($file) > filemtime($sourceFiles[$filename])) {
                             $sourceFiles[$filename] = $file;
+                            Log::debug('Content sync: Found image file', [
+                                'filename' => $filename,
+                                'source' => $file,
+                            ]);
                         }
                     }
                 }
             }
         }
 
-        Log::debug('Content sync: Found images to sync', ['count' => count($sourceFiles), 'files' => array_keys($sourceFiles)]);
+        Log::info('Content sync: Found images to sync', [
+            'delivery_id' => $this->deliveryId,
+            'count' => count($sourceFiles),
+            'files' => array_keys($sourceFiles),
+        ]);
 
         // Copy all found images to storage
         foreach ($sourceFiles as $filename => $sourceFile) {
@@ -339,9 +368,20 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             if (! file_exists($targetFile) || filemtime($sourceFile) > filemtime($targetFile)) {
                 if (copy($sourceFile, $targetFile)) {
                     $syncedCount++;
-                    Log::debug('Content sync: Copied image', ['file' => $filename]);
+                    Log::info('Content sync: Copied image', [
+                        'delivery_id' => $this->deliveryId,
+                        'file' => $filename,
+                        'from' => $sourceFile,
+                        'to' => $targetFile,
+                    ]);
                 } else {
-                    Log::error('Content sync: Failed to copy image', ['file' => $filename, 'source' => $sourceFile]);
+                    Log::error('Content sync: Failed to copy image', [
+                        'delivery_id' => $this->deliveryId,
+                        'file' => $filename,
+                        'source' => $sourceFile,
+                        'target' => $targetFile,
+                        'error' => error_get_last(),
+                    ]);
                 }
             }
         }
@@ -355,17 +395,49 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             if (! isset($sourceFiles[$filename])) {
                 if (unlink($file)) {
                     $deletedCount++;
-                    Log::debug('Content sync: Deleted orphaned image', ['file' => $filename]);
+                    Log::info('Content sync: Deleted orphaned image', [
+                        'delivery_id' => $this->deliveryId,
+                        'file' => $filename,
+                    ]);
                 }
             }
         }
 
-        Log::info('Content sync: Images synced', [
+        Log::info('Content sync: Images sync complete', [
             'delivery_id' => $this->deliveryId,
             'synced' => $syncedCount,
             'deleted' => $deletedCount,
             'source_dirs_checked' => count(array_filter($possibleSourceDirs, 'is_dir')),
+            'target_dir' => $targetDir,
         ]);
+    }
+
+    /**
+     * Find the git repository root from a content path.
+     */
+    private function findGitRepoRoot(string $gitContentPath): string
+    {
+        // Start from the content path and go up until we find .git directory
+        $currentDir = $gitContentPath;
+        $maxDepth = 10; // Prevent infinite loop
+        $depth = 0;
+
+        while ($depth < $maxDepth) {
+            if (is_dir($currentDir.'/.git')) {
+                return $currentDir;
+            }
+
+            $parentDir = dirname($currentDir);
+            if ($parentDir === $currentDir) {
+                // Reached root
+                break;
+            }
+            $currentDir = $parentDir;
+            $depth++;
+        }
+
+        // Fallback: assume content is 2 levels deep (repo/content/posts)
+        return dirname(dirname($gitContentPath));
     }
 
     /**
