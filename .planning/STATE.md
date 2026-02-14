@@ -1,12 +1,12 @@
 ---
 phase: "08-media-and-content-management"
-plan: "06"
+plan: "08"
 type: "milestone"
 wave: "1"
-status: "in-progress"
+status: "complete"
 last_activity: "2026-02-14"
-progress: "▓▓▓▓▓▓▓░ 7/8 plans complete"
-completed_plans: "7/8 in phase 08"
+progress: "▓▓▓▓▓▓▓▓ 8/8 plans complete"
+completed_plans: "8/8 in phase 08"
 ---
 
 # Personal Blog Project - State
@@ -16,14 +16,14 @@ completed_plans: "7/8 in phase 08"
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Git-based publishing workflow with comprehensive portfolio presence
-**Current focus:** Phase 08 - Media and Content Management
+**Current focus:** Phase 08 - Media and Content Management (COMPLETE)
 
 ## Current Position
 
-**Phase:** 08-media-and-content-management (in progress)
-**Plan:** 06 complete
-**Status:** In progress
-**Last activity:** 2026-02-14 — Completed 08-06-PLAN.md (about page admin editor)
+**Phase:** 08-media-and-content-management (COMPLETE)
+**Plan:** 08 complete (all plans done)
+**Status:** Phase complete
+**Last activity:** 2026-02-14 — Completed 08-08-PLAN.md (public certifications page)
 
 ### Progress Overview
 
@@ -35,9 +35,10 @@ Phase 4: Portfolio Features - 100% complete
 Phase 5: Admin Panel and Auth - 100% complete
 Phase 6: Reader Engagement - 100% complete
 Phase 7: Search and Discovery - 100% complete
-Phase 8: Media and Content Management - 7/8 plans complete (in progress)
+Phase 8: Media and Content Management - 8/8 plans complete (COMPLETE)
 
 **Milestone v1.0: 100% complete**
+**Phase 08: 100% complete**
 
 ### Phase 08 Plan Status
 
@@ -50,7 +51,7 @@ Phase 8: Media and Content Management - 7/8 plans complete (in progress)
 | 08-05 | Blog image support | COMPLETE |
 | 08-06 | About page admin editor | COMPLETE |
 | 08-07 | Umami analytics production-ready | COMPLETE |
-| 08-08 | ... | pending |
+| 08-08 | Public certifications page | COMPLETE |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ All key decisions from v1.0 documented in PROJECT.md:
 - About page content: skills/interests stored as comma-separated strings (not JSON) for simple admin text input UX
 - About page: config/portfolio.php is read-only fallback; settings table is authoritative when rows exist
 - Profile photo path preserved via hidden `about_profile_photo_existing` field — prevents accidental clearing on form save without new upload
+- Public certifications: `->all()` called once, filtered in PHP into featured/standard — avoids two DB queries
+- Nav active state for certifications uses `request()->routeIs('certifications.*')` wildcard pattern
 
 ### Resolved Blockers
 
@@ -103,8 +106,8 @@ None
 ## Session Continuity
 
 **Last session:** 2026-02-14
-**Stopped at:** 08-06 complete
-**Resume file:** .planning/phases/08-media-and-content-management/08-08-PLAN.md
+**Stopped at:** 08-08 complete — Phase 08 fully complete
+**Resume file:** None (all plans complete)
 
 ---
-*Last updated: 2026-02-14 after completing 08-06 (about page admin editor)*
+*Last updated: 2026-02-14 after completing 08-08 (public certifications page) — Phase 08 complete*
