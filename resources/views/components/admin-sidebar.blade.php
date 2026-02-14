@@ -42,6 +42,17 @@
                 </a>
             </li>
 
+            <!-- Certifications -->
+            <li>
+                <a href="{{ route('admin.certifications.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.certifications.*') ? 'bg-rose-pine-gold text-rose-pine-base' : 'text-rose-pine-subtle hover:bg-rose-pine-highlight-low hover:text-rose-pine-text' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                    <span class="font-medium">Certifications</span>
+                </a>
+            </li>
+
             <!-- Contacts -->
             <li>
                 <a href="{{ route('admin.contacts.index') }}"
