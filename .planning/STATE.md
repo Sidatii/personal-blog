@@ -1,12 +1,12 @@
 ---
 phase: "08-media-and-content-management"
-plan: "05"
+plan: "06"
 type: "milestone"
 wave: "1"
 status: "in-progress"
 last_activity: "2026-02-14"
-progress: "▓▓▓▓▓░▓░ 6/8 plans complete"
-completed_plans: "6/8 in phase 08"
+progress: "▓▓▓▓▓▓▓░ 7/8 plans complete"
+completed_plans: "7/8 in phase 08"
 ---
 
 # Personal Blog Project - State
@@ -21,9 +21,9 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 **Phase:** 08-media-and-content-management (in progress)
-**Plan:** 05 complete
+**Plan:** 06 complete
 **Status:** In progress
-**Last activity:** 2026-02-14 — Completed 08-05-PLAN.md (blog image support)
+**Last activity:** 2026-02-14 — Completed 08-06-PLAN.md (about page admin editor)
 
 ### Progress Overview
 
@@ -35,7 +35,7 @@ Phase 4: Portfolio Features - 100% complete
 Phase 5: Admin Panel and Auth - 100% complete
 Phase 6: Reader Engagement - 100% complete
 Phase 7: Search and Discovery - 100% complete
-Phase 8: Media and Content Management - 6/8 plans complete (in progress)
+Phase 8: Media and Content Management - 7/8 plans complete (in progress)
 
 **Milestone v1.0: 100% complete**
 
@@ -48,7 +48,7 @@ Phase 8: Media and Content Management - 6/8 plans complete (in progress)
 | 08-03 | Image upload service | COMPLETE |
 | 08-04 | Project image uploads | COMPLETE |
 | 08-05 | Blog image support | COMPLETE |
-| 08-06 | ... | pending |
+| 08-06 | About page admin editor | COMPLETE |
 | 08-07 | Umami analytics production-ready | COMPLETE |
 | 08-08 | ... | pending |
 
@@ -79,6 +79,9 @@ All key decisions from v1.0 documented in PROJECT.md:
 - Screenshots diff deletion: array_diff(old, new) → imageService->delete() per removed path
 - Blog post admin: read-only list (no CRUD) — git is authoritative; per-post image manager uploads to uploads/blog/ directory
 - Post image markdown snippet copy uses navigator.clipboard with 2s visual confirmation ("Copied ✓")
+- About page content: skills/interests stored as comma-separated strings (not JSON) for simple admin text input UX
+- About page: config/portfolio.php is read-only fallback; settings table is authoritative when rows exist
+- Profile photo path preserved via hidden `about_profile_photo_existing` field — prevents accidental clearing on form save without new upload
 
 ### Resolved Blockers
 
@@ -100,8 +103,8 @@ None
 ## Session Continuity
 
 **Last session:** 2026-02-14
-**Stopped at:** 08-05 complete
-**Resume file:** .planning/phases/08-media-and-content-management/08-06-PLAN.md (or 08-08-PLAN.md)
+**Stopped at:** 08-06 complete
+**Resume file:** .planning/phases/08-media-and-content-management/08-08-PLAN.md
 
 ---
-*Last updated: 2026-02-14 after completing 08-05 (blog image support)*
+*Last updated: 2026-02-14 after completing 08-06 (about page admin editor)*
