@@ -60,8 +60,12 @@ class ProjectController extends Controller
         // Handle thumbnail path from image upload component
         $data['thumbnail'] = $request->input('thumbnail', '');
 
-        // Handle screenshots array from multi-upload
-        $data['screenshots'] = array_values(array_filter((array) $request->input('screenshots', [])));
+        // Handle screenshots from JSON input
+        if ($request->has('screenshots_json')) {
+            $data['screenshots'] = json_decode($request->input('screenshots_json'), true) ?? [];
+        } else {
+            $data['screenshots'] = [];
+        }
 
         // Create the project
         $project = Project::create($data);
@@ -107,8 +111,12 @@ class ProjectController extends Controller
             $data['thumbnail'] = $project->thumbnail;
         }
 
-        // Handle screenshots: collect new list, delete removed ones
-        $data['screenshots'] = array_values(array_filter((array) $request->input('screenshots', [])));
+        // Handle screenshots from JSON input
+        if ($request->has('screenshots_json')) {
+            $data['screenshots'] = json_decode($request->input('screenshots_json'), true) ?? [];
+        } else {
+            $data['screenshots'] = [];
+        }
 
         // Delete screenshots that were removed
         $removedScreenshots = array_diff($project->screenshots ?? [], $data['screenshots']);

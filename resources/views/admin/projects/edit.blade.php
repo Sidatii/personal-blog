@@ -216,7 +216,8 @@
                     }
                     event.target.value = '';
                 },
-                remove(index) { this.screenshots.splice(index, 1); }
+                remove(index) { this.screenshots.splice(index, 1); },
+                get paths() { return this.screenshots.map(s => s.path); }
             }"
             class="space-y-2"
         >
@@ -229,10 +230,11 @@
                         <img :src="s.url" class="h-20 w-28 object-cover rounded border border-rose-pine-muted">
                         <button type="button" @click="remove(i)"
                                 class="absolute top-0 right-0 bg-rose-pine-love text-white text-xs rounded-full w-5 h-5 flex items-center justify-center leading-none">&#x2715;</button>
-                        <input type="hidden" name="screenshots[]" :value="s.path">
                     </div>
                 </template>
             </div>
+            <!-- Hidden input with all screenshot paths as JSON -->
+            <input type="hidden" name="screenshots_json" x-model="JSON.stringify(paths)">
             <p class="text-sm text-rose-pine-subtle">Select multiple images to upload as project screenshots. Existing screenshots are shown above.</p>
         </div>
 

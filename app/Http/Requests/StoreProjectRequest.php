@@ -33,8 +33,7 @@ class StoreProjectRequest extends FormRequest
             'live_url' => ['nullable', 'url', 'max:255'],
             'github_url' => ['nullable', 'url', 'max:255'],
             'thumbnail' => ['nullable', 'string', 'max:255'],
-            'screenshots' => ['nullable', 'array'],
-            'screenshots.*' => ['string'],
+            'screenshots_json' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
