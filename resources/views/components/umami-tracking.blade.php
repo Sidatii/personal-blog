@@ -1,8 +1,7 @@
-@if(config('services.umami.enabled') && config('services.umami.host') && config('services.umami.website_id') && app()->environment('production'))
-    <script async defer
-        src="{{ config('services.umami.host') }}/{{ config('services.umami.script_name', 'script.js') }}"
-        data-website-id="{{ config('services.umami.website_id') }}"
-        data-do-not-track="true"
-        data-cache="true">
-    </script>
+@if(config('services.umami.enabled') && config('services.umami.website_id') && config('services.umami.url'))
+<script
+    defer
+    src="{{ rtrim(config('services.umami.url'), '/') }}/script.js"
+    data-website-id="{{ config('services.umami.website_id') }}"
+></script>
 @endif

@@ -40,17 +40,16 @@ return [
     | Umami Analytics
     |--------------------------------------------------------------------------
     |
-    | Umami is a privacy-first web analytics platform. This configuration
-    | allows you to connect your Laravel application to a self-hosted
-    | Umami instance for tracking visitor engagement metrics.
+    | Umami is a privacy-first, cookie-free web analytics platform. Set
+    | UMAMI_ENABLED=true plus UMAMI_URL and UMAMI_WEBSITE_ID to activate
+    | tracking on public pages only (never on the admin panel).
     |
     */
 
     'umami' => [
-        'host' => env('UMAMI_HOST'),
-        'website_id' => env('UMAMI_WEBSITE_ID'),
-        'enabled' => env('UMAMI_ENABLED', true),
-        'script_name' => env('UMAMI_TRACKER_SCRIPT', 'script.js'),
+        'enabled'    => env('UMAMI_ENABLED', false),
+        'url'        => env('UMAMI_URL', ''),
+        'website_id' => env('UMAMI_WEBSITE_ID', ''),
     ],
 
 ];
