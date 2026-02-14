@@ -312,9 +312,10 @@ class MarkdownParser
     protected function resolveImagePaths(string $html): string
     {
         // Pattern to match img tags with relative paths starting with images/
+        // Captures just the filename/path after "images/" to avoid double "images/" in output
         // Handles: images/file.png, ./images/file.png, /images/file.png
         return preg_replace(
-            '/<img([^>]+?)src=["\'](?:\.?\/?)(images\/[^"\']+)["\']([^>]*)>/i',
+            '/<img([^>]+?)src=["\'](?:\.?\/?)images\/([^"\']+)["\']([^>]*)>/i',
             '<img$1src="/storage/content/images/$2"$3>',
             $html
         );
