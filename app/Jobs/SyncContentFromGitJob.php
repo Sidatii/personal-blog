@@ -295,14 +295,16 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
      */
     private function syncImages(string $gitContentPath): void
     {
-        $sourceDir = dirname($gitContentPath).'/images';
+        // Try multiple possible source locations
+        $possibleSourceDirs = [
+            dirname($gitContentPath).'/images',                    // Git repo content/images/
+            base_path('content/images'),                           // Local content/images/
+        ];
+
         $targetDir = storage_path('app/public/content/images');
-
-        if (! is_dir($sourceDir)) {
-            Log::debug('Content sync: No images directory in git', ['path' => $sourceDir]);
-
-            return;
-        }
+        $syncedCount = 0;
+        $deletedCount = 0;
+        $sourceFiles = [];
 
         // Ensure target directory exists
         if (! is_dir($targetDir)) {
@@ -310,32 +312,51 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             Log::info('Content sync: Created images directory', ['path' => $targetDir]);
         }
 
-        $syncedCount = 0;
-        $deletedCount = 0;
+        // Find all images from all possible source directories
+        foreach ($possibleSourceDirs as $sourceDir) {
+            Log::debug('Content sync: Checking images source', ['path' => $sourceDir, 'exists' => is_dir($sourceDir)]);
 
-        // Copy all images from git to storage
-        foreach (glob("$sourceDir/*") as $file) {
-            if (is_file($file)) {
-                $filename = basename($file);
-                $targetFile = "$targetDir/$filename";
-
-                // Only copy if file is new or changed
-                if (! file_exists($targetFile) || filemtime($file) > filemtime($targetFile)) {
-                    copy($file, $targetFile);
-                    $syncedCount++;
+            if (is_dir($sourceDir)) {
+                foreach (glob("$sourceDir/*") as $file) {
+                    if (is_file($file) && basename($file) !== '.gitkeep') {
+                        $filename = basename($file);
+                        // Use most recent version if file exists in multiple sources
+                        if (! isset($sourceFiles[$filename]) || filemtime($file) > filemtime($sourceFiles[$filename])) {
+                            $sourceFiles[$filename] = $file;
+                        }
+                    }
                 }
             }
         }
 
-        // Remove images from storage that don't exist in git
+        Log::debug('Content sync: Found images to sync', ['count' => count($sourceFiles), 'files' => array_keys($sourceFiles)]);
+
+        // Copy all found images to storage
+        foreach ($sourceFiles as $filename => $sourceFile) {
+            $targetFile = "$targetDir/$filename";
+
+            // Only copy if file is new or changed
+            if (! file_exists($targetFile) || filemtime($sourceFile) > filemtime($targetFile)) {
+                if (copy($sourceFile, $targetFile)) {
+                    $syncedCount++;
+                    Log::debug('Content sync: Copied image', ['file' => $filename]);
+                } else {
+                    Log::error('Content sync: Failed to copy image', ['file' => $filename, 'source' => $sourceFile]);
+                }
+            }
+        }
+
+        // Remove images from storage that don't exist in any source
         foreach (glob("$targetDir/*") as $file) {
             $filename = basename($file);
             if ($filename === '.gitkeep') {
                 continue;
             }
-            if (! file_exists("$sourceDir/$filename")) {
-                unlink($file);
-                $deletedCount++;
+            if (! isset($sourceFiles[$filename])) {
+                if (unlink($file)) {
+                    $deletedCount++;
+                    Log::debug('Content sync: Deleted orphaned image', ['file' => $filename]);
+                }
             }
         }
 
@@ -343,6 +364,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             'delivery_id' => $this->deliveryId,
             'synced' => $syncedCount,
             'deleted' => $deletedCount,
+            'source_dirs_checked' => count(array_filter($possibleSourceDirs, 'is_dir')),
         ]);
     }
 

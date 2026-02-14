@@ -21,6 +21,8 @@ I made some changes to test the sync mechanism!
 echo "Hello Updated World";
 ```
 
+![Test Screenshot](images/oob-white.png)
+
 ## Conclusion
 
 Thanks for reading!

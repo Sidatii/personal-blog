@@ -70,24 +70,34 @@ class SyncContentCommand extends Command
         $targetDir = storage_path('app/public/content/images');
 
         if (! is_dir($sourceDir)) {
-            $this->warn('No content/images directory found.');
+            $this->warn('No content/images directory found at: '.$sourceDir);
 
             return;
         }
 
         if (! is_dir($targetDir)) {
             mkdir($targetDir, 0755, true);
+            $this->info('Created target directory: '.$targetDir);
         }
 
         $synced = 0;
         foreach (glob("$sourceDir/*") as $file) {
-            if (is_file($file)) {
+            if (is_file($file) && basename($file) !== '.gitkeep') {
                 $filename = basename($file);
-                copy($file, "$targetDir/$filename");
-                $synced++;
+                $targetFile = "$targetDir/$filename";
+
+                // Only copy if file is new or changed
+                if (! file_exists($targetFile) || filemtime($file) > filemtime($targetFile)) {
+                    if (copy($file, $targetFile)) {
+                        $synced++;
+                    } else {
+                        $this->error("Failed to copy: $filename");
+                    }
+                }
             }
         }
 
         $this->info("Synced {$synced} images to public storage.");
+        $this->info("Target directory: $targetDir");
     }
 }
