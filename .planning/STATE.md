@@ -1,12 +1,12 @@
 ---
 phase: "08-media-and-content-management"
-plan: "04"
+plan: "05"
 type: "milestone"
 wave: "1"
 status: "in-progress"
 last_activity: "2026-02-14"
-progress: "▓▓▓▓░░▓░ 5/8 plans complete"
-completed_plans: "5/8 in phase 08"
+progress: "▓▓▓▓▓░▓░ 6/8 plans complete"
+completed_plans: "6/8 in phase 08"
 ---
 
 # Personal Blog Project - State
@@ -21,9 +21,9 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 **Phase:** 08-media-and-content-management (in progress)
-**Plan:** 04 complete (also 02 complete in same session)
+**Plan:** 05 complete
 **Status:** In progress
-**Last activity:** 2026-02-14 — Completed 08-04-PLAN.md (project image uploads)
+**Last activity:** 2026-02-14 — Completed 08-05-PLAN.md (blog image support)
 
 ### Progress Overview
 
@@ -35,7 +35,7 @@ Phase 4: Portfolio Features - 100% complete
 Phase 5: Admin Panel and Auth - 100% complete
 Phase 6: Reader Engagement - 100% complete
 Phase 7: Search and Discovery - 100% complete
-Phase 8: Media and Content Management - 5/8 plans complete (in progress)
+Phase 8: Media and Content Management - 6/8 plans complete (in progress)
 
 **Milestone v1.0: 100% complete**
 
@@ -47,7 +47,7 @@ Phase 8: Media and Content Management - 5/8 plans complete (in progress)
 | 08-02 | Certifications admin CRUD | COMPLETE |
 | 08-03 | Image upload service | COMPLETE |
 | 08-04 | Project image uploads | COMPLETE |
-| 08-05 | ... | pending |
+| 08-05 | Blog image support | COMPLETE |
 | 08-06 | ... | pending |
 | 08-07 | Umami analytics production-ready | COMPLETE |
 | 08-08 | ... | pending |
@@ -77,6 +77,8 @@ All key decisions from v1.0 documented in PROJECT.md:
 - Project images: use `thumbnail_url` accessor (Storage::disk('public')->url()) in views, not raw `thumbnail` path — decouples DB storage path from public URL
 - Edit form empty thumbnail submission preserves existing path (controller else-branch) — no unintended removal
 - Screenshots diff deletion: array_diff(old, new) → imageService->delete() per removed path
+- Blog post admin: read-only list (no CRUD) — git is authoritative; per-post image manager uploads to uploads/blog/ directory
+- Post image markdown snippet copy uses navigator.clipboard with 2s visual confirmation ("Copied ✓")
 
 ### Resolved Blockers
 
@@ -98,8 +100,8 @@ None
 ## Session Continuity
 
 **Last session:** 2026-02-14
-**Stopped at:** 08-04 complete
-**Resume file:** .planning/phases/08-media-and-content-management/08-05-PLAN.md (or 08-06-PLAN.md)
+**Stopped at:** 08-05 complete
+**Resume file:** .planning/phases/08-media-and-content-management/08-06-PLAN.md (or 08-08-PLAN.md)
 
 ---
-*Last updated: 2026-02-14 after completing 08-04 (project image uploads)*
+*Last updated: 2026-02-14 after completing 08-05 (blog image support)*
