@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\LogoutController;
@@ -66,6 +67,10 @@ Route::middleware('admin')->group(function () {
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+
+    // About page editor
+    Route::get('about', [AboutController::class, 'index'])->name('admin.about.index');
+    Route::put('about', [AboutController::class, 'update'])->name('admin.about.update');
 
     // Image uploads
     Route::post('images', [ImageController::class, 'store'])->name('admin.images.store');
