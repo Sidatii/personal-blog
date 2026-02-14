@@ -1,12 +1,12 @@
 ---
 phase: "08-media-and-content-management"
-plan: "03"
+plan: "02"
 type: "milestone"
 wave: "1"
 status: "in-progress"
 last_activity: "2026-02-14"
-progress: "▓░▓░░░▓░ 3/8 plans complete"
-completed_plans: "3/8 in phase 08"
+progress: "▓▓▓▓░░▓░ 5/8 plans complete"
+completed_plans: "5/8 in phase 08"
 ---
 
 # Personal Blog Project - State
@@ -21,9 +21,9 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 **Phase:** 08-media-and-content-management (in progress)
-**Plan:** 03 complete
+**Plan:** 02 complete
 **Status:** In progress
-**Last activity:** 2026-02-14 — Completed 08-03-PLAN.md (image upload infrastructure)
+**Last activity:** 2026-02-14 — Completed 08-02-PLAN.md (admin certifications CRUD)
 
 ### Progress Overview
 
@@ -35,7 +35,7 @@ Phase 4: Portfolio Features - 100% complete
 Phase 5: Admin Panel and Auth - 100% complete
 Phase 6: Reader Engagement - 100% complete
 Phase 7: Search and Discovery - 100% complete
-Phase 8: Media and Content Management - 3/8 plans complete (in progress)
+Phase 8: Media and Content Management - 5/8 plans complete (in progress)
 
 **Milestone v1.0: 100% complete**
 
@@ -44,9 +44,9 @@ Phase 8: Media and Content Management - 3/8 plans complete (in progress)
 | Plan | Name | Status |
 |------|------|--------|
 | 08-01 | Certifications schema, model, repository | COMPLETE |
-| 08-02 | Certifications admin CRUD | pending |
+| 08-02 | Certifications admin CRUD | COMPLETE |
 | 08-03 | Image upload service | COMPLETE |
-| 08-04 | Certifications public display | pending |
+| 08-04 | Certifications public display | COMPLETE |
 | 08-05 | ... | pending |
 | 08-06 | ... | pending |
 | 08-07 | Umami analytics production-ready | COMPLETE |
@@ -72,6 +72,8 @@ All key decisions from v1.0 documented in PROJECT.md:
 - Umami production-only env check removed from component — `UMAMI_ENABLED` flag is the authoritative gate
 - Image upload: Laravel public disk with storage:link (no S3); UUID filenames; directory whitelist for path traversal prevention
 - admin-image-upload Blade component is the standard interface for all admin image fields going forward
+- Admin certification CRUD: paginate via `Certification::ordered()->paginate(15)` directly (repository has no paginate method)
+- Admin certification update: empty badge_image input = keep existing DB value (no accidental deletion without new upload)
 
 ### Resolved Blockers
 
@@ -93,8 +95,8 @@ None
 ## Session Continuity
 
 **Last session:** 2026-02-14
-**Stopped at:** 08-03 complete
-**Resume file:** .planning/phases/08-media-and-content-management/08-02-PLAN.md (or 08-04-PLAN.md)
+**Stopped at:** 08-02 complete
+**Resume file:** .planning/phases/08-media-and-content-management/08-05-PLAN.md (or 08-06-PLAN.md)
 
 ---
-*Last updated: 2026-02-14 after completing 08-03 (image upload infrastructure)*
+*Last updated: 2026-02-14 after completing 08-02 (admin certifications CRUD)*
