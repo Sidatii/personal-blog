@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,16 @@ Route::middleware('admin')->group(function () {
         'edit' => 'admin.projects.edit',
         'update' => 'admin.projects.update',
         'destroy' => 'admin.projects.destroy',
+    ]);
+
+    // Certification management
+    Route::resource('certifications', CertificationController::class)->except(['show'])->names([
+        'index'   => 'admin.certifications.index',
+        'create'  => 'admin.certifications.create',
+        'store'   => 'admin.certifications.store',
+        'edit'    => 'admin.certifications.edit',
+        'update'  => 'admin.certifications.update',
+        'destroy' => 'admin.certifications.destroy',
     ]);
 
     // Contact submissions management
