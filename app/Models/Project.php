@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 
 class Project extends Model
@@ -31,6 +32,14 @@ class Project extends Model
         'screenshots' => 'array',
         'is_featured' => 'boolean',
     ];
+
+    /**
+     * Get the full public URL for the thumbnail image.
+     */
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        return $this->thumbnail ? Storage::disk('public')->url($this->thumbnail) : null;
+    }
 
     /**
      * Scope a query to only include active projects.

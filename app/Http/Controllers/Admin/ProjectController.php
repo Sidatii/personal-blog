@@ -7,12 +7,14 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Services\ActivityLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     public function __construct(
-        protected ActivityLogger $activityLogger
+        protected ActivityLogger $activityLogger,
+        protected ImageUploadService $imageService
     ) {}
 
     /**
@@ -55,6 +57,12 @@ class ProjectController extends Controller
             $data['tech_stack'] = array_values(array_filter($data['tech_stack']));
         }
 
+        // Handle thumbnail path from image upload component
+        $data['thumbnail'] = $request->input('thumbnail', '');
+
+        // Handle screenshots array from multi-upload
+        $data['screenshots'] = array_values(array_filter((array) $request->input('screenshots', [])));
+
         // Create the project
         $project = Project::create($data);
 
@@ -89,6 +97,25 @@ class ProjectController extends Controller
             $data['tech_stack'] = array_values(array_filter($data['tech_stack']));
         }
 
+        // Handle thumbnail: if new path sent and different from existing, delete old
+        $newThumbnail = $request->input('thumbnail', '');
+        if ($newThumbnail && $newThumbnail !== $project->thumbnail) {
+            $this->imageService->delete($project->thumbnail);
+            $data['thumbnail'] = $newThumbnail;
+        } else {
+            // Keep existing thumbnail path (not submitted means no change)
+            $data['thumbnail'] = $project->thumbnail;
+        }
+
+        // Handle screenshots: collect new list, delete removed ones
+        $data['screenshots'] = array_values(array_filter((array) $request->input('screenshots', [])));
+
+        // Delete screenshots that were removed
+        $removedScreenshots = array_diff($project->screenshots ?? [], $data['screenshots']);
+        foreach ($removedScreenshots as $removed) {
+            $this->imageService->delete($removed);
+        }
+
         // Update the project
         $project->update($data);
 
@@ -107,6 +134,13 @@ class ProjectController extends Controller
     {
         $title = $project->title;
         $id = $project->id;
+
+        // Delete associated images before removing record
+        $this->imageService->delete($project->thumbnail);
+        foreach ($project->screenshots ?? [] as $screenshot) {
+            $this->imageService->delete($screenshot);
+        }
+
         $project->delete();
 
         // Log activity
