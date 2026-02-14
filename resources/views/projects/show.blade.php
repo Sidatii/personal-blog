@@ -33,10 +33,10 @@
         </header>
 
         {{-- Thumbnail --}}
-        @if($project->thumbnail)
+        @if($project->thumbnail_url)
             <div class="mb-10 rounded-lg overflow-hidden border border-rose-pine-overlay">
-                <img src="{{ $project->thumbnail }}" 
-                     alt="{{ $project->title }}" 
+                <img src="{{ $project->thumbnail_url }}"
+                     alt="{{ $project->title }}"
                      class="w-full h-auto object-cover">
             </div>
         @endif
@@ -67,18 +67,16 @@
 
         {{-- Screenshots --}}
         @if(!empty($project->screenshots))
-            <div class="mb-10">
-                <h2 class="text-xl font-semibold text-rose-pine-text mb-4">Screenshots</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    @foreach($project->screenshots as $screenshot)
-                        <div class="rounded-lg overflow-hidden border border-rose-pine-overlay">
-                            <img src="{{ $screenshot }}" 
-                                 alt="Screenshot of {{ $project->title }}" 
-                                 class="w-full h-auto object-cover hover:opacity-90 transition-opacity">
-                        </div>
-                    @endforeach
-                </div>
+        <section class="mt-8 mb-10">
+            <h2 class="text-xl font-semibold text-rose-pine-text mb-4">Screenshots</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @foreach($project->screenshots as $path)
+                <a href="{{ asset('storage/' . $path) }}" target="_blank" class="block rounded-lg overflow-hidden border border-rose-pine-muted hover:border-rose-pine-subtle transition">
+                    <img src="{{ asset('storage/' . $path) }}" alt="Screenshot {{ $loop->iteration }}" class="w-full object-cover">
+                </a>
+                @endforeach
             </div>
+        </section>
         @endif
 
         {{-- Links --}}

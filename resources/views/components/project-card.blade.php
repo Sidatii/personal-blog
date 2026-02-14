@@ -6,11 +6,11 @@
    class="block bg-rose-pine-surface border border-rose-pine-overlay rounded-lg overflow-hidden hover:ring-1 hover:ring-rose-pine-gold/50 transition break-inside-avoid">
     
     {{-- Thumbnail --}}
-    @if($project->thumbnail)
-        <div class="w-full">
-            <img src="{{ $project->thumbnail }}" 
-                 alt="{{ $project->title }}" 
-                 class="w-full h-auto object-cover">
+    @if($project->thumbnail_url)
+        <img src="{{ $project->thumbnail_url }}" alt="{{ $project->title }}" class="w-full h-40 object-cover rounded-t-lg">
+    @else
+        <div class="w-full h-40 bg-rose-pine-overlay rounded-t-lg flex items-center justify-center">
+            <span class="text-rose-pine-muted text-3xl">&#x1F5A5;</span>
         </div>
     @endif
     
