@@ -51,11 +51,17 @@ class AboutController extends Controller
         foreach ($map as $inputKey => $settingKey) {
             $value = $request->input($inputKey, '');
 
-            // Handle profile photo: if new path supplied, delete old stored file
-            if ($inputKey === 'about_profile_photo' && $value) {
-                $current = Setting::where('key', 'about.profile_photo')->value('value');
-                if ($current && $current !== $value) {
-                    $this->imageService->delete($current);
+            // Handle profile photo: preserve existing if no new upload was made
+            if ($inputKey === 'about_profile_photo') {
+                if (empty($value)) {
+                    // No new upload — keep the existing stored path
+                    $value = $request->input('about_profile_photo_existing', '');
+                } else {
+                    // New upload — delete the old file if path changed
+                    $current = Setting::where('key', 'about.profile_photo')->value('value');
+                    if ($current && $current !== $value) {
+                        $this->imageService->delete($current);
+                    }
                 }
             }
 
