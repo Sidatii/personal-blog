@@ -10,7 +10,6 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\ThrottlesExceptions;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -58,18 +57,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
      */
     public function middleware(): array
     {
-        // Temporarily disabled for debugging
-        Log::debug('Content sync: middleware called');
-
         return [];
-        /*
-        return [
-            (new ThrottlesExceptions(
-                config('git-sync.job_max_exceptions', 3),
-                config('git-sync.job_backoff_minutes', 5) * 60
-            ))->backoff(config('git-sync.job_backoff_minutes', 5)),
-        ];
-        */
     }
 
     /**
@@ -94,14 +82,6 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             'max_tries' => $this->tries,
         ]);
 
-        // If this is a retry, add delay to prevent hammering
-        if ($attemptNumber > 1) {
-            Log::warning('Content sync: Retry attempt', [
-                'delivery_id' => $this->deliveryId,
-                'attempt' => $attemptNumber,
-            ]);
-        }
-
         try {
             $this->doHandle($gitSync, $indexer);
             Log::info('Content sync: completed successfully', [
@@ -114,15 +94,6 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                 'attempt' => $attemptNumber,
                 'error' => $e->getMessage(),
             ]);
-
-            // Don't retry on certain errors
-            if (str_contains($e->getMessage(), 'timed out')) {
-                Log::error('Content sync: Lock timeout - not retrying', ['delivery_id' => $this->deliveryId]);
-                $this->fail($e);
-
-                return;
-            }
-
             throw $e;
         }
     }
@@ -138,19 +109,16 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             Log::error('Content sync: pullLatest failed', [
                 'delivery_id' => $this->deliveryId,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }
 
         // Get the content path from the git repository
-        Log::debug('Content sync: Getting content path', ['delivery_id' => $this->deliveryId]);
         $gitContentPath = $gitSync->getContentPath();
         Log::debug('Content sync: Got content path', ['path' => $gitContentPath, 'delivery_id' => $this->deliveryId]);
 
         // Verify the content path exists in the repository
         if (! is_dir($gitContentPath)) {
-            // Log the actual structure to help debug
             $repoPath = config('git-sync.repo_storage_path');
             $actualContents = is_dir($repoPath) ? scandir($repoPath) : ['DIRECTORY_NOT_FOUND'];
             Log::error('Content sync: Content path does not exist in repository', [
@@ -159,10 +127,8 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                 'repo_contents' => $actualContents,
                 'delivery_id' => $this->deliveryId,
             ]);
-            throw new \RuntimeException('Content path does not exist in repository: '.$gitContentPath.'. Check your GIT_SYNC_CONTENT_PATH setting.');
+            throw new \RuntimeException('Content path does not exist in repository: '.$gitContentPath);
         }
-
-        Log::debug('Content sync: Content path verified', ['path' => $gitContentPath, 'delivery_id' => $this->deliveryId]);
 
         // Create/update symlink from base_path('content/posts') to git content path
         $symlinkPath = base_path('content/posts');
@@ -178,28 +144,21 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
 
         clearstatcache(true, $symlinkPath);
 
-        // Case 1: Symlink exists and points to valid target
+        // Manage posts symlink
         if (is_link($symlinkPath)) {
             $currentTarget = @readlink($symlinkPath);
             if (is_dir($currentTarget)) {
-                Log::debug('Content sync: Symlink valid, continuing', [
-                    'symlink' => $symlinkPath,
-                    'target' => $currentTarget,
-                    'delivery_id' => $this->deliveryId,
-                ]);
+                Log::debug('Content sync: Symlink valid', ['symlink' => $symlinkPath, 'target' => $currentTarget]);
             } else {
-                // Symlink exists but target is invalid, recreate it
                 Log::warning('Content sync: Symlink exists but target invalid, recreating', [
                     'symlink' => $symlinkPath,
                     'current_target' => $currentTarget,
                     'new_target' => $absoluteTarget,
-                    'delivery_id' => $this->deliveryId,
                 ]);
                 @unlink($symlinkPath);
                 $this->createSymlink($absoluteTarget, $symlinkPath);
             }
         } else {
-            // Case 2: No symlink exists (first time)
             $this->createSymlink($absoluteTarget, $symlinkPath);
         }
 
@@ -207,21 +166,10 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         $this->syncImagesSymlink($gitContentPath);
 
         // Detect changed files
-        Log::debug('Content sync: Detecting changes', ['delivery_id' => $this->deliveryId]);
-        try {
-            $changedFiles = $indexer->detectChanges();
-            Log::debug('Content sync: Changes detected', ['count' => $changedFiles->count(), 'delivery_id' => $this->deliveryId]);
-        } catch (\Throwable $e) {
-            Log::error('Content sync: detectChanges failed', [
-                'delivery_id' => $this->deliveryId,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
-        }
+        $changedFiles = $indexer->detectChanges();
+        Log::debug('Content sync: Changes detected', ['count' => $changedFiles->count(), 'delivery_id' => $this->deliveryId]);
 
         if ($changedFiles->isNotEmpty()) {
-            // Index each changed file
             $count = 0;
             foreach ($changedFiles as $filepath) {
                 Log::debug('Content sync: Indexing file', ['filepath' => $filepath, 'delivery_id' => $this->deliveryId]);
@@ -243,27 +191,10 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                 'files_processed' => $count,
             ]);
         } else {
-            // No changed files, run full index as fallback (handles first sync after clone)
-            Log::debug('Content sync: Running full index', ['delivery_id' => $this->deliveryId]);
-            try {
-                $count = $indexer->indexAll();
-            } catch (\Throwable $e) {
-                Log::error('Content sync: indexAll failed', [
-                    'delivery_id' => $this->deliveryId,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-                throw $e;
-            }
-
-            Log::info('Content sync completed - full index', [
-                'delivery_id' => $this->deliveryId,
-                'files_processed' => $count,
-            ]);
+            Log::debug('Content sync: No changed files', ['delivery_id' => $this->deliveryId]);
         }
 
         // Delete posts that no longer exist in git
-        Log::debug('Content sync: Checking for deleted posts', ['delivery_id' => $this->deliveryId]);
         try {
             $deletedCount = $indexer->deleteMissing();
             if ($deletedCount > 0) {
@@ -277,27 +208,27 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                 'delivery_id' => $this->deliveryId,
                 'error' => $e->getMessage(),
             ]);
-            // Don't throw - this is cleanup, not critical
         }
 
-        // Sync images from git to storage (images dir is now symlinked)
+        // Sync images from git to storage (force sync all images)
         Log::debug('Content sync: Syncing images', ['delivery_id' => $this->deliveryId]);
         try {
-            $this->syncImages();
+            $this->syncImages(true); // true = force sync all images
         } catch (\Throwable $e) {
             Log::error('Content sync: Image sync failed', [
                 'delivery_id' => $this->deliveryId,
                 'error' => $e->getMessage(),
             ]);
-            // Don't throw - images are supplementary
         }
     }
 
     /**
      * Sync images from git repository to public storage.
      * Images are sourced from the symlinked content/images directory.
+     *
+     * @param  bool  $force  If true, copy all images regardless of timestamp
      */
-    private function syncImages(): void
+    private function syncImages(bool $force = false): void
     {
         $sourceDir = base_path('content/images');
         $targetDir = storage_path('app/public/content/images');
@@ -305,13 +236,11 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         $deletedCount = 0;
         $sourceFiles = [];
 
-        // Ensure target directory exists
         if (! is_dir($targetDir)) {
             mkdir($targetDir, 0755, true);
             Log::info('Content sync: Created images directory', ['path' => $targetDir]);
         }
 
-        // Check if source directory exists (should be symlinked to git repo)
         if (! is_dir($sourceDir)) {
             Log::warning('Content sync: Images source directory not found', [
                 'delivery_id' => $this->deliveryId,
@@ -321,13 +250,13 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        Log::info('Content sync: Syncing images from symlinked directory', [
+        Log::info('Content sync: Syncing images', [
             'delivery_id' => $this->deliveryId,
             'source' => $sourceDir,
             'target' => $targetDir,
+            'force' => $force,
         ]);
 
-        // Find all images in source directory
         foreach (glob("$sourceDir/*") as $file) {
             if (is_file($file) && basename($file) !== '.gitkeep') {
                 $filename = basename($file);
@@ -335,18 +264,21 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             }
         }
 
-        Log::info('Content sync: Found images to sync', [
+        Log::info('Content sync: Found images', [
             'delivery_id' => $this->deliveryId,
             'count' => count($sourceFiles),
             'files' => array_keys($sourceFiles),
         ]);
 
-        // Copy all found images to storage
         foreach ($sourceFiles as $filename => $sourceFile) {
             $targetFile = "$targetDir/$filename";
 
-            // Only copy if file is new or changed
-            if (! file_exists($targetFile) || filemtime($sourceFile) > filemtime($targetFile)) {
+            $shouldCopy = $force
+                || ! file_exists($targetFile)
+                || filemtime($sourceFile) > filemtime($targetFile)
+                || filesize($sourceFile) !== @filesize($targetFile);
+
+            if ($shouldCopy) {
                 if (copy($sourceFile, $targetFile)) {
                     $syncedCount++;
                     Log::info('Content sync: Copied image', [
@@ -357,13 +289,11 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                     Log::error('Content sync: Failed to copy image', [
                         'delivery_id' => $this->deliveryId,
                         'file' => $filename,
-                        'source' => $sourceFile,
                     ]);
                 }
             }
         }
 
-        // Remove images from storage that don't exist in source
         foreach (glob("$targetDir/*") as $file) {
             $filename = basename($file);
             if ($filename === '.gitkeep') {
@@ -388,62 +318,13 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     }
 
     /**
-     * Handle a job failure.
-     */
-    public function failed(Throwable $exception): void
-    {
-        Log::error('Content sync job failed permanently', [
-            'delivery_id' => $this->deliveryId,
-            'error' => $exception->getMessage(),
-        ]);
-
-        // Send failure notification
-        $adminEmail = config('git-sync.admin_email', config('mail.from.address'));
-
-        if ($adminEmail) {
-            Notification::route('mail', $adminEmail)
-                ->notify(new ContentSyncFailedNotification($exception, $this->deliveryId));
-        }
-    }
-
-    /**
-     * Create a symlink with proper error handling.
-     */
-    private function createSymlink(string $target, string $link): void
-    {
-        $parentDir = dirname($link);
-        if (! is_dir($parentDir)) {
-            mkdir($parentDir, 0755, true);
-        }
-
-        if (! @symlink($target, $link)) {
-            $error = error_get_last();
-            throw new \RuntimeException('Failed to create symlink: '.($error['message'] ?? 'Unknown error'));
-        }
-
-        Log::info('Content symlink created', [
-            'target' => $target,
-            'link' => $link,
-        ]);
-    }
-
-    /**
      * Create/update symlink for images directory from git repo.
      */
     private function syncImagesSymlink(string $gitContentPath): void
     {
-        // Find the images directory in the git repo
-        // It's at the same level as the posts directory
         $gitImagesPath = dirname($gitContentPath).'/images';
         $symlinkPath = base_path('content/images');
 
-        Log::debug('Content sync: Syncing images symlink', [
-            'delivery_id' => $this->deliveryId,
-            'git_images_path' => $gitImagesPath,
-            'symlink_path' => $symlinkPath,
-        ]);
-
-        // Check if images directory exists in git repo
         if (! is_dir($gitImagesPath)) {
             Log::warning('Content sync: No images directory in git repo', [
                 'delivery_id' => $this->deliveryId,
@@ -466,34 +347,64 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
 
         clearstatcache(true, $symlinkPath);
 
-        // Check if symlink exists and is valid
         if (is_link($symlinkPath)) {
             $currentTarget = @readlink($symlinkPath);
             if ($currentTarget === $absoluteTarget) {
                 Log::debug('Content sync: Images symlink valid', [
                     'delivery_id' => $this->deliveryId,
                     'symlink' => $symlinkPath,
-                    'target' => $currentTarget,
                 ]);
             } else {
-                // Recreate symlink with correct target
-                Log::warning('Content sync: Images symlink needs update', [
+                Log::warning('Content sync: Images symlink updating', [
                     'delivery_id' => $this->deliveryId,
-                    'symlink' => $symlinkPath,
-                    'current_target' => $currentTarget,
+                    'old_target' => $currentTarget,
                     'new_target' => $absoluteTarget,
                 ]);
                 @unlink($symlinkPath);
                 $this->createSymlink($absoluteTarget, $symlinkPath);
             }
         } else {
-            // Create new symlink
             Log::info('Content sync: Creating images symlink', [
                 'delivery_id' => $this->deliveryId,
                 'target' => $absoluteTarget,
-                'link' => $symlinkPath,
             ]);
             $this->createSymlink($absoluteTarget, $symlinkPath);
+        }
+    }
+
+    /**
+     * Create a symlink with proper error handling.
+     */
+    private function createSymlink(string $target, string $link): void
+    {
+        $parentDir = dirname($link);
+        if (! is_dir($parentDir)) {
+            mkdir($parentDir, 0755, true);
+        }
+
+        if (! @symlink($target, $link)) {
+            $error = error_get_last();
+            throw new \RuntimeException('Failed to create symlink: '.($error['message'] ?? 'Unknown error'));
+        }
+
+        Log::info('Content symlink created', ['target' => $target, 'link' => $link]);
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Content sync job failed permanently', [
+            'delivery_id' => $this->deliveryId,
+            'error' => $exception->getMessage(),
+        ]);
+
+        $adminEmail = config('git-sync.admin_email', config('mail.from.address'));
+
+        if ($adminEmail) {
+            Notification::route('mail', $adminEmail)
+                ->notify(new ContentSyncFailedNotification($exception, $this->deliveryId));
         }
     }
 }

@@ -12,7 +12,7 @@ class SyncContentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'content:sync {--force : Force re-index all files}';
+    protected $signature = 'content:sync {--force : Force re-index all files} {--images-force : Force re-sync all images}';
 
     /**
      * The console command description.
@@ -68,6 +68,7 @@ class SyncContentCommand extends Command
     {
         $sourceDir = base_path('content/images');
         $targetDir = storage_path('app/public/content/images');
+        $force = $this->option('images-force');
 
         if (! is_dir($sourceDir)) {
             $this->warn('No content/images directory found at: '.$sourceDir);
@@ -86,8 +87,13 @@ class SyncContentCommand extends Command
                 $filename = basename($file);
                 $targetFile = "$targetDir/$filename";
 
-                // Only copy if file is new or changed
-                if (! file_exists($targetFile) || filemtime($file) > filemtime($targetFile)) {
+                // Copy if: force flag, target doesn't exist, source is newer, or size differs
+                $shouldCopy = $force
+                    || ! file_exists($targetFile)
+                    || filemtime($file) > filemtime($targetFile)
+                    || filesize($file) !== filesize($targetFile);
+
+                if ($shouldCopy) {
                     if (copy($file, $targetFile)) {
                         $synced++;
                     } else {
