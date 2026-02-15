@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- Favicon --}}
+    <link rel="icon" href="/oob-white.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="/oob-black.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/oob-black.png" type="image/png">
+
     {{-- SEO Meta Tags --}}
     <x-seo-meta
         :title="$seo['title'] ?? null"

@@ -30,7 +30,7 @@
         </div>
 
         {{-- Back to Home --}}
-        <a href="{{ route('home') }}" class="inline-flex items-center px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-pine text-white font-semibold rounded-lg transition-colors">
+        <a href="{{ route('home') }}" class="inline-flex items-center px-6 py-3 bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-gray-900 font-semibold rounded-lg transition-colors cursor-pointer">
             Back to Home
         </a>
     </div>

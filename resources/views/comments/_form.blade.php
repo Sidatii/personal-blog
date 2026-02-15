@@ -83,7 +83,7 @@
     <div class="flex items-center justify-between">
         <button
             type="submit"
-            class="px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-rose text-rose-pine-base rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-love focus:ring-offset-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-6 py-3 bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-gray-900 rounded-lg font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-pine-gold focus:ring-offset-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             hx-disabled-elt="this"
         >
             <span class="flex items-center space-x-2">

@@ -98,7 +98,7 @@
         <button
             @click="loadMore()"
             :disabled="isLoading"
-            class="px-6 py-2.5 bg-rose-pine-surface hover:bg-rose-pine-overlay border-2 border-rose-pine-highlight hover:border-rose-pine-subtle text-rose-pine-text font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-6 py-2.5 bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-gray-900 font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
             <span x-show="!isLoading">Show more comments</span>
             <span x-show="isLoading" class="flex items-center gap-2">

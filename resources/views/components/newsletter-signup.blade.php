@@ -79,7 +79,7 @@
         <button
             type="submit"
             :disabled="loading"
-            class="w-full px-6 py-3 bg-rose-pine-love hover:bg-rose-pine-pine text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full px-6 py-3 bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-gray-900 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
         >
             <template x-if="!loading">
                 <span>Subscribe</span>

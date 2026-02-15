@@ -5,90 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Your Newsletter Subscription</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #191724; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #191724;">
+<body style="margin: 0; padding: 0; background-color: #f5f0eb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f5f0eb;">
         <tr>
             <td align="center" style="padding: 40px 20px;">
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #1f1d2e; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
+
+                    {{-- Logo header --}}
                     <tr>
-                        <td style="padding: 40px;">
-                            {{-- Header --}}
+                        <td align="center" style="padding-bottom: 32px;">
+                            <a href="{{ url('/') }}" style="text-decoration: none;">
+                                <img src="{{ url('/oob-black.png') }}" alt="{{ config('app.name') }}" width="240" style="display: block; margin: 0 auto; max-width: 100%;">
+                            </a>
+                        </td>
+                    </tr>
+
+                    {{-- Card --}}
+                    <tr>
+                        <td style="background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e8e0d8;">
+
+                            {{-- Accent bar --}}
                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
-                                    <td style="border-bottom: 2px solid #31748f; padding-bottom: 20px; margin-bottom: 30px;">
-                                        <h1 style="margin: 0; color: #e0def4; font-size: 24px; font-weight: 600;">
-                                            Confirm Your Newsletter Subscription
+                                    <td style="background: linear-gradient(90deg, #f9c97c 0%, #d4b5ea 100%); height: 4px; font-size: 0; line-height: 0;">&nbsp;</td>
+                                </tr>
+                            </table>
+
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="padding: 40px;">
+
+                                        {{-- Header --}}
+                                        <h1 style="margin: 0 0 8px 0; color: #1f1d2e; font-size: 24px; font-weight: 700;">
+                                            Confirm Your Subscription
                                         </h1>
-                                        <p style="margin: 8px 0 0 0; color: #908caa; font-size: 14px;">
+                                        <p style="margin: 0 0 32px 0; color: #9893a5; font-size: 14px;">
                                             One click away from staying updated
                                         </p>
-                                    </td>
-                                </tr>
-                            </table>
 
-                            {{-- Greeting --}}
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px;">
-                                <tr>
-                                    <td>
-                                        <p style="margin: 0 0 20px 0; color: #e0def4; font-size: 16px; line-height: 1.6;">
+                                        {{-- Divider --}}
+                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 32px;">
+                                            <tr>
+                                                <td style="border-top: 1px solid #e8e0d8; font-size: 0; line-height: 0;">&nbsp;</td>
+                                            </tr>
+                                        </table>
+
+                                        {{-- Greeting --}}
+                                        <p style="margin: 0 0 16px 0; color: #575279; font-size: 16px; line-height: 1.6;">
                                             Hi {{ $subscriber->name ?? 'there' }},
                                         </p>
-                                        <p style="margin: 0 0 20px 0; color: #e0def4; font-size: 16px; line-height: 1.6;">
-                                            Thanks for subscribing to our newsletter! Click the button below to confirm your subscription and start receiving updates.
+                                        <p style="margin: 0 0 32px 0; color: #575279; font-size: 16px; line-height: 1.6;">
+                                            Thanks for subscribing! Click the button below to confirm your subscription and start receiving updates.
                                         </p>
-                                    </td>
-                                </tr>
-                            </table>
 
-                            {{-- CTA Button --}}
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px; margin-bottom: 30px;">
-                                <tr>
-                                    <td align="center">
-                                        <a href="{{ $confirmUrl }}" style="display: inline-block; padding: 14px 32px; background-color: #eb6f92; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600; text-align: center;">
-                                            Confirm Subscription
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
+                                        {{-- CTA Button --}}
+                                        <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 32px;">
+                                            <tr>
+                                                <td style="border-radius: 8px; background-color: #f9c97c;">
+                                                    <a href="{{ $confirmUrl }}" style="display: inline-block; padding: 14px 32px; color: #1f1d2e; text-decoration: none; font-size: 15px; font-weight: 700; border-radius: 8px;">
+                                                        Confirm Subscription
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
 
-                            {{-- Alternative Link --}}
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px;">
-                                <tr>
-                                    <td>
-                                        <p style="margin: 0; color: #908caa; font-size: 14px; line-height: 1.6; text-align: center;">
-                                            If the button doesn't work, copy and paste this link into your browser:
+                                        {{-- Alternative Link --}}
+                                        <p style="margin: 0 0 8px 0; color: #9893a5; font-size: 13px; line-height: 1.6;">
+                                            If the button doesn't work, copy and paste this link:
                                         </p>
-                                        <p style="margin: 10px 0 0 0; color: #31748f; font-size: 14px; line-height: 1.6; text-align: center; word-break: break-all;">
+                                        <p style="margin: 0 0 32px 0; color: #907aa9; font-size: 13px; line-height: 1.6; word-break: break-all;">
                                             {{ $confirmUrl }}
                                         </p>
-                                    </td>
-                                </tr>
-                            </table>
 
-                            {{-- Footer Note --}}
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #26233a;">
-                                <tr>
-                                    <td style="background-color: #26233a; padding: 16px; border-radius: 6px; border-left: 4px solid #f6c177;">
-                                        <p style="margin: 0; color: #e0def4; font-size: 14px; line-height: 1.5;">
-                                            <strong>Didn't sign up?</strong> If you didn't request this subscription, you can safely ignore this email.
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
+                                        {{-- Footer Note --}}
+                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td style="background-color: #faf4ed; padding: 16px; border-radius: 8px; border-left: 4px solid #f9c97c;">
+                                                    <p style="margin: 0; color: #575279; font-size: 14px; line-height: 1.5;">
+                                                        <strong>Didn't sign up?</strong> You can safely ignore this email.
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
 
-                            {{-- Unsubscribe Link --}}
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px;">
-                                <tr>
-                                    <td style="border-top: 1px solid #26233a; padding-top: 20px; text-align: center;">
-                                        <p style="margin: 0; color: #6e6a86; font-size: 12px;">
-                                            Don't want to receive emails from us?
-                                            <a href="{{ route('newsletter.unsubscribe', $subscriber->unsubscribe_token) }}" style="color: #908caa; text-decoration: underline;">Unsubscribe here</a>
-                                        </p>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
+
+                    {{-- Footer --}}
+                    <tr>
+                        <td style="padding: 32px 0 0 0; text-align: center;">
+                            <p style="margin: 0 0 8px 0; color: #9893a5; font-size: 12px; line-height: 1.6;">
+                                You're receiving this because you subscribed to {{ config('app.name') }}.
+                            </p>
+                            <p style="margin: 0; color: #9893a5; font-size: 12px;">
+                                <a href="{{ route('newsletter.unsubscribe', $subscriber->unsubscribe_token) }}" style="color: #797593; text-decoration: underline;">Unsubscribe</a>
+                            </p>
+                        </td>
+                    </tr>
+
                 </table>
             </td>
         </tr>

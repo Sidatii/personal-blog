@@ -111,7 +111,7 @@
         <button
             type="submit"
             :disabled="submitting"
-            class="w-full bg-rose-pine-gold text-gray-900 font-semibold py-3 px-6 rounded-lg hover:bg-rose-pine-gold/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            class="w-full bg-rose-pine-gold hover:bg-rose-pine-gold/80 text-gray-900 font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center"
         >
             <span x-show="!submitting">Send Message</span>
             <span x-show="submitting" class="flex items-center">
