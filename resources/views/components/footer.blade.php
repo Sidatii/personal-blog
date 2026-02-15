@@ -48,7 +48,7 @@
                     <div class="flex items-center space-x-4">
                         {{-- GitHub --}}
                         <a
-                            href="https://github.com/yourusername"
+                            href="https://github.com/Sidatii"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors"
@@ -65,7 +65,7 @@
 
                         {{-- Twitter/X --}}
                         <a
-                            href="https://twitter.com/yourusername"
+                            href="https://x.com/SidatiNouhi"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="text-rose-pine-subtle hover:text-rose-pine-text transition-colors"
