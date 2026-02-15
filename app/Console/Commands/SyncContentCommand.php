@@ -28,6 +28,9 @@ class SyncContentCommand extends Command
     {
         $this->info('Scanning content/posts/ directory...');
 
+        // Ensure images symlink is always in place, regardless of post changes
+        $this->createImagesSymlink();
+
         if ($this->option('force')) {
             $this->info('Force re-indexing all content...');
             $count = $indexer->rebuild();
@@ -53,65 +56,81 @@ class SyncContentCommand extends Command
             }
         }
 
-        // Sync images
-        $this->syncImages();
-
         $this->info("Content sync complete. {$count} posts indexed.");
 
         return Command::SUCCESS;
     }
 
     /**
-     * Sync images from content/images to storage using content hashing.
+     * Create/update symlink: storage/app/public/content/images → git repo images.
+     * Mirrors the posts symlink approach so no file copying is needed.
      */
-    protected function syncImages(): void
+    protected function createImagesSymlink(): void
     {
-        $sourceDir = base_path('content/images');
-        $targetDir = storage_path('app/public/content/images');
-        $synced = 0;
-        $skipped = 0;
+        $repoPath = config('git-sync.repo_storage_path');
+        $contentPath = config('git-sync.content_path'); // e.g. 'content/posts'
+        $gitImagesPath = $repoPath.'/'.dirname($contentPath).'/images';
+        $symlinkPath = storage_path('app/public/content/images');
 
-        if (! is_dir($sourceDir)) {
-            $this->warn('No content/images directory found at: '.$sourceDir);
+        if (! is_dir($gitImagesPath)) {
+            $this->warn('Images directory not found in git repo: '.$gitImagesPath);
 
             return;
         }
 
-        if (! is_dir($targetDir)) {
-            mkdir($targetDir, 0755, true);
-            $this->info('Created target directory: '.$targetDir);
+        $absoluteTarget = realpath($gitImagesPath);
+
+        if (! $absoluteTarget) {
+            $this->error('Cannot resolve images path: '.$gitImagesPath);
+
+            return;
         }
 
-        foreach (glob("$sourceDir/*") as $file) {
-            if (is_file($file) && basename($file) !== '.gitkeep') {
-                $filename = basename($file);
-                $targetFile = "$targetDir/$filename";
+        $parentDir = dirname($symlinkPath);
+        if (! is_dir($parentDir)) {
+            mkdir($parentDir, 0755, true);
+        }
 
-                // Use hash-based diffing for reliable change detection
-                $needsCopy = false;
-                if (! file_exists($targetFile)) {
-                    $needsCopy = true;
-                } else {
-                    $sourceHash = md5_file($file);
-                    $targetHash = @md5_file($targetFile);
-                    if ($targetHash === false || $sourceHash !== $targetHash) {
-                        $needsCopy = true;
-                    } else {
-                        $skipped++;
-                    }
-                }
+        clearstatcache(true, $symlinkPath);
 
-                if ($needsCopy) {
-                    if (copy($file, $targetFile)) {
-                        $synced++;
-                    } else {
-                        $this->error("Failed to copy: $filename");
-                    }
-                }
+        if (is_link($symlinkPath)) {
+            if (@readlink($symlinkPath) === $absoluteTarget) {
+                $this->line('Images symlink already valid.');
+
+                return;
             }
+            @unlink($symlinkPath);
+        } elseif (is_dir($symlinkPath)) {
+            $this->warn('Replacing real images directory with symlink at: '.$symlinkPath);
+            $this->removeDirectory($symlinkPath);
         }
 
-        $this->info("Synced {$synced} images, skipped {$skipped} unchanged.");
-        $this->info("Target directory: $targetDir");
+        if (@symlink($absoluteTarget, $symlinkPath)) {
+            $this->info("Images symlink created: {$symlinkPath} → {$absoluteTarget}");
+        } else {
+            $error = error_get_last();
+            $this->error('Failed to create images symlink: '.($error['message'] ?? 'unknown error'));
+        }
+    }
+
+    /**
+     * Recursively remove a directory and all its contents.
+     */
+    protected function removeDirectory(string $path): void
+    {
+        if (! is_dir($path)) {
+            return;
+        }
+
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+
+        rmdir($path);
     }
 }

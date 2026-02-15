@@ -162,8 +162,8 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             $this->createSymlink($absoluteTarget, $symlinkPath);
         }
 
-        // Also create/update symlink for images directory
-        $this->syncImagesSymlink($gitContentPath);
+        // Create/update symlink for public images (storage/app/public/content/images → git images)
+        $this->createImagesSymlink($gitContentPath);
 
         // Detect changed files
         $changedFiles = $indexer->detectChanges();
@@ -210,141 +210,16 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             ]);
         }
 
-        // Sync images from git to storage (uses hash-based diffing)
-        Log::debug('Content sync: Syncing images', ['delivery_id' => $this->deliveryId]);
-        try {
-            $this->syncImages();
-        } catch (\Throwable $e) {
-            Log::error('Content sync: Image sync failed', [
-                'delivery_id' => $this->deliveryId,
-                'error' => $e->getMessage(),
-            ]);
-        }
     }
 
     /**
-     * Sync images from git repository to public storage using content hashing.
-     * Only copies files that have actually changed (based on MD5 hash).
+     * Create/update symlink: storage/app/public/content/images → git repo images.
+     * Mirrors the posts symlink approach so images are served directly at /storage/content/images/...
      */
-    private function syncImages(): void
-    {
-        $sourceDir = base_path('content/images');
-        $targetDir = storage_path('app/public/content/images');
-        $syncedCount = 0;
-        $skippedCount = 0;
-        $deletedCount = 0;
-        $sourceFiles = [];
-
-        if (! is_dir($targetDir)) {
-            mkdir($targetDir, 0755, true);
-            Log::info('Content sync: Created images directory', ['path' => $targetDir]);
-        }
-
-        if (! is_dir($sourceDir)) {
-            Log::warning('Content sync: Images source directory not found', [
-                'delivery_id' => $this->deliveryId,
-                'path' => $sourceDir,
-            ]);
-
-            return;
-        }
-
-        Log::info('Content sync: Syncing images with diffing', [
-            'delivery_id' => $this->deliveryId,
-            'source' => $sourceDir,
-            'target' => $targetDir,
-        ]);
-
-        // Build map of source files with their hashes
-        foreach (glob("$sourceDir/*") as $file) {
-            if (is_file($file) && basename($file) !== '.gitkeep') {
-                $filename = basename($file);
-                $sourceFiles[$filename] = [
-                    'path' => $file,
-                    'hash' => md5_file($file),
-                    'size' => filesize($file),
-                ];
-            }
-        }
-
-        Log::info('Content sync: Found images in source', [
-            'delivery_id' => $this->deliveryId,
-            'count' => count($sourceFiles),
-        ]);
-
-        // Sync each file based on hash comparison
-        foreach ($sourceFiles as $filename => $sourceInfo) {
-            $targetFile = "$targetDir/$filename";
-            $needsCopy = false;
-            $reason = '';
-
-            if (! file_exists($targetFile)) {
-                $needsCopy = true;
-                $reason = 'new file';
-            } else {
-                $targetHash = @md5_file($targetFile);
-                if ($targetHash === false) {
-                    $needsCopy = true;
-                    $reason = 'cannot read target';
-                } elseif ($targetHash !== $sourceInfo['hash']) {
-                    $needsCopy = true;
-                    $reason = 'content changed';
-                } else {
-                    $skippedCount++;
-                }
-            }
-
-            if ($needsCopy) {
-                if (copy($sourceInfo['path'], $targetFile)) {
-                    $syncedCount++;
-                    Log::info('Content sync: Copied image', [
-                        'delivery_id' => $this->deliveryId,
-                        'file' => $filename,
-                        'reason' => $reason,
-                        'size' => $sourceInfo['size'],
-                    ]);
-                } else {
-                    Log::error('Content sync: Failed to copy image', [
-                        'delivery_id' => $this->deliveryId,
-                        'file' => $filename,
-                    ]);
-                }
-            }
-        }
-
-        // Remove images from storage that don't exist in source
-        foreach (glob("$targetDir/*") as $file) {
-            $filename = basename($file);
-            if ($filename === '.gitkeep') {
-                continue;
-            }
-            if (! isset($sourceFiles[$filename])) {
-                if (unlink($file)) {
-                    $deletedCount++;
-                    Log::info('Content sync: Deleted orphaned image', [
-                        'delivery_id' => $this->deliveryId,
-                        'file' => $filename,
-                    ]);
-                }
-            }
-        }
-
-        Log::info('Content sync: Images sync complete', [
-            'delivery_id' => $this->deliveryId,
-            'synced' => $syncedCount,
-            'skipped' => $skippedCount,
-            'deleted' => $deletedCount,
-            'total_source' => count($sourceFiles),
-        ]);
-    }
-
-    /**
-     * Create/update symlink for images directory from git repo.
-     */
-    private function syncImagesSymlink(string $gitContentPath): void
+    private function createImagesSymlink(string $gitContentPath): void
     {
         $gitImagesPath = dirname($gitContentPath).'/images';
-        $symlinkPath = base_path('content/images');
+        $symlinkPath = storage_path('app/public/content/images');
 
         if (! is_dir($gitImagesPath)) {
             Log::warning('Content sync: No images directory in git repo', [
@@ -366,31 +241,67 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
+        // Ensure storage/app/public/content/ parent exists
+        $parentDir = dirname($symlinkPath);
+        if (! is_dir($parentDir)) {
+            mkdir($parentDir, 0755, true);
+        }
+
         clearstatcache(true, $symlinkPath);
 
         if (is_link($symlinkPath)) {
             $currentTarget = @readlink($symlinkPath);
             if ($currentTarget === $absoluteTarget) {
-                Log::debug('Content sync: Images symlink valid', [
+                Log::debug('Content sync: Images symlink already valid', [
                     'delivery_id' => $this->deliveryId,
                     'symlink' => $symlinkPath,
+                    'target' => $absoluteTarget,
                 ]);
-            } else {
-                Log::warning('Content sync: Images symlink updating', [
-                    'delivery_id' => $this->deliveryId,
-                    'old_target' => $currentTarget,
-                    'new_target' => $absoluteTarget,
-                ]);
-                @unlink($symlinkPath);
-                $this->createSymlink($absoluteTarget, $symlinkPath);
+
+                return;
             }
-        } else {
-            Log::info('Content sync: Creating images symlink', [
+            Log::info('Content sync: Updating images symlink', [
                 'delivery_id' => $this->deliveryId,
-                'target' => $absoluteTarget,
+                'old_target' => $currentTarget,
+                'new_target' => $absoluteTarget,
             ]);
-            $this->createSymlink($absoluteTarget, $symlinkPath);
+            @unlink($symlinkPath);
+        } elseif (is_dir($symlinkPath)) {
+            // Real directory exists (leftover from old copy-based approach) — remove it
+            Log::warning('Content sync: Replacing real images directory with symlink', [
+                'delivery_id' => $this->deliveryId,
+                'path' => $symlinkPath,
+            ]);
+            $this->removeDirectory($symlinkPath);
         }
+
+        $this->createSymlink($absoluteTarget, $symlinkPath);
+        Log::info('Content sync: Images symlink created', [
+            'delivery_id' => $this->deliveryId,
+            'symlink' => $symlinkPath,
+            'target' => $absoluteTarget,
+        ]);
+    }
+
+    /**
+     * Recursively remove a directory and all its contents.
+     */
+    private function removeDirectory(string $path): void
+    {
+        if (! is_dir($path)) {
+            return;
+        }
+
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+
+        rmdir($path);
     }
 
     /**
