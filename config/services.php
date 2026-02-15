@@ -49,6 +49,7 @@ return [
     'umami' => [
         'enabled'    => env('UMAMI_ENABLED', false),
         'url'        => env('UMAMI_URL', ''),
+        'host'       => env('UMAMI_HOST', env('UMAMI_URL', '')),
         'website_id' => env('UMAMI_WEBSITE_ID', ''),
     ],
 
