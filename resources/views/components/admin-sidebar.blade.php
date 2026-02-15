@@ -2,7 +2,7 @@
     <!-- Logo/Branding + User Info -->
     <div class="p-4 border-b border-rose-pine-base/30">
         <a href="{{ route('admin.dashboard') }}" class="block mb-3">
-            <img src="/oob-white.svg" alt="{{ config('app.name') }}" class="h-8 w-auto">
+            <img src="/oob-white.svg" alt="{{ config('app.name') }}" class="w-full h-auto">
         </a>
 
         <!-- User Info -->
