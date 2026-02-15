@@ -43,6 +43,23 @@ after('deploy:symlink', 'artisan:queue:restart');
 // Unlock deployment on failure
 after('deploy:failed', 'deploy:unlock');
 
+// Ensure upload directories exist with correct group ownership for PHP-FPM (www-data)
+task('uploads:setup', function () {
+    $dirs = [
+        'storage/app/public/uploads/projects',
+        'storage/app/public/uploads/certifications',
+        'storage/app/public/uploads/blog',
+        'storage/app/public/uploads/about',
+    ];
+    foreach ($dirs as $dir) {
+        run("mkdir -p {{deploy_path}}/shared/{$dir}");
+        run("chmod 775 {{deploy_path}}/shared/{$dir}");
+        run("chown deploy:www-data {{deploy_path}}/shared/{$dir}");
+    }
+})->desc('Ensure upload directories exist and are writable by www-data');
+
+after('deploy:shared', 'uploads:setup');
+
 // Custom health check task
 task('health:check', function () {
     $url = get('health_check_url', 'http://localhost/health');
