@@ -11,11 +11,11 @@
             <td align="center" style="padding: 40px 20px;">
                 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
 
-                    {{-- Logo header — dark background on the cell protects logo visibility even if email client overrides body --}}
+                    {{-- Logo header — white band ensures black logo is always visible --}}
                     <tr>
-                        <td align="center" style="padding-bottom: 32px; background-color: #191724;">
+                        <td align="center" style="padding: 24px 32px; background-color: #ffffff; border-radius: 12px 12px 0 0;">
                             <a href="{{ url('/') }}" style="text-decoration: none;">
-                                <img src="{{ url('/oob-white.png') }}" alt="{{ config('app.name') }}" width="240" style="display: block; margin: 0 auto; max-width: 100%;">
+                                <img src="{{ url('/oob-black.png') }}" alt="{{ config('app.name') }}" width="240" style="display: block; margin: 0 auto; max-width: 100%;">
                             </a>
                         </td>
                     </tr>
