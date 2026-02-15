@@ -31,11 +31,18 @@
                 body: formData,
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                this.error = data.error || 'Upload failed. Please try again.';
+                if (response.status === 413) {
+                    this.error = 'File too large. Your server limits uploads to less than 4 MB. Ask your host to raise client_max_body_size.';
+                } else if (response.status === 419) {
+                    this.error = 'Session expired. Please refresh the page and try again.';
+                } else {
+                    let msg = 'Upload failed. Please try again.';
+                    try { const d = await response.json(); msg = d.error || msg; } catch {}
+                    this.error = msg;
+                }
             } else {
+                const data = await response.json();
                 this.path = data.path;
                 this.preview = data.url;
             }
