@@ -1,7 +1,9 @@
 <div class="flex flex-col h-full">
     <!-- Logo/Branding + User Info -->
     <div class="p-4 border-b border-rose-pine-base/30">
-        <h1 class="text-xl font-bold text-rose-pine-foam mb-3">Admin Panel</h1>
+        <a href="{{ route('admin.dashboard') }}" class="block mb-3">
+            <img src="/oob-white.svg" alt="{{ config('app.name') }}" class="h-8 w-auto">
+        </a>
 
         <!-- User Info -->
         <div class="flex items-center gap-3 p-3 rounded-lg bg-rose-pine-base/40">
