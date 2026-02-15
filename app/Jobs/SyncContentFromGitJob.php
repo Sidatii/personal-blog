@@ -210,10 +210,10 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             ]);
         }
 
-        // Sync images from git to storage (force sync all images)
+        // Sync images from git to storage (uses hash-based diffing)
         Log::debug('Content sync: Syncing images', ['delivery_id' => $this->deliveryId]);
         try {
-            $this->syncImages(true); // true = force sync all images
+            $this->syncImages();
         } catch (\Throwable $e) {
             Log::error('Content sync: Image sync failed', [
                 'delivery_id' => $this->deliveryId,
@@ -223,16 +223,15 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     }
 
     /**
-     * Sync images from git repository to public storage.
-     * Images are sourced from the symlinked content/images directory.
-     *
-     * @param  bool  $force  If true, copy all images regardless of timestamp
+     * Sync images from git repository to public storage using content hashing.
+     * Only copies files that have actually changed (based on MD5 hash).
      */
-    private function syncImages(bool $force = false): void
+    private function syncImages(): void
     {
         $sourceDir = base_path('content/images');
         $targetDir = storage_path('app/public/content/images');
         $syncedCount = 0;
+        $skippedCount = 0;
         $deletedCount = 0;
         $sourceFiles = [];
 
@@ -250,40 +249,59 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        Log::info('Content sync: Syncing images', [
+        Log::info('Content sync: Syncing images with diffing', [
             'delivery_id' => $this->deliveryId,
             'source' => $sourceDir,
             'target' => $targetDir,
-            'force' => $force,
         ]);
 
+        // Build map of source files with their hashes
         foreach (glob("$sourceDir/*") as $file) {
             if (is_file($file) && basename($file) !== '.gitkeep') {
                 $filename = basename($file);
-                $sourceFiles[$filename] = $file;
+                $sourceFiles[$filename] = [
+                    'path' => $file,
+                    'hash' => md5_file($file),
+                    'size' => filesize($file),
+                ];
             }
         }
 
-        Log::info('Content sync: Found images', [
+        Log::info('Content sync: Found images in source', [
             'delivery_id' => $this->deliveryId,
             'count' => count($sourceFiles),
-            'files' => array_keys($sourceFiles),
         ]);
 
-        foreach ($sourceFiles as $filename => $sourceFile) {
+        // Sync each file based on hash comparison
+        foreach ($sourceFiles as $filename => $sourceInfo) {
             $targetFile = "$targetDir/$filename";
+            $needsCopy = false;
+            $reason = '';
 
-            $shouldCopy = $force
-                || ! file_exists($targetFile)
-                || filemtime($sourceFile) > filemtime($targetFile)
-                || filesize($sourceFile) !== @filesize($targetFile);
+            if (! file_exists($targetFile)) {
+                $needsCopy = true;
+                $reason = 'new file';
+            } else {
+                $targetHash = @md5_file($targetFile);
+                if ($targetHash === false) {
+                    $needsCopy = true;
+                    $reason = 'cannot read target';
+                } elseif ($targetHash !== $sourceInfo['hash']) {
+                    $needsCopy = true;
+                    $reason = 'content changed';
+                } else {
+                    $skippedCount++;
+                }
+            }
 
-            if ($shouldCopy) {
-                if (copy($sourceFile, $targetFile)) {
+            if ($needsCopy) {
+                if (copy($sourceInfo['path'], $targetFile)) {
                     $syncedCount++;
                     Log::info('Content sync: Copied image', [
                         'delivery_id' => $this->deliveryId,
                         'file' => $filename,
+                        'reason' => $reason,
+                        'size' => $sourceInfo['size'],
                     ]);
                 } else {
                     Log::error('Content sync: Failed to copy image', [
@@ -294,6 +312,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             }
         }
 
+        // Remove images from storage that don't exist in source
         foreach (glob("$targetDir/*") as $file) {
             $filename = basename($file);
             if ($filename === '.gitkeep') {
@@ -313,7 +332,9 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
         Log::info('Content sync: Images sync complete', [
             'delivery_id' => $this->deliveryId,
             'synced' => $syncedCount,
+            'skipped' => $skippedCount,
             'deleted' => $deletedCount,
+            'total_source' => count($sourceFiles),
         ]);
     }
 

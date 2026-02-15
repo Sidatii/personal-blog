@@ -12,7 +12,7 @@ class SyncContentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'content:sync {--force : Force re-index all files} {--images-force : Force re-sync all images}';
+    protected $signature = 'content:sync {--force : Force re-index all files}';
 
     /**
      * The console command description.
@@ -62,13 +62,14 @@ class SyncContentCommand extends Command
     }
 
     /**
-     * Sync images from content/images to storage.
+     * Sync images from content/images to storage using content hashing.
      */
     protected function syncImages(): void
     {
         $sourceDir = base_path('content/images');
         $targetDir = storage_path('app/public/content/images');
-        $force = $this->option('images-force');
+        $synced = 0;
+        $skipped = 0;
 
         if (! is_dir($sourceDir)) {
             $this->warn('No content/images directory found at: '.$sourceDir);
@@ -81,19 +82,26 @@ class SyncContentCommand extends Command
             $this->info('Created target directory: '.$targetDir);
         }
 
-        $synced = 0;
         foreach (glob("$sourceDir/*") as $file) {
             if (is_file($file) && basename($file) !== '.gitkeep') {
                 $filename = basename($file);
                 $targetFile = "$targetDir/$filename";
 
-                // Copy if: force flag, target doesn't exist, source is newer, or size differs
-                $shouldCopy = $force
-                    || ! file_exists($targetFile)
-                    || filemtime($file) > filemtime($targetFile)
-                    || filesize($file) !== filesize($targetFile);
+                // Use hash-based diffing for reliable change detection
+                $needsCopy = false;
+                if (! file_exists($targetFile)) {
+                    $needsCopy = true;
+                } else {
+                    $sourceHash = md5_file($file);
+                    $targetHash = @md5_file($targetFile);
+                    if ($targetHash === false || $sourceHash !== $targetHash) {
+                        $needsCopy = true;
+                    } else {
+                        $skipped++;
+                    }
+                }
 
-                if ($shouldCopy) {
+                if ($needsCopy) {
                     if (copy($file, $targetFile)) {
                         $synced++;
                     } else {
@@ -103,7 +111,7 @@ class SyncContentCommand extends Command
             }
         }
 
-        $this->info("Synced {$synced} images to public storage.");
+        $this->info("Synced {$synced} images, skipped {$skipped} unchanged.");
         $this->info("Target directory: $targetDir");
     }
 }
