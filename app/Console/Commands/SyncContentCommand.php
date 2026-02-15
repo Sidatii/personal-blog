@@ -70,7 +70,7 @@ class SyncContentCommand extends Command
         $repoPath = config('git-sync.repo_storage_path');
         $contentPath = config('git-sync.content_path'); // e.g. 'content/posts'
         $gitImagesPath = $repoPath.'/'.dirname($contentPath).'/images';
-        $symlinkPath = storage_path('app/public/content/images');
+        $symlinkPath = public_path('content/images');
 
         if (! is_dir($gitImagesPath)) {
             $this->warn('Images directory not found in git repo: '.$gitImagesPath);
@@ -101,7 +101,7 @@ class SyncContentCommand extends Command
             }
             @unlink($symlinkPath);
         } elseif (is_dir($symlinkPath)) {
-            $this->warn('Replacing real images directory with symlink at: '.$symlinkPath);
+            $this->warn('Replacing real directory with symlink at: '.$symlinkPath);
             $this->removeDirectory($symlinkPath);
         }
 

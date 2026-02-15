@@ -316,7 +316,7 @@ class MarkdownParser
         // Handles: images/file.png, ./images/file.png, /images/file.png
         return preg_replace(
             '/<img([^>]+?)src=["\'](?:\.?\/?)images\/([^"\']+)["\']([^>]*)>/i',
-            '<img$1src="/storage/content/images/$2"$3>',
+            '<img$1src="/content/images/$2"$3>',
             $html
         );
     }

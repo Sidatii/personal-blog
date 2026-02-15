@@ -219,7 +219,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
     private function createImagesSymlink(string $gitContentPath): void
     {
         $gitImagesPath = dirname($gitContentPath).'/images';
-        $symlinkPath = storage_path('app/public/content/images');
+        $symlinkPath = public_path('content/images');
 
         if (! is_dir($gitImagesPath)) {
             Log::warning('Content sync: No images directory in git repo', [
@@ -241,7 +241,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        // Ensure storage/app/public/content/ parent exists
+        // Ensure public/content/ parent exists
         $parentDir = dirname($symlinkPath);
         if (! is_dir($parentDir)) {
             mkdir($parentDir, 0755, true);
@@ -268,7 +268,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             @unlink($symlinkPath);
         } elseif (is_dir($symlinkPath)) {
             // Real directory exists (leftover from old copy-based approach) — remove it
-            Log::warning('Content sync: Replacing real images directory with symlink', [
+            Log::warning('Content sync: Replacing real directory with symlink', [
                 'delivery_id' => $this->deliveryId,
                 'path' => $symlinkPath,
             ]);
