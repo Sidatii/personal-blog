@@ -14,7 +14,13 @@ class ImageUploadService
     {
         $this->validate($file);
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        return $file->storeAs($directory, $filename, 'public');
+        $path = $file->storeAs($directory, $filename, 'public');
+
+        if ($path === false) {
+            throw new \RuntimeException('Failed to store the uploaded file. Check that storage/app/public is writable by the web server.');
+        }
+
+        return $path;
     }
 
     public function delete(?string $path): void
