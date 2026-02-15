@@ -203,6 +203,9 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             $this->createSymlink($absoluteTarget, $symlinkPath);
         }
 
+        // Also create/update symlink for images directory
+        $this->syncImagesSymlink($gitContentPath);
+
         // Detect changed files
         Log::debug('Content sync: Detecting changes', ['delivery_id' => $this->deliveryId]);
         try {
@@ -277,10 +280,10 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             // Don't throw - this is cleanup, not critical
         }
 
-        // Sync images from git to storage
+        // Sync images from git to storage (images dir is now symlinked)
         Log::debug('Content sync: Syncing images', ['delivery_id' => $this->deliveryId]);
         try {
-            $this->syncImages($gitContentPath);
+            $this->syncImages();
         } catch (\Throwable $e) {
             Log::error('Content sync: Image sync failed', [
                 'delivery_id' => $this->deliveryId,
@@ -292,9 +295,11 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
 
     /**
      * Sync images from git repository to public storage.
+     * Images are sourced from the symlinked content/images directory.
      */
-    private function syncImages(string $gitContentPath): void
+    private function syncImages(): void
     {
+        $sourceDir = base_path('content/images');
         $targetDir = storage_path('app/public/content/images');
         $syncedCount = 0;
         $deletedCount = 0;
@@ -306,51 +311,27 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             Log::info('Content sync: Created images directory', ['path' => $targetDir]);
         }
 
-        // Find the git repo root from the content path
-        $repoRoot = $this->findGitRepoRoot($gitContentPath);
-
-        // Try multiple possible source locations
-        $possibleSourceDirs = [
-            $repoRoot.'/content/images',                          // Git repo content/images/ (repo root)
-            dirname($gitContentPath).'/images',                     // Relative to posts dir
-            base_path('content/images'),                            // Local content/images/ fallback
-        ];
-
-        Log::info('Content sync: Looking for images', [
-            'delivery_id' => $this->deliveryId,
-            'git_content_path' => $gitContentPath,
-            'repo_root' => $repoRoot,
-            'source_dirs' => $possibleSourceDirs,
-        ]);
-
-        // Find all images from all possible source directories
-        foreach ($possibleSourceDirs as $sourceDir) {
-            $exists = is_dir($sourceDir);
-            Log::debug('Content sync: Checking images source', [
+        // Check if source directory exists (should be symlinked to git repo)
+        if (! is_dir($sourceDir)) {
+            Log::warning('Content sync: Images source directory not found', [
+                'delivery_id' => $this->deliveryId,
                 'path' => $sourceDir,
-                'exists' => $exists,
             ]);
 
-            if ($exists) {
-                $files = glob("$sourceDir/*");
-                Log::debug('Content sync: Found files in source', [
-                    'path' => $sourceDir,
-                    'count' => count($files),
-                ]);
+            return;
+        }
 
-                foreach ($files as $file) {
-                    if (is_file($file) && basename($file) !== '.gitkeep') {
-                        $filename = basename($file);
-                        // Use most recent version if file exists in multiple sources
-                        if (! isset($sourceFiles[$filename]) || filemtime($file) > filemtime($sourceFiles[$filename])) {
-                            $sourceFiles[$filename] = $file;
-                            Log::debug('Content sync: Found image file', [
-                                'filename' => $filename,
-                                'source' => $file,
-                            ]);
-                        }
-                    }
-                }
+        Log::info('Content sync: Syncing images from symlinked directory', [
+            'delivery_id' => $this->deliveryId,
+            'source' => $sourceDir,
+            'target' => $targetDir,
+        ]);
+
+        // Find all images in source directory
+        foreach (glob("$sourceDir/*") as $file) {
+            if (is_file($file) && basename($file) !== '.gitkeep') {
+                $filename = basename($file);
+                $sourceFiles[$filename] = $file;
             }
         }
 
@@ -371,22 +352,18 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
                     Log::info('Content sync: Copied image', [
                         'delivery_id' => $this->deliveryId,
                         'file' => $filename,
-                        'from' => $sourceFile,
-                        'to' => $targetFile,
                     ]);
                 } else {
                     Log::error('Content sync: Failed to copy image', [
                         'delivery_id' => $this->deliveryId,
                         'file' => $filename,
                         'source' => $sourceFile,
-                        'target' => $targetFile,
-                        'error' => error_get_last(),
                     ]);
                 }
             }
         }
 
-        // Remove images from storage that don't exist in any source
+        // Remove images from storage that don't exist in source
         foreach (glob("$targetDir/*") as $file) {
             $filename = basename($file);
             if ($filename === '.gitkeep') {
@@ -407,37 +384,7 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             'delivery_id' => $this->deliveryId,
             'synced' => $syncedCount,
             'deleted' => $deletedCount,
-            'source_dirs_checked' => count(array_filter($possibleSourceDirs, 'is_dir')),
-            'target_dir' => $targetDir,
         ]);
-    }
-
-    /**
-     * Find the git repository root from a content path.
-     */
-    private function findGitRepoRoot(string $gitContentPath): string
-    {
-        // Start from the content path and go up until we find .git directory
-        $currentDir = $gitContentPath;
-        $maxDepth = 10; // Prevent infinite loop
-        $depth = 0;
-
-        while ($depth < $maxDepth) {
-            if (is_dir($currentDir.'/.git')) {
-                return $currentDir;
-            }
-
-            $parentDir = dirname($currentDir);
-            if ($parentDir === $currentDir) {
-                // Reached root
-                break;
-            }
-            $currentDir = $parentDir;
-            $depth++;
-        }
-
-        // Fallback: assume content is 2 levels deep (repo/content/posts)
-        return dirname(dirname($gitContentPath));
     }
 
     /**
@@ -478,5 +425,75 @@ class SyncContentFromGitJob implements ShouldBeUnique, ShouldQueue
             'target' => $target,
             'link' => $link,
         ]);
+    }
+
+    /**
+     * Create/update symlink for images directory from git repo.
+     */
+    private function syncImagesSymlink(string $gitContentPath): void
+    {
+        // Find the images directory in the git repo
+        // It's at the same level as the posts directory
+        $gitImagesPath = dirname($gitContentPath).'/images';
+        $symlinkPath = base_path('content/images');
+
+        Log::debug('Content sync: Syncing images symlink', [
+            'delivery_id' => $this->deliveryId,
+            'git_images_path' => $gitImagesPath,
+            'symlink_path' => $symlinkPath,
+        ]);
+
+        // Check if images directory exists in git repo
+        if (! is_dir($gitImagesPath)) {
+            Log::warning('Content sync: No images directory in git repo', [
+                'delivery_id' => $this->deliveryId,
+                'path' => $gitImagesPath,
+            ]);
+
+            return;
+        }
+
+        $absoluteTarget = realpath($gitImagesPath);
+
+        if (! $absoluteTarget) {
+            Log::error('Content sync: Cannot resolve images path', [
+                'delivery_id' => $this->deliveryId,
+                'path' => $gitImagesPath,
+            ]);
+
+            return;
+        }
+
+        clearstatcache(true, $symlinkPath);
+
+        // Check if symlink exists and is valid
+        if (is_link($symlinkPath)) {
+            $currentTarget = @readlink($symlinkPath);
+            if ($currentTarget === $absoluteTarget) {
+                Log::debug('Content sync: Images symlink valid', [
+                    'delivery_id' => $this->deliveryId,
+                    'symlink' => $symlinkPath,
+                    'target' => $currentTarget,
+                ]);
+            } else {
+                // Recreate symlink with correct target
+                Log::warning('Content sync: Images symlink needs update', [
+                    'delivery_id' => $this->deliveryId,
+                    'symlink' => $symlinkPath,
+                    'current_target' => $currentTarget,
+                    'new_target' => $absoluteTarget,
+                ]);
+                @unlink($symlinkPath);
+                $this->createSymlink($absoluteTarget, $symlinkPath);
+            }
+        } else {
+            // Create new symlink
+            Log::info('Content sync: Creating images symlink', [
+                'delivery_id' => $this->deliveryId,
+                'target' => $absoluteTarget,
+                'link' => $symlinkPath,
+            ]);
+            $this->createSymlink($absoluteTarget, $symlinkPath);
+        }
     }
 }
