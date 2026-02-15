@@ -202,7 +202,7 @@
         <!-- Screenshots -->
         <div
             x-data="{
-                screenshots: @json(collect($project->screenshots ?? [])->map(fn($p) => ['path' => $p, 'url' => asset('storage/' . $p)])->values()->all()),
+                screenshots: @json(collect(array_filter($project->screenshots ?? []))->map(fn($p) => ['path' => $p, 'url' => asset('storage/' . $p)])->values()->all()),
                 async upload(event) {
                     const files = Array.from(event.target.files);
                     for (const file of files) {
