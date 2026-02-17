@@ -84,6 +84,18 @@
     display: block;
 }
 
+/* Code blocks are always dark regardless of light/dark theme,
+   because Shiki renders with the dark Rose Pine token colors. */
+[data-theme="light"] .code-block {
+  --rose-pine-base:    #100f14;
+  --rose-pine-surface: #1a1520;
+  --rose-pine-overlay: #221c2a;
+  --rose-pine-muted:   #857a96;
+  --rose-pine-subtle:  #9d92b0;
+  --rose-pine-text:    #e8e4f0;
+  --rose-pine-pine:    #4a8ca0;
+}
+
 /* Custom dark variant for Rose Pine */
 @custom-variant dark (&:where(.dark, .dark *));
 

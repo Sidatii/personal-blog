@@ -1,4 +1,4 @@
-<div x-data="{ copied: false }" class="relative group my-6 rounded-lg overflow-hidden border border-rose-pine-overlay">
+<div x-data="{ copied: false }" class="code-block relative group my-6 rounded-lg overflow-hidden border border-rose-pine-overlay">
     {{-- Header with language label and copy button --}}
     <div class="flex justify-between items-center px-4 py-2 bg-rose-pine-surface border-b border-rose-pine-overlay">
         <span class="text-xs font-mono text-rose-pine-muted">{{ $language ?? 'code' }}</span>
