@@ -36,9 +36,10 @@ class ShikiHighlighter
         // Get highlighted code from Shiki
         $highlighted = $this->shiki->highlightCode($code, $language);
 
-        // Remove the inline background-color style to make it transparent
-        // This allows the container background (bg-rose-pine-overlay) to show through
-        $highlighted = preg_replace('/style="background-color: #[0-9a-fA-F]+"/', 'style=""', $highlighted);
+        // Strip the inline style attribute from the <pre> so its background is
+        // transparent and the container's bg-rose-pine-overlay shows through.
+        // Shiki v3 omits the space after the colon, so match the full attribute.
+        $highlighted = preg_replace('/(<pre\b[^>]*?)\s*style="[^"]*"/', '$1', $highlighted);
 
         // Shiki already wraps each line in <span class="line">...</span>
         // So line numbers will work with the CSS counter on .line::before
