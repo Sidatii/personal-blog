@@ -15,9 +15,9 @@
             headings.forEach(h => observer.observe(h));
         }
     }"
-    class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto"
+    class="sticky top-24"
 >
-    <div class="bg-rose-pine-surface border border-rose-pine-overlay rounded-xl p-4">
+    <div class="max-h-[calc(100vh-7rem)] overflow-y-auto bg-rose-pine-surface border border-rose-pine-overlay rounded-xl p-4">
         <p class="text-[10px] font-semibold uppercase tracking-widest text-rose-pine-muted mb-3 pb-2.5 border-b border-rose-pine-overlay">
             On this page
         </p>
