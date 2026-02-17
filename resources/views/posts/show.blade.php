@@ -3,8 +3,8 @@
 @section('title', $post->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="max-w-6xl mx-auto px-4 py-12">
-    <div class="lg:grid lg:grid-cols-4 lg:gap-12">
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="lg:grid lg:grid-cols-4 lg:gap-10">
         {{-- Table of Contents - Sticky sidebar (hidden on mobile) --}}
         <aside class="hidden lg:block lg:col-span-1">
             @if(isset($headings) && count($headings) > 0)

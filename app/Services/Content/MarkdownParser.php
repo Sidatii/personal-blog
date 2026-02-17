@@ -4,12 +4,12 @@ namespace App\Services\Content;
 
 use App\Services\ShikiHighlighter;
 use Illuminate\Support\Facades\View;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Spatie\LaravelMarkdown\MarkdownRenderer;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class MarkdownParser
 {
-    protected GithubFlavoredMarkdownConverter $converter;
+    protected MarkdownRenderer $renderer;
 
     protected ShikiHighlighter $highlighter;
 
@@ -21,21 +21,11 @@ class MarkdownParser
     protected array $headings = [];
 
     /**
-     * Constructor - inject converter and highlighter with security-hardened configuration.
+     * Constructor - security options are configured in config/markdown.php.
      */
-    public function __construct(?GithubFlavoredMarkdownConverter $converter = null, ?ShikiHighlighter $highlighter = null)
+    public function __construct(?MarkdownRenderer $renderer = null, ?ShikiHighlighter $highlighter = null)
     {
-        // Security-hardened configuration
-        $config = [
-            'html_input' => 'strip',           // CRITICAL: Strips ALL HTML from input
-            'allow_unsafe_links' => false,     // CRITICAL: Blocks javascript:, data: URLs
-            'max_nesting_level' => 100,        // Prevents catastrophic backtracking
-            'renderer' => [
-                'soft_break' => "<br>\n",      // Render single newlines as <br> tags
-            ],
-        ];
-
-        $this->converter = $converter ?? new GithubFlavoredMarkdownConverter($config);
+        $this->renderer = $renderer ?? app(MarkdownRenderer::class);
         $this->highlighter = $highlighter ?? new ShikiHighlighter;
     }
 
@@ -56,8 +46,8 @@ class MarkdownParser
             // preventing backslash escaping and _ → <em> mangling
             [$body, $mathStash] = $this->stashMath($document->body());
 
-            // Convert markdown body to HTML with security configuration
-            $html = $this->converter->convert($body)->getContent();
+            // Convert markdown body to HTML
+            $html = $this->renderer->toHtml($body);
 
             // Restore math blocks verbatim
             $html = $this->restoreMath($html, $mathStash);
@@ -102,11 +92,11 @@ class MarkdownParser
     }
 
     /**
-     * Convert markdown to HTML with security configuration.
+     * Convert markdown to HTML.
      */
     public function convertToHtml(string $markdown): string
     {
-        return $this->converter->convert($markdown)->getContent();
+        return $this->renderer->toHtml($markdown);
     }
 
     /**
@@ -124,14 +114,6 @@ class MarkdownParser
     }
 
     /**
-     * Get the converter instance (for testing/debugging).
-     */
-    public function getConverter(): GithubFlavoredMarkdownConverter
-    {
-        return $this->converter;
-    }
-
-    /**
      * Get headings extracted from the last parse operation.
      *
      * @return array<int, array{level: int, text: string, id: string}>
@@ -142,8 +124,9 @@ class MarkdownParser
     }
 
     /**
-     * Extract headings from markdown content.
-     * Finds all heading elements (h1-h6) and returns their level, text, and slug.
+     * Extract h1/h2 headings from markdown content for the table of contents.
+     * Strips fenced and indented code blocks first to avoid picking up
+     * comment lines (e.g. `# bash comment`) as headings.
      *
      * @return array<int, array{level: int, text: string, id: string}>
      */
@@ -151,11 +134,13 @@ class MarkdownParser
     {
         $headings = [];
 
-        // Match markdown headings: # Heading, ## Heading, etc.
-        // Supports optional closing hashes and inline formatting
-        $pattern = '/^(#{1,6})\s+(.+?)(?:\s*#*)?$/m';
+        // Strip fenced code blocks (``` or ~~~) so # lines inside them are ignored
+        $stripped = preg_replace('/^(`{3,}|~{3,}).*?^\1/ms', '', $markdown);
 
-        if (preg_match_all($pattern, $markdown, $matches, PREG_SET_ORDER)) {
+        // Match only h1 (# ...) and h2 (## ...) headings
+        $pattern = '/^(#{1,2})\s+(.+?)(?:\s*#*)?$/m';
+
+        if (preg_match_all($pattern, $stripped, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $level = strlen($match[1]);
                 $text = trim($match[2]);

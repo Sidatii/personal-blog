@@ -44,6 +44,7 @@
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
       'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-body: 'Google Sans', ui-sans-serif, system-ui, sans-serif;
 
   /* Rose Pine Color Mapping to TailwindCSS */
   --color-rose-pine-base: var(--rose-pine-base);
@@ -59,6 +60,18 @@
   --color-rose-pine-foam: var(--rose-pine-foam);
   --color-rose-pine-iris: var(--rose-pine-iris);
   --color-rose-pine-highlight: var(--rose-pine-highlight);
+}
+
+/* Blog post body — Google Sans, justified text */
+.post-content {
+    font-family: var(--font-body);
+}
+
+.post-content p,
+.post-content li,
+.post-content td {
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /* Responsive images inside blog post content */
