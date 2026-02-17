@@ -33,9 +33,8 @@ return [
         'html_input' => 'strip',        // Strip all raw HTML from input
         'allow_unsafe_links' => false,  // Block javascript: / data: URLs
         'max_nesting_level' => 100,
-        'renderer' => [
-            'soft_break' => "<br>\n",  // Single newlines → <br>
-        ],
+        // soft_break left at CommonMark default: single newlines are spaces,
+        // double newlines create paragraphs — same as GitHub rendering.
     ],
 
     /*

@@ -52,6 +52,9 @@ class MarkdownParser
             // Restore math blocks verbatim
             $html = $this->restoreMath($html, $mathStash);
 
+            // Process GitHub-style callouts ([!NOTE], [!TIP], etc.)
+            $html = $this->processCallouts($html);
+
             // Post-process to highlight code blocks
             $html = $this->highlightCodeBlocks($html);
 
@@ -302,6 +305,44 @@ class MarkdownParser
         return preg_replace(
             '/<img([^>]+?)src=["\'](?:\.?\/?)images\/([^"\']+)["\']([^>]*)>/i',
             '<img$1src="/content/images/$2"$3>',
+            $html
+        );
+    }
+
+    /**
+     * Convert GitHub-style alert blockquotes into styled callout divs.
+     * Handles [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION].
+     */
+    protected function processCallouts(string $html): string
+    {
+        $types = [
+            'NOTE'      => 'Note',
+            'TIP'       => 'Tip',
+            'IMPORTANT' => 'Important',
+            'WARNING'   => 'Warning',
+            'CAUTION'   => 'Caution',
+        ];
+
+        return preg_replace_callback(
+            '/<blockquote>\s*<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:<br\s*\/?>)?([\s\S]*?)<\/blockquote>/i',
+            function ($matches) use ($types) {
+                $type  = strtoupper($matches[1]);
+                $label = $types[$type];
+                $raw   = $matches[2];
+
+                if (preg_match('/^\s*<\/p>/i', $raw)) {
+                    // [!TYPE] was on its own line; strip its closing </p>
+                    $body = trim(preg_replace('/^\s*<\/p>\s*/', '', $raw));
+                } else {
+                    // Content continues on same paragraph line as [!TYPE]
+                    $body = '<p>'.trim($raw);
+                }
+
+                return '<div class="callout callout-'.strtolower($type).'">'
+                    .'<p class="callout-title">'.$label.'</p>'
+                    .'<div class="callout-body">'.($body ?: '<p></p>').'</div>'
+                    .'</div>';
+            },
             $html
         );
     }

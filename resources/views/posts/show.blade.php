@@ -100,94 +100,145 @@
 </div>
 @endsection
 
-{{-- Add custom CSS for prose styling --}}
 @push('head')
 <style>
-    /* Custom prose styles for Rose Pine theme */
+    /* ── Rose Pine theme tokens for @tailwindcss/typography ─────────────────── */
     .prose-rose-pine {
-        --tw-prose-body: var(--rose-pine-text);
-        --tw-prose-headings: var(--rose-pine-text);
-        --tw-prose-lead: var(--rose-pine-subtle);
-        --tw-prose-links: var(--rose-pine-iris);
-        --tw-prose-bold: var(--rose-pine-text);
-        --tw-prose-counters: var(--rose-pine-muted);
-        --tw-prose-bullets: var(--rose-pine-muted);
-        --tw-prose-hr: var(--rose-pine-highlight);
-        --tw-prose-quotes: var(--rose-pine-subtle);
+        --tw-prose-body:        var(--rose-pine-text);
+        --tw-prose-headings:    var(--rose-pine-text);
+        --tw-prose-lead:        var(--rose-pine-subtle);
+        --tw-prose-links:       var(--rose-pine-iris);
+        --tw-prose-bold:        var(--rose-pine-text);
+        --tw-prose-counters:    var(--rose-pine-muted);
+        --tw-prose-bullets:     var(--rose-pine-muted);
+        --tw-prose-hr:          var(--rose-pine-highlight);
+        --tw-prose-quotes:      var(--rose-pine-subtle);
         --tw-prose-quote-borders: var(--rose-pine-highlight);
-        --tw-prose-captions: var(--rose-pine-muted);
-        --tw-prose-code: var(--rose-pine-text);
-        --tw-prose-pre-code: var(--rose-pine-text);
-        --tw-prose-pre-bg: var(--rose-pine-overlay);
-        --tw-prose-th-borders: var(--rose-pine-highlight);
-        --tw-prose-td-borders: var(--rose-pine-highlight);
+        --tw-prose-captions:    var(--rose-pine-muted);
+        --tw-prose-code:        var(--rose-pine-foam);
+        --tw-prose-pre-code:    var(--rose-pine-text);
+        --tw-prose-pre-bg:      var(--rose-pine-overlay);
+        --tw-prose-th-borders:  var(--rose-pine-highlight);
+        --tw-prose-td-borders:  var(--rose-pine-highlight);
     }
 
-    /* Distinct header typography for visual hierarchy */
+    /* ── Links ───────────────────────────────────────────────────────────────── */
+    .prose a {
+        color: var(--rose-pine-iris);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-color: color-mix(in srgb, var(--rose-pine-iris) 50%, transparent);
+        transition: color 0.15s, text-decoration-color 0.15s;
+    }
+    .prose a:hover {
+        color: var(--rose-pine-foam);
+        text-decoration-color: var(--rose-pine-foam);
+    }
+
+    /* ── Headings ────────────────────────────────────────────────────────────── */
     .prose h1 {
-        font-size: 2rem;
-        font-weight: 700;
+        font-size: 2rem; font-weight: 700;
         color: var(--rose-pine-text);
-        margin-top: 2em;
-        margin-bottom: 1em;
-        letter-spacing: -0.025em;
+        margin-top: 2em; margin-bottom: 0.75em;
+        letter-spacing: -0.025em; line-height: 1.2;
     }
-
     .prose h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 1.5rem; font-weight: 600;
         color: var(--rose-pine-text);
-        margin-top: 1.5em;
-        margin-bottom: 0.75em;
+        margin-top: 2em; margin-bottom: 0.75em;
         border-bottom: 1px solid var(--rose-pine-highlight);
-        padding-bottom: 0.25em;
+        padding-bottom: 0.3em; line-height: 1.3;
     }
-
     .prose h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
+        font-size: 1.25rem; font-weight: 600;
         color: var(--rose-pine-subtle);
-        margin-top: 1.25em;
-        margin-bottom: 0.5em;
+        margin-top: 1.5em; margin-bottom: 0.5em;
     }
-
     .prose h4 {
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 1rem; font-weight: 600;
         color: var(--rose-pine-muted);
-        margin-top: 1em;
-        margin-bottom: 0.25em;
+        margin-top: 1.25em; margin-bottom: 0.4em;
     }
-
     .prose h5 {
-        font-size: 0.875rem;
-        font-weight: 500;
+        font-size: 0.875rem; font-weight: 500;
         color: var(--rose-pine-muted);
-        margin-top: 0.75em;
-        margin-bottom: 0.25em;
+        margin-top: 1em; margin-bottom: 0.25em;
     }
-
     .prose h6 {
-        font-size: 0.75rem;
-        font-weight: 500;
+        font-size: 0.8rem; font-weight: 500;
         color: var(--rose-pine-muted);
-        margin-top: 0.5em;
-        margin-bottom: 0.25em;
+        margin-top: 0.75em; margin-bottom: 0.25em;
+        text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    /* ── Body text & spacing ─────────────────────────────────────────────────── */
+    .prose p  { margin-top: 0; margin-bottom: 1.25em; line-height: 1.8; }
+    .prose li { margin-bottom: 0.4em; line-height: 1.75; }
+    .prose ul { margin-bottom: 1.25em; }
+    .prose ol { margin-bottom: 1.25em; }
+
+    /* ── Inline code ─────────────────────────────────────────────────────────── */
+    .prose code:not([class]) {
+        background-color: var(--rose-pine-overlay);
+        color: var(--rose-pine-foam);
+        padding: 0.15em 0.4em;
+        border-radius: 0.3em;
+        font-size: 0.875em;
+    }
+    .prose code:not([class])::before,
+    .prose code:not([class])::after { content: none; }
+
+    /* ── Blockquotes ─────────────────────────────────────────────────────────── */
+    .prose blockquote {
+        border-left: 4px solid var(--rose-pine-highlight);
+        padding: 0.25em 1em;
+        color: var(--rose-pine-subtle);
+        font-style: italic;
+        margin: 1.5em 0;
+        background-color: transparent;
+    }
+    .prose blockquote p { margin-bottom: 0.5em; }
+    .prose blockquote p:last-child { margin-bottom: 0; }
+
+    /* ── GitHub-style callouts ───────────────────────────────────────────────── */
+    .callout {
+        border-left: 4px solid;
+        border-radius: 0 0.5rem 0.5rem 0;
+        padding: 0.875rem 1.25rem;
+        margin: 1.5rem 0;
+        background-color: var(--rose-pine-surface);
+    }
+    .callout-title {
+        font-size: 0.8rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
+        margin: 0 0 0.5em;
+    }
+    .callout-body > p:last-child { margin-bottom: 0; }
+
+    .callout-note      { border-color: var(--rose-pine-iris); }
+    .callout-note      .callout-title { color: var(--rose-pine-iris); }
+    .callout-tip       { border-color: var(--rose-pine-foam); }
+    .callout-tip       .callout-title { color: var(--rose-pine-foam); }
+    .callout-important { border-color: var(--rose-pine-gold); }
+    .callout-important .callout-title { color: var(--rose-pine-gold); }
+    .callout-warning   { border-color: var(--rose-pine-love); }
+    .callout-warning   .callout-title { color: var(--rose-pine-love); }
+    .callout-caution   { border-color: var(--rose-pine-pine); }
+    .callout-caution   .callout-title { color: var(--rose-pine-pine); }
+
+    /* ── Horizontal rules ────────────────────────────────────────────────────── */
+    .prose hr {
+        border-color: var(--rose-pine-highlight);
+        margin: 2.5em 0;
     }
 
-    /* Smooth scroll for anchor links */
-    html {
-        scroll-behavior: smooth;
-    }
+    /* ── Smooth scroll + anchor offset ──────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+    [id]  { scroll-margin-top: 6rem; }
 
-    /* Offset for fixed header when scrolling to anchors */
-    [id] {
-        scroll-margin-top: 6rem;
-    }
-
-    /* Code block line numbers and transparent background */
+    /* ── Shiki code blocks ───────────────────────────────────────────────────── */
     .shiki {
         counter-reset: line;
         background-color: transparent !important;
@@ -195,74 +246,41 @@
         padding: 0 !important;
         margin: 0 !important;
     }
-
-    .shiki .line {
-        display: inline-block;
-        width: 100%;
-    }
-
+    .shiki .line { display: inline-block; width: 100%; }
     .shiki .line::before {
         counter-increment: line;
         content: counter(line);
         display: inline-block;
-        width: 2.5em;
-        margin-right: 1em;
+        width: 2.5em; margin-right: 1em;
         text-align: right;
         color: var(--rose-pine-muted);
         user-select: none;
-        font-size: 0.85em;
-        opacity: 0.6;
+        font-size: 0.85em; opacity: 0.6;
     }
+    .shiki code { display: block; background: transparent !important; }
 
-    .shiki code {
-        display: block;
-        background: transparent !important;
-    }
-
-    /* Table styles */
+    /* ── Tables ──────────────────────────────────────────────────────────────── */
     .prose table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1.5em;
-        margin-bottom: 1.5em;
-        font-size: 0.875rem;
-        display: block;
-        overflow-x: auto;
+        width: 100%; border-collapse: collapse;
+        margin: 1.5em 0; font-size: 0.875rem;
+        display: block; overflow-x: auto;
     }
-
-    .prose thead {
-        background-color: var(--rose-pine-surface);
-    }
-
+    .prose thead { background-color: var(--rose-pine-surface); }
     .prose th {
-        padding: 0.625rem 1rem;
-        text-align: left;
-        font-weight: 600;
-        color: var(--rose-pine-text);
-        border: 1px solid var(--rose-pine-highlight);
-        white-space: nowrap;
+        padding: 0.625rem 1rem; text-align: left;
+        font-weight: 600; color: var(--rose-pine-text);
+        border: 1px solid var(--rose-pine-highlight); white-space: nowrap;
     }
-
     .prose td {
-        padding: 0.625rem 1rem;
-        color: var(--rose-pine-subtle);
-        border: 1px solid var(--rose-pine-highlight);
-        vertical-align: top;
+        padding: 0.625rem 1rem; color: var(--rose-pine-subtle);
+        border: 1px solid var(--rose-pine-highlight); vertical-align: top;
     }
+    .prose tbody tr:nth-child(even) { background-color: var(--rose-pine-overlay); }
+    .prose tbody tr:hover            { background-color: var(--rose-pine-highlight); }
 
-    .prose tbody tr:nth-child(even) {
-        background-color: var(--rose-pine-overlay);
-    }
-
-    .prose tbody tr:hover {
-        background-color: var(--rose-pine-highlight);
-    }
-
-    /* KaTeX display math centering */
+    /* ── KaTeX math ──────────────────────────────────────────────────────────── */
     .prose .katex-display {
-        margin: 1.5em 0;
-        overflow-x: auto;
-        overflow-y: hidden;
+        margin: 1.5em 0; overflow-x: auto; overflow-y: hidden;
     }
 </style>
 @endpush
