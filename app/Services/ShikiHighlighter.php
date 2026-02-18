@@ -41,12 +41,20 @@ class ShikiHighlighter
     /**
      * Highlight code with the Rose Pine Dawn theme (for light mode).
      *
+     * Foam (#56949f) is prohibited in light-mode output: its contrast against
+     * the warm overlay background (~2.8:1) fails WCAG AA. Tokens that Shiki
+     * would colour foam are remapped to pine (#286983, ~6.4:1) instead.
+     *
      * @param  string  $code  The code to highlight
      * @param  string  $language  The programming language (default: 'php')
      */
     public function highlightDawn(string $code, string $language = 'php'): string
     {
-        return $this->doHighlight($this->shikiDawn, $code, $language);
+        $highlighted = $this->doHighlight($this->shikiDawn, $code, $language);
+
+        // Replace every foam token (#56949f) with pine (#286983).
+        // Case-insensitive to cover both upper and lower-case hex output.
+        return preg_replace('/#56949f/i', '#286983', $highlighted);
     }
 
     /**
