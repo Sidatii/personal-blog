@@ -282,13 +282,58 @@
 
     /* Unified container styling for all shiki variants */
     .prose .code-block {
-        position: relative;
         border-radius: 0.5rem;
         overflow: hidden;
         margin: 1.5em 0;
         max-width: 100%;
         width: 100%;
         background: var(--rose-pine-overlay);
+    }
+
+    /* Wrapper divs inside code-block */
+    .shiki-dark,
+    .shiki-dawn {
+        background: transparent !important;
+    }
+
+    /* Shiki output - scrollable container */
+    .shiki {
+        background: transparent !important;
+        margin: 0 !important;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .shiki code {
+        display: block;
+        background: transparent !important;
+    }
+
+    /* Line numbers - inline, scrolls naturally with content */
+    .shiki .line {
+        display: block;
+        padding: 0 1rem;
+    }
+
+    .shiki .line::before {
+        counter-increment: line;
+        content: counter(line);
+        display: inline-block;
+        width: 2.5em;
+        margin-right: 0.75em;
+        text-align: right;
+        color: var(--rose-pine-muted);
+        user-select: none;
+        opacity: 0.5;
+        font-size: 0.75rem;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+        .shiki { font-size: 0.7rem; }
+        .shiki .line::before { width: 1.75em; font-size: 0.65rem; }
     }
 
     /* Wrapper divs inside code-block */
