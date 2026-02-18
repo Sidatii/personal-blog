@@ -3,8 +3,8 @@
 @section('title', $post->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <div class="lg:grid lg:grid-cols-4 lg:gap-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="lg:grid lg:grid-cols-4 lg:gap-10 min-w-0">
         {{-- Table of Contents - Sticky sidebar (hidden on mobile) --}}
         <aside class="hidden lg:block lg:col-span-1 min-w-0">
             @if(isset($headings) && count($headings) > 0)
@@ -18,44 +18,44 @@
             @include('components.reading-progress')
             
             {{-- Post Header --}}
-            <header class="mb-8">
+            <header class="mb-8 min-w-0">
                 {{-- Post Title --}}
-                <h1 class="text-3xl sm:text-4xl font-bold text-rose-pine-text mb-4 leading-tight">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-rose-pine-text mb-4 leading-tight break-words">
                     {{ $post->title }}
                 </h1>
                 
                 {{-- Post Meta --}}
-                <div class="flex flex-wrap items-center gap-4 text-sm text-rose-pine-muted mb-4">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-rose-pine-muted mb-4">
                     {{-- Published Date --}}
                     @if($post->published_at)
-                        <time datetime="{{ $post->published_at->toISOString() }}" class="flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            {{ $post->published_at->format('F j, Y') }}
+                        <time datetime="{{ $post->published_at->toISOString() }}" class="flex items-center gap-1 whitespace-nowrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            {{ $post->published_at->format('M j, Y') }}
                         </time>
                     @endif
                     
                     {{-- Category --}}
                     @if($post->category)
                         <span class="flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            {{ $post->category->name }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span class="truncate max-w-[120px] sm:max-w-none">{{ $post->category->name }}</span>
                         </span>
                     @endif
                     
                     {{-- Reading Time Estimate --}}
                     @if(isset($readingTime))
-                        <span class="flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            {{ $readingTime }} min read
+                        <span class="flex items-center gap-1 whitespace-nowrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            {{ $readingTime }} min
                         </span>
                     @endif
                 </div>
                 
                 {{-- Tags --}}
                 @if($post->tags && $post->tags->count() > 0)
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-1.5 sm:gap-2">
                         @foreach($post->tags as $tag)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-pine-overlay text-rose-pine-subtle">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-pine-overlay text-rose-pine-subtle">
                                 {{ $tag->name }}
                             </span>
                         @endforeach
@@ -70,10 +70,10 @@
                 </div>
             @endif
             
-            {{-- Post Content --}}
-            <div class="prose prose-invert prose-rose-pine max-w-none post-content">
-                {!! $content !!}
-            </div>
+             {{-- Post Content --}}
+             <div class="prose prose-invert prose-rose-pine max-w-none post-content min-w-0">
+                 {!! $content !!}
+             </div>
 
             {{-- Reaction Bar --}}
             <x-reaction-bar :reactable="$post" />
@@ -137,25 +137,25 @@
 
     /* ── Headings ────────────────────────────────────────────────────────────── */
     .prose h1 {
-        font-size: 2rem; font-weight: 700;
+        font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 700;
         color: var(--rose-pine-text);
         margin-top: 2em; margin-bottom: 0.75em;
         letter-spacing: -0.025em; line-height: 1.2;
     }
     .prose h2 {
-        font-size: 1.5rem; font-weight: 600;
+        font-size: clamp(1.25rem, 4vw, 1.5rem); font-weight: 600;
         color: var(--rose-pine-text);
         margin-top: 2em; margin-bottom: 0.75em;
         border-bottom: 1px solid var(--rose-pine-highlight);
         padding-bottom: 0.3em; line-height: 1.3;
     }
     .prose h3 {
-        font-size: 1.25rem; font-weight: 600;
+        font-size: clamp(1.1rem, 3vw, 1.25rem); font-weight: 600;
         color: var(--rose-pine-subtle);
         margin-top: 1.5em; margin-bottom: 0.5em;
     }
     .prose h4 {
-        font-size: 1rem; font-weight: 600;
+        font-size: clamp(1rem, 2.5vw, 1rem); font-weight: 600;
         color: var(--rose-pine-muted);
         margin-top: 1.25em; margin-bottom: 0.4em;
     }
@@ -176,6 +176,24 @@
     .prose li { margin-bottom: 0.4em; line-height: 1.75; }
     .prose ul { margin-bottom: 1.25em; }
     .prose ol { margin-bottom: 1.25em; }
+
+    /* Mobile text wrapping fixes */
+    .prose {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+    }
+    .prose pre, .prose code {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-x: auto;
+        max-width: 100%;
+    }
+    .prose img {
+        max-width: 100%;
+        height: auto;
+    }
 
     /* ── Inline code ─────────────────────────────────────────────────────────── */
     .prose code:not([class]) {
@@ -204,18 +222,20 @@
     .callout {
         border-left: 4px solid;
         border-radius: 0 0.5rem 0.5rem 0;
-        padding: 0.875rem 1.25rem;
-        margin: 1.5rem 0;
+        padding: 0.75rem 1rem;
+        margin: 1.25rem 0;
         background-color: var(--rose-pine-surface);
+        overflow-wrap: break-word;
     }
     .callout-title {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin: 0 0 0.5em;
     }
     .callout-body > p:last-child { margin-bottom: 0; }
+    .callout-body p { font-size: 0.9rem; }
 
     .callout-note      { border-color: var(--rose-pine-iris); }
     .callout-note      .callout-title { color: var(--rose-pine-iris); }
@@ -239,9 +259,6 @@
     [id]  { scroll-margin-top: 6rem; }
 
     /* ── Shiki code blocks ───────────────────────────────────────────────────── */
-    /* Shiki <pre> sits directly inside a <div>, not a nested <pre>.
-       Override the typography plugin's prose pre defaults so they
-       don't compound font-size or add extra padding/background. */
     .prose pre { margin: 0; padding: 0; background: transparent; border-radius: 0; font-size: 1rem; }
 
     .shiki {
@@ -249,21 +266,36 @@
         background: transparent !important;
         margin: 0 !important;
         padding: 1rem 1.25rem !important;
-        font-size: 0.9rem;
-        line-height: 1.7;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
-    .shiki .line { display: inline-block; width: 100%; }
+    .shiki .line { 
+        display: block; 
+        min-height: 1.6em;
+        padding-left: 3.75em;
+    }
     .shiki .line::before {
         counter-increment: line;
         content: counter(line);
-        display: inline-block;
-        width: 2.5em; margin-right: 1.25em;
+        position: absolute;
+        left: 0;
+        width: 3em;
         text-align: right;
         color: var(--rose-pine-muted);
         user-select: none;
         opacity: 0.5;
+        font-size: 0.85rem;
     }
     .shiki code { display: block; background: transparent !important; }
+
+    .prose div:has(> .shiki) {
+        position: relative;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        margin: 1.5em 0;
+    }
 
     /* ── Tables ──────────────────────────────────────────────────────────────── */
     .prose table {
