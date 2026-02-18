@@ -298,6 +298,7 @@
 
     /* Shiki output - scrollable container */
     .shiki {
+        counter-reset: line;
         background: transparent !important;
         margin: 0 !important;
         font-size: 0.8rem;
@@ -334,75 +335,6 @@
     @media (max-width: 640px) {
         .shiki { font-size: 0.7rem; }
         .shiki .line::before { width: 1.75em; font-size: 0.65rem; }
-    }
-
-    /* Wrapper divs inside code-block */
-    .shiki-dark,
-    .shiki-dawn {
-        background: transparent !important;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Shiki output - transparent to use container background */
-    .shiki {
-        counter-reset: line;
-        background: transparent !important;
-        margin: 0 !important;
-        padding: 0.75rem 0;
-        font-size: 0.8rem;
-        line-height: 1.5;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-    }
-
-    .shiki code {
-        display: block;
-        background: transparent !important;
-        min-width: max-content;
-        padding: 0 1rem;
-    }
-
-    .shiki .line { 
-        display: block;
-        padding-left: 3.5em;
-        padding-right: 1rem;
-        min-height: 1.5em;
-    }
-
-    .shiki .line::before {
-        counter-increment: line;
-        content: counter(line);
-        position: absolute;
-        left: 0.75rem;
-        width: 2.5em;
-        text-align: right;
-        color: var(--rose-pine-muted);
-        user-select: none;
-        opacity: 0.5;
-        font-size: 0.75rem;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 640px) {
-        .shiki {
-            font-size: 0.7rem;
-            padding: 0.5rem 0;
-        }
-        .shiki .line {
-            padding-left: 2.5em;
-            padding-right: 0.75rem;
-        }
-        .shiki .line::before {
-            width: 1.75em;
-            left: 0.5rem;
-            font-size: 0.65rem;
-        }
-        .shiki code {
-            padding: 0 0.5rem;
-        }
     }
 
     /* ── Tables ──────────────────────────────────────────────────────────────── */
