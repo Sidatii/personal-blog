@@ -315,15 +315,15 @@
     /* Line numbers - inline, scrolls naturally with content */
     .shiki .line {
         display: block;
-        padding: 0 1rem;
+        padding: 0 0.5rem 0 0;
     }
 
     .shiki .line::before {
         counter-increment: line;
         content: counter(line);
         display: inline-block;
-        width: 2.5em;
-        margin-right: 0.75em;
+        width: 2em;
+        margin-right: 0.5em;
         text-align: right;
         color: var(--rose-pine-muted);
         user-select: none;
