@@ -184,15 +184,36 @@
         word-break: break-word;
         hyphens: auto;
     }
-    .prose pre, .prose code {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow-x: auto;
-        max-width: 100%;
-    }
     .prose img {
         max-width: 100%;
         height: auto;
+    }
+
+    /* Code block containers must not overflow */
+    .prose pre,
+    .prose .code-block,
+    .prose div:has(> pre),
+    .prose div:has(> .shiki),
+    .prose div:has(> .shiki-dark),
+    .prose div:has(> .shiki-dawn) {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .code-block {
+        width: 100%;
+        max-width: calc(100vw - 2rem);
+        margin-left: calc(-50vw + 50% + 1rem);
+        margin-right: calc(-50vw + 50% + 1rem);
+    }
+
+    @media (min-width: 640px) {
+        .code-block {
+            max-width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
 
     /* ── Inline code ─────────────────────────────────────────────────────────── */
@@ -202,6 +223,8 @@
         padding: 0.15em 0.4em;
         border-radius: 0.3em;
         font-size: 0.875em;
+        white-space: nowrap;
+        word-wrap: normal;
     }
     .prose code:not([class])::before,
     .prose code:not([class])::after { content: none; }
@@ -259,31 +282,77 @@
     [id]  { scroll-margin-top: 6rem; }
 
     /* ── Shiki code blocks ───────────────────────────────────────────────────── */
-    /* Shiki <pre> sits directly inside a <div>, not a nested <pre>.
-       Override the typography plugin's prose pre defaults so they
-       don't compound font-size or add extra padding/background. */
     .prose pre { margin: 0; padding: 0; background: transparent; border-radius: 0; font-size: 1rem; }
+
+    /* Code block container - fits screen, content scrolls inside */
+    .prose div:has(> .shiki) {
+        position: relative;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        margin: 1.5em 0;
+        max-width: 100%;
+        width: 100%;
+    }
 
     .shiki {
         counter-reset: line;
         background: transparent !important;
         margin: 0 !important;
-        padding: 1rem 1.25rem !important;
-        font-size: 0.9rem;
-        line-height: 1.7;
+        padding: 0.75rem 0;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
     }
-    .shiki .line { display: inline-block; width: 100%; }
+
+    .shiki code {
+        display: block;
+        background: transparent !important;
+        min-width: max-content;
+        padding: 0 1rem;
+    }
+
+    .shiki .line { 
+        display: block;
+        padding-left: 3.5em;
+        padding-right: 1rem;
+        min-height: 1.5em;
+    }
+
     .shiki .line::before {
         counter-increment: line;
         content: counter(line);
-        display: inline-block;
-        width: 2.5em; margin-right: 1.25em;
+        position: absolute;
+        left: 0.75rem;
+        width: 2.5em;
         text-align: right;
         color: var(--rose-pine-muted);
         user-select: none;
         opacity: 0.5;
+        font-size: 0.75rem;
     }
-    .shiki code { display: block; background: transparent !important; }
+
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+        .shiki {
+            font-size: 0.7rem;
+            padding: 0.5rem 0;
+        }
+        .shiki .line {
+            padding-left: 2.5em;
+            padding-right: 0.75rem;
+        }
+        .shiki .line::before {
+            width: 1.75em;
+            left: 0.5rem;
+            font-size: 0.65rem;
+        }
+        .shiki code {
+            padding: 0 0.5rem;
+        }
+    }
 
     /* ── Tables ──────────────────────────────────────────────────────────────── */
     .prose table {
