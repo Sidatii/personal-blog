@@ -14,36 +14,52 @@ use Spatie\ShikiPhp\Shiki;
  */
 class ShikiHighlighter
 {
-    private Shiki $shiki;
+    private Shiki $shikiDark;
+
+    private Shiki $shikiDawn;
 
     /**
-     * Initialize Shiki with Rose Pine theme.
+     * Initialize Shiki with both Rose Pine dark and dawn themes.
      */
     public function __construct()
     {
-        $this->shiki = new Shiki('rose-pine');
+        $this->shikiDark = new Shiki('rose-pine');
+        $this->shikiDawn = new Shiki('rose-pine-dawn');
     }
 
     /**
-     * Highlight code with specified language.
+     * Highlight code with the dark Rose Pine theme (for dark mode).
      *
      * @param  string  $code  The code to highlight
      * @param  string  $language  The programming language (default: 'php')
-     * @return string HTML with syntax highlighting and line numbers support
      */
     public function highlight(string $code, string $language = 'php'): string
     {
-        // Get highlighted code from Shiki
-        $highlighted = $this->shiki->highlightCode($code, $language);
+        return $this->doHighlight($this->shikiDark, $code, $language);
+    }
+
+    /**
+     * Highlight code with the Rose Pine Dawn theme (for light mode).
+     *
+     * @param  string  $code  The code to highlight
+     * @param  string  $language  The programming language (default: 'php')
+     */
+    public function highlightDawn(string $code, string $language = 'php'): string
+    {
+        return $this->doHighlight($this->shikiDawn, $code, $language);
+    }
+
+    /**
+     * Run Shiki highlighting and strip the inline background so the
+     * container's background-color shows through.
+     */
+    private function doHighlight(Shiki $shiki, string $code, string $language): string
+    {
+        $highlighted = $shiki->highlightCode($code, $language);
 
         // Strip the inline style attribute from the <pre> so its background is
         // transparent and the container's bg-rose-pine-overlay shows through.
         // Shiki v3 omits the space after the colon, so match the full attribute.
-        $highlighted = preg_replace('/(<pre\b[^>]*?)\s*style="[^"]*"/', '$1', $highlighted);
-
-        // Shiki already wraps each line in <span class="line">...</span>
-        // So line numbers will work with the CSS counter on .line::before
-
-        return $highlighted;
+        return preg_replace('/(<pre\b[^>]*?)\s*style="[^"]*"/', '$1', $highlighted);
     }
 }

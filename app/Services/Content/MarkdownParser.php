@@ -367,14 +367,16 @@ class MarkdownParser
                 return $matches[0]; // Return original if no code content
             }
 
-            // Use Shiki to highlight the code
+            // Use Shiki to highlight the code in both dark and dawn themes
             try {
-                $highlighted = $this->highlighter->highlight($code, $language);
+                $highlighted     = $this->highlighter->highlight($code, $language);
+                $highlightedDawn = $this->highlighter->highlightDawn($code, $language);
 
-                // Wrap in code-block component structure for container isolation, copy button, and language label
+                // Wrap in code-block component with both renders; CSS toggles which is shown
                 return View::make('components.code-block', [
-                    'language' => $language,
-                    'highlighted' => $highlighted,
+                    'language'        => $language,
+                    'highlighted'     => $highlighted,
+                    'highlightedDawn' => $highlightedDawn,
                 ])->render();
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::warning('MarkdownParser: Code highlighting failed', [

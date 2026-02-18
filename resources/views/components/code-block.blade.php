@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center px-4 py-2 bg-rose-pine-surface border-b border-rose-pine-overlay">
         <span class="text-xs font-mono text-rose-pine-muted">{{ $language ?? 'code' }}</span>
 
-        <button x-on:click="navigator.clipboard.writeText($refs.block.querySelector('code').textContent.trimEnd()); copied = true; setTimeout(() => copied = false, 2000)"
+        <button x-on:click="navigator.clipboard.writeText($refs.codeRef.querySelector('code').textContent.trimEnd()); copied = true; setTimeout(() => copied = false, 2000)"
                 class="text-xs text-rose-pine-subtle hover:text-rose-pine-text transition-colors flex items-center gap-1">
             <span x-show="!copied">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -16,6 +16,9 @@
         </button>
     </div>
 
-    {{-- Shiki <pre> output sits directly in a div — no nested <pre> wrapping --}}
-    <div x-ref="block" class="overflow-x-auto bg-rose-pine-overlay">{!! $highlighted ?? $slot !!}</div>
+    {{-- Rose Pine (dark) — shown in dark mode --}}
+    <div x-ref="codeRef" class="shiki-dark overflow-x-auto bg-rose-pine-overlay">{!! $highlighted ?? $slot !!}</div>
+
+    {{-- Rose Pine Dawn — shown in light mode --}}
+    <div class="shiki-dawn overflow-x-auto bg-rose-pine-overlay">{!! $highlightedDawn ?? '' !!}</div>
 </div>
