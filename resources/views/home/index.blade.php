@@ -254,40 +254,5 @@
 </section>
 @endif
 
-{{-- ════════════════════════════════════ NEWSLETTER ══ --}}
-<section class="py-24 border-t" style="border-color:var(--rose-pine-overlay);background:var(--rose-pine-surface)">
-    <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {{-- Inbox.java — the message before the signup form --}}
-        <div class="rounded-xl overflow-hidden border mb-12" style="border-color:var(--rose-pine-overlay);background:var(--rose-pine-base)">
-            <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--rose-pine-overlay);background:var(--rose-pine-overlay)">
-                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-love)"></span>
-                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-gold)"></span>
-                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-foam)"></span>
-                <span class="ml-3 text-xs font-mono" style="color:var(--rose-pine-muted)">Inbox.java</span>
-            </div>
-            <pre class="p-5 text-xs sm:text-sm leading-6 overflow-x-auto" style="color:var(--rose-pine-text)"><span class="text-rose-pine-pine">public</span> <span class="text-rose-pine-pine">void</span> <span class="text-rose-pine-rose">subscribe</span><span class="text-rose-pine-subtle">(</span><span class="text-rose-pine-pine">String</span> email<span class="text-rose-pine-subtle">) {</span>
-    validator<span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">check</span><span class="text-rose-pine-subtle">(</span>email<span class="text-rose-pine-subtle">);</span>
-    inbox<span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">register</span><span class="text-rose-pine-subtle">(</span>
-        <span class="text-rose-pine-pine">new</span> <span class="text-rose-pine-iris">Subscriber</span><span class="text-rose-pine-subtle">(</span>email<span class="text-rose-pine-subtle">)</span>
-    <span class="text-rose-pine-subtle">);</span>
-    <span class="text-rose-pine-muted">// No noise. Just writing.</span>
-<span class="text-rose-pine-subtle">}</span></pre>
-        </div>
-
-        {{-- Newsletter form --}}
-        <div class="text-center">
-            <p class="text-xs font-mono tracking-widest uppercase mb-4" style="color:var(--rose-pine-muted)">— Stay in bounds —</p>
-            <h2 class="text-2xl font-bold mb-3" style="color:var(--rose-pine-text)">
-                Get new posts when they ship.
-            </h2>
-            <p class="mb-8" style="color:var(--rose-pine-subtle)">
-                No noise. Just writing, delivered straight to your inbox.
-            </p>
-            <x-newsletter-signup />
-        </div>
-
-    </div>
-</section>
 
 @endsection

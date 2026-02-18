@@ -1,72 +1,65 @@
 {{-- Projects Index Page --}}
-{{-- Masonry grid layout with status filter --}}
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {{-- Page Header --}}
-        <header class="mb-10">
-            <h1 class="text-4xl font-bold text-rose-pine-text mb-4">Projects</h1>
-            <p class="text-lg text-rose-pine-subtle">Browse my portfolio of projects showcasing web development, applications, and technical work.</p>
-        </header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-        {{-- Status Filter Bar --}}
-        <div class="mb-10">
-            <div class="flex flex-wrap gap-2" x-data="{ currentStatus: '{{ $currentStatus ?? 'all' }}' }">
-                {{-- All Filter --}}
-                <a href="{{ route('projects.index') }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ is_null($currentStatus) ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
+    {{-- Header: heading + filters left, Portfolio.java right --}}
+    <div class="grid lg:grid-cols-2 gap-10 items-start mb-14">
+        <div>
+            <h1 class="text-4xl font-bold mb-3" style="color:var(--rose-pine-text)">Projects</h1>
+            <p class="text-lg mb-8" style="color:var(--rose-pine-subtle)">Code that shipped.</p>
+
+            {{-- Status filters --}}
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('projects.index') }}"
+                   class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                   style="{{ is_null($currentStatus) ? 'background:var(--rose-pine-gold);color:#111827' : 'background:var(--rose-pine-surface);color:var(--rose-pine-subtle)' }}">
                     All
                 </a>
-                
-                {{-- Active Filter --}}
-                <a href="{{ route('projects.index', ['status' => 'active']) }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'active' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
-                    Active
+                @foreach(['active' => 'Active', 'in-progress' => 'In Progress', 'completed' => 'Completed', 'archived' => 'Archived'] as $key => $label)
+                <a href="{{ route('projects.index', ['status' => $key]) }}"
+                   class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                   style="{{ $currentStatus === $key ? 'background:var(--rose-pine-gold);color:#111827' : 'background:var(--rose-pine-surface);color:var(--rose-pine-subtle)' }}">
+                    {{ $label }}
                 </a>
-                
-                {{-- Completed Filter --}}
-                <a href="{{ route('projects.index', ['status' => 'completed']) }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'completed' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
-                    Completed
-                </a>
-                
-                {{-- In Progress Filter --}}
-                <a href="{{ route('projects.index', ['status' => 'in-progress']) }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'in-progress' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
-                    In Progress
-                </a>
-                
-                {{-- Archived Filter --}}
-                <a href="{{ route('projects.index', ['status' => 'archived']) }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   {{ $currentStatus === 'archived' ? 'bg-rose-pine-gold text-gray-900' : 'bg-rose-pine-surface text-rose-pine-subtle hover:text-rose-pine-text' }}">
-                    Archived
-                </a>
+                @endforeach
             </div>
         </div>
 
-        {{-- Projects Masonry Grid --}}
-        @if($projects->count() > 0)
-            <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-                @foreach($projects as $project)
-                    <x-project-card :project="$project" />
-                @endforeach
+        <div class="rounded-xl overflow-hidden border" style="border-color:var(--rose-pine-overlay);background:var(--rose-pine-surface)">
+            <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--rose-pine-overlay);background:var(--rose-pine-overlay)">
+                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-love)"></span>
+                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-gold)"></span>
+                <span class="w-3 h-3 rounded-full" style="background:var(--rose-pine-foam)"></span>
+                <span class="ml-3 text-xs font-mono" style="color:var(--rose-pine-muted)">Portfolio.java</span>
             </div>
-        @else
-            {{-- Empty State --}}
-            <div class="text-center py-16">
-                <p class="text-rose-pine-muted text-lg">No projects to display.</p>
-                @if($currentStatus)
-                    <p class="text-rose-pine-subtle text-sm mt-2">
-                        Try <a href="{{ route('projects.index') }}" class="text-rose-pine-gold hover:underline">viewing all projects</a>.
-                    </p>
-                @endif
-            </div>
-        @endif
+            <pre class="p-5 text-xs sm:text-sm leading-6 overflow-x-auto" style="color:var(--rose-pine-text)"><span class="text-rose-pine-pine">public</span> <span class="text-rose-pine-iris">List</span>&lt;<span class="text-rose-pine-iris">Project</span>&gt; <span class="text-rose-pine-rose">all</span><span class="text-rose-pine-subtle">(</span><span class="text-rose-pine-iris">@Nullable</span> <span class="text-rose-pine-pine">String</span> status<span class="text-rose-pine-subtle">) {</span>
+    <span class="text-rose-pine-pine">return</span> projects<span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">stream</span><span class="text-rose-pine-subtle">()</span>
+        <span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">filter</span><span class="text-rose-pine-subtle">(</span>p <span class="text-rose-pine-subtle">-></span> status <span class="text-rose-pine-subtle">==</span> <span class="text-rose-pine-pine">null</span>
+            <span class="text-rose-pine-subtle">||</span> p<span class="text-rose-pine-subtle">.</span>status<span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">equals</span><span class="text-rose-pine-subtle">(</span>status<span class="text-rose-pine-subtle">))</span>
+        <span class="text-rose-pine-subtle">.</span><span class="text-rose-pine-rose">toList</span><span class="text-rose-pine-subtle">();</span>
+    <span class="text-rose-pine-muted">// Code that shipped.</span>
+<span class="text-rose-pine-subtle">}</span></pre>
+        </div>
     </div>
+
+    @if($projects->count() > 0)
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+            @foreach($projects as $project)
+                <x-project-card :project="$project" />
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-20">
+            <p class="font-mono text-sm" style="color:var(--rose-pine-muted)">// No projects to display.</p>
+            @if($currentStatus)
+                <p class="text-sm mt-3" style="color:var(--rose-pine-subtle)">
+                    Try <a href="{{ route('projects.index') }}" style="color:var(--rose-pine-gold)">viewing all projects</a>.
+                </p>
+            @endif
+        </div>
+    @endif
+
+</div>
 @endsection
