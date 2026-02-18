@@ -259,6 +259,9 @@
     [id]  { scroll-margin-top: 6rem; }
 
     /* ── Shiki code blocks ───────────────────────────────────────────────────── */
+    /* Shiki <pre> sits directly inside a <div>, not a nested <pre>.
+       Override the typography plugin's prose pre defaults so they
+       don't compound font-size or add extra padding/background. */
     .prose pre { margin: 0; padding: 0; background: transparent; border-radius: 0; font-size: 1rem; }
 
     .shiki {
@@ -266,36 +269,21 @@
         background: transparent !important;
         margin: 0 !important;
         padding: 1rem 1.25rem !important;
-        font-size: 0.85rem;
-        line-height: 1.6;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        font-size: 0.9rem;
+        line-height: 1.7;
     }
-    .shiki .line { 
-        display: block; 
-        min-height: 1.6em;
-        padding-left: 3.75em;
-    }
+    .shiki .line { display: inline-block; width: 100%; }
     .shiki .line::before {
         counter-increment: line;
         content: counter(line);
-        position: absolute;
-        left: 0;
-        width: 3em;
+        display: inline-block;
+        width: 2.5em; margin-right: 1.25em;
         text-align: right;
         color: var(--rose-pine-muted);
         user-select: none;
         opacity: 0.5;
-        font-size: 0.85rem;
     }
     .shiki code { display: block; background: transparent !important; }
-
-    .prose div:has(> .shiki) {
-        position: relative;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        margin: 1.5em 0;
-    }
 
     /* ── Tables ──────────────────────────────────────────────────────────────── */
     .prose table {
