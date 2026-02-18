@@ -190,18 +190,13 @@
     }
 
     /* Code block containers must not overflow */
-    .prose pre,
-    .prose .code-block,
-    .prose div:has(> pre),
-    .prose div:has(> .shiki),
-    .prose div:has(> .shiki-dark),
-    .prose div:has(> .shiki-dawn) {
+    .prose .code-block {
         max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    .code-block {
+    .prose .code-block {
         width: 100%;
         max-width: calc(100vw - 2rem);
         margin-left: calc(-50vw + 50% + 1rem);
@@ -209,7 +204,7 @@
     }
 
     @media (min-width: 640px) {
-        .code-block {
+        .prose .code-block {
             max-width: 100%;
             margin-left: 0;
             margin-right: 0;
@@ -282,18 +277,29 @@
     [id]  { scroll-margin-top: 6rem; }
 
     /* ── Shiki code blocks ───────────────────────────────────────────────────── */
+    /* Reset prose pre defaults */
     .prose pre { margin: 0; padding: 0; background: transparent; border-radius: 0; font-size: 1rem; }
 
-    /* Code block container - fits screen, content scrolls inside */
-    .prose div:has(> .shiki) {
+    /* Unified container styling for all shiki variants */
+    .prose .code-block {
         position: relative;
         border-radius: 0.5rem;
         overflow: hidden;
         margin: 1.5em 0;
         max-width: 100%;
         width: 100%;
+        background: var(--rose-pine-overlay);
     }
 
+    /* Wrapper divs inside code-block */
+    .shiki-dark,
+    .shiki-dawn {
+        background: transparent !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Shiki output - transparent to use container background */
     .shiki {
         counter-reset: line;
         background: transparent !important;

@@ -17,8 +17,8 @@
     </div>
 
     {{-- Rose Pine (dark) — shown in dark mode --}}
-    <div x-ref="codeRef" class="shiki-dark overflow-x-auto bg-rose-pine-overlay">{!! $highlighted ?? $slot !!}</div>
+    <div x-ref="codeRef" class="shiki-dark overflow-x-auto">{!! $highlighted ?? $slot !!}</div>
 
     {{-- Rose Pine Dawn — shown in light mode --}}
-    <div class="shiki-dawn overflow-x-auto bg-rose-pine-overlay">{!! $highlightedDawn ?? '' !!}</div>
+    <div class="shiki-dawn overflow-x-auto">{!! $highlightedDawn ?? '' !!}</div>
 </div>
